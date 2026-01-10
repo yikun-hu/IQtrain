@@ -11,7 +11,7 @@ import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
 
 export default function DashboardPage() {
   const { language } = useLanguage();
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('training');
@@ -27,8 +27,11 @@ export default function DashboardPage() {
   const [completedTests, setCompletedTests] = useState<any[]>([]);
 
   useEffect(() => {
+    // 等待认证状态加载完成
+    if (authLoading) return;
+    
     loadData();
-  }, [user]);
+  }, [user, authLoading]);
 
   // 监听来自Header的tab切换事件
   useEffect(() => {
@@ -91,7 +94,8 @@ export default function DashboardPage() {
     return language === 'zh' ? names[category]?.zh : names[category]?.en;
   };
 
-  if (loading) {
+  // 如果认证状态或数据正在加载，显示加载界面
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

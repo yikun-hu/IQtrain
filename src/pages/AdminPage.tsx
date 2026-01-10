@@ -7,8 +7,11 @@ import type { AdminOverview, DailyStats, Profile } from '@/types/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Users, DollarSign, CreditCard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, DollarSign, CreditCard, ChevronLeft, ChevronRight, Package, Settings } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import SubscriptionPlansManager from '@/components/admin/SubscriptionPlansManager';
+import PaymentGatewayManager from '@/components/admin/PaymentGatewayManager';
 
 export default function AdminPage() {
   const { profile } = useAuth();
@@ -170,10 +173,33 @@ export default function AdminPage() {
         {/* 页面标题 */}
         <h1 className="text-3xl font-bold mb-8">{t.title}</h1>
 
-        {/* 模块一：数据总览 */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">{t.overview.title}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {/* 标签页 */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="overview" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              {language === 'zh' ? '数据总览' : 'Overview'}
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              {language === 'zh' ? '用户管理' : 'Users'}
+            </TabsTrigger>
+            <TabsTrigger value="plans" className="flex items-center gap-2">
+              <Package className="h-4 w-4" />
+              {language === 'zh' ? '订阅包' : 'Plans'}
+            </TabsTrigger>
+            <TabsTrigger value="gateway" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              {language === 'zh' ? '支付网关' : 'Gateway'}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* 数据总览标签页 */}
+          <TabsContent value="overview" className="space-y-8">
+            {/* 模块一：数据总览 */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">{t.overview.title}</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {/* 总用户数 */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -406,7 +432,121 @@ export default function AdminPage() {
               </div>
             </div>
           )}
-        </div>
+            </div>
+          </TabsContent>
+
+          {/* 用户管理标签页 */}
+          <TabsContent value="users" className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">{t.userList.title}</h2>
+              <Card>
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{t.userList.email}</TableHead>
+                          <TableHead>{t.userList.name}</TableHead>
+                          <TableHead>{language === 'zh' ? '角色' : 'Role'}</TableHead>
+                          <TableHead>{t.userList.subscriptionType}</TableHead>
+                          <TableHead>{t.userList.createdAt}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {loading ? (
+                          Array.from({ length: 5 }).map((_, i) => (
+                            <TableRow key={i}>
+                              <TableCell><Skeleton className="h-4 w-40 bg-muted" /></TableCell>
+                              <TableCell><Skeleton className="h-4 w-24 bg-muted" /></TableCell>
+                              <TableCell><Skeleton className="h-4 w-16 bg-muted" /></TableCell>
+                              <TableCell><Skeleton className="h-4 w-20 bg-muted" /></TableCell>
+                              <TableCell><Skeleton className="h-4 w-32 bg-muted" /></TableCell>
+                            </TableRow>
+                          ))
+                        ) : users.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center text-muted-foreground">
+                              {language === 'zh' ? '暂无用户数据' : 'No users found'}
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          users.map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell className="font-medium">{user.email}</TableCell>
+                              <TableCell>{user.full_name || '-'}</TableCell>
+                              <TableCell>
+                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                  user.role === 'admin' 
+                                    ? 'bg-purple-100 text-purple-800' 
+                                    : 'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {user.role}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                {user.has_paid ? (
+                                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    {user.subscription_type === 'monthly' ? t.userList.monthly : t.userList.oneTime}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted-foreground">-</span>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {formatDateTime(user.created_at)}
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 分页 */}
+              {!loading && users.length > 0 && (
+                <div className="flex items-center justify-between mt-4">
+                  <div className="text-sm text-muted-foreground">
+                    {t.userList.page
+                      .replace('{current}', currentPage.toString())
+                      .replace('{total}', totalPages.toString())}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1 || loading}
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      {t.userList.previous}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages || loading}
+                    >
+                      {t.userList.next}
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* 订阅包管理标签页 */}
+          <TabsContent value="plans">
+            <SubscriptionPlansManager />
+          </TabsContent>
+
+          {/* 支付网关配置标签页 */}
+          <TabsContent value="gateway">
+            <PaymentGatewayManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import { Loader2, Award, Clock, Target } from 'lucide-react';
 
 export default function ResultsPage() {
   const { t } = useLanguage();
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -20,13 +20,16 @@ export default function ResultsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 等待认证状态加载完成
+    if (authLoading) return;
+    
     if (!user) {
       navigate('/login');
       return;
     }
 
     loadResult();
-  }, [user]);
+  }, [user, authLoading]);
 
   const loadResult = async () => {
     if (!user) return;

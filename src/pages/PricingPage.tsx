@@ -1,19 +1,65 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { getActiveSubscriptionPlans } from '@/db/api';
+import type { SubscriptionPlan } from '@/types/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { useToast } from '@/hooks/use-toast';
 
 export default function PricingPage() {
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // 加载订阅包
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  const loadPlans = async () => {
+    try {
+      setLoading(true);
+      const data = await getActiveSubscriptionPlans();
+      setPlans(data);
+    } catch (error) {
+      console.error('加载订阅包失败:', error);
+      toast({
+        title: language === 'zh' ? '错误' : 'Error',
+        description: language === 'zh' ? '加载订阅包失败' : 'Failed to load subscription plans',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 获取时间单位标签
+  const getTimeUnitLabel = (unit: string, duration: number) => {
+    const labels: Record<string, { zh: string; en: string }> = {
+      DAY: { zh: '天', en: duration > 1 ? 'days' : 'day' },
+      WEEK: { zh: '周', en: duration > 1 ? 'weeks' : 'week' },
+      MONTH: { zh: '月', en: duration > 1 ? 'months' : 'month' },
+      YEAR: { zh: '年', en: duration > 1 ? 'years' : 'year' },
+    };
+    return labels[unit]?.[language] || unit;
+  };
+
+  // 处理订阅按钮点击
+  const handleSubscribe = (planId: string) => {
+    navigate(`/payment?plan_id=${planId}`);
+  };
 
   const content = {
     zh: {
@@ -173,71 +219,83 @@ export default function PricingPage() {
           {t.title}
         </h1>
 
-        {/* 定价卡片 */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
-          {/* 双周计划 */}
-          <Card className="relative hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-xl">{t.oneTime.title}</CardTitle>
-              <CardDescription>
-                <span className="text-4xl font-bold text-foreground">{t.oneTime.price}</span>
-                <span className="text-muted-foreground">{t.oneTime.period}</span>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {t.oneTime.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => handlePlanSelect('one_time')}
-              >
-                {t.oneTime.button}
-              </Button>
-            </CardFooter>
-          </Card>
+        {/* 加载状态 */}
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : plans.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            {language === 'zh' ? '暂无可用的订阅计划' : 'No subscription plans available'}
+          </div>
+        ) : (
+          <>
+            {/* 定价卡片 */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
+              {plans.map((plan, index) => (
+                <Card 
+                  key={plan.id} 
+                  className={`relative hover:shadow-lg transition-shadow ${index === 0 ? 'border-primary' : ''}`}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-xl">{plan.name}</CardTitle>
+                    <CardDescription>
+                      {/* 试用价格 */}
+                      {/* {plan.trial_price > 0 && (
+                        <div className="mb-2">
+                          <span className="text-2xl font-bold text-foreground">
+                            ${plan.trial_price.toFixed(2)}
+                          </span>
+                          <span className="text-muted-foreground">
+                            {' '}/ {plan.trial_duration} {getTimeUnitLabel(plan.trial_unit, plan.trial_duration)}
+                          </span>
+                          <span className="text-xs text-muted-foreground block mt-1">
+                            {language === 'zh' ? '试用期' : 'Trial Period'}
+                          </span>
+                        </div>
+                      )} */}
+                      {/* 续费价格 */}
+                      <div>
+                        <span className="text-4xl font-bold text-foreground">
+                          ${plan.recurring_price.toFixed(2)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          {' '}/ {plan.recurring_duration} {getTimeUnitLabel(plan.recurring_unit, plan.recurring_duration)}
+                        </span>
+                        {plan.trial_price > 0 && (
+                          <span className="text-xs text-muted-foreground block mt-1">
+                            {language === 'zh' ? '之后续费' : 'Then'}
+                          </span>
+                        )}
+                      </div>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {plan.description.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button 
+                      className="w-full bg-primary hover:bg-primary/90"
+                      onClick={() => handleSubscribe(plan.id)}
+                    >
+                      {language === 'zh' ? '开始' : 'Get Started'}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
 
-          {/* 月度计划 */}
-          <Card className="relative hover:shadow-lg transition-shadow border-primary">
-            <CardHeader>
-              <CardTitle className="text-xl">{t.monthly.title}</CardTitle>
-              <CardDescription>
-                <span className="text-4xl font-bold text-foreground">{t.monthly.price}</span>
-                <span className="text-muted-foreground">{t.monthly.period}</span>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
-                {t.monthly.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-            <CardFooter>
-              <Button 
-                className="w-full bg-primary hover:bg-primary/90"
-                onClick={() => handlePlanSelect('monthly')}
-              >
-                {t.monthly.button}
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
-
-        {/* 免责声明 */}
-        <p className="text-center text-sm text-muted-foreground mb-16">
-          {t.disclaimer}
-        </p>
+            {/* 免责声明 */}
+            <p className="text-center text-sm text-muted-foreground mb-16">
+              {t.disclaimer}
+            </p>
 
         {/* 您将获得 */}
         <div className="mb-16">
@@ -258,8 +316,8 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* 常见问题 */}
-        <div className="max-w-3xl mx-auto">
+            {/* 常见问题 */}
+            <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl xl:text-3xl font-bold mb-8">
             {t.faqTitle}
           </h2>
@@ -275,7 +333,9 @@ export default function PricingPage() {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

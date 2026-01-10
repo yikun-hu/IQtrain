@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import TestPage from './pages/TestPage';
 import LoadingAnalysisPage from './pages/LoadingAnalysisPage';
 import CollectionPage from './pages/CollectionPage';
+import ResultPage from './pages/ResultPage';
 import ResultsPage from './pages/ResultsPage';
 import DashboardPage from './pages/DashboardPage';
 import PaymentPage from './pages/PaymentPage';
@@ -12,7 +13,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CookiePolicyPage from './pages/CookiePolicyPage';
 import GamePage from './pages/GamePage';
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 
 interface RouteConfig {
     name: string;
@@ -56,6 +57,11 @@ const routes: RouteConfig[] = [
         name: 'Results',
         path: '/results',
         element: <ResultsPage/>,
+    },
+    {
+        name: 'Results',
+        path: '/result',
+        element: <ResultPage/>,
     },
     {
         name: 'Dashboard',

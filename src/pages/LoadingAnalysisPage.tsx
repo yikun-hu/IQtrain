@@ -80,7 +80,7 @@ export default function LoadingAnalysisPage() {
 
   // 进度控制
   useEffect(() => {
-    const duration = 30000; // 30秒
+    const duration = 6000; // 6秒（缩短分析时长）
     const interval = 100; // 每100ms更新一次
     const increment = (interval / duration) * 100;
 

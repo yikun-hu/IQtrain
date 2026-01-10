@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { createOrder, updateProfile, saveTestResult, getAllQuestions } from '@/db/api';
-import type { SubscriptionType, TestDimension } from '@/types/types';
+import { createOrder, updateProfile, saveTestResult, getAllQuestions, getSubscriptionPlan, getPaymentGatewayConfig, signInWithOTP, verifyOTP } from '@/db/api';
+import type { SubscriptionType, TestDimension, SubscriptionPlan, PaymentGatewayConfig } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle, FileText, Award, BarChart3, TrendingUp, Users, Clock, Lock } from 'lucide-react';
 import { supabase } from '@/db/supabase';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 
 // 随机生成购买横幅数据
 const generatePurchaseBanners = () => {
@@ -19,7 +22,7 @@ const generatePurchaseBanners = () => {
     'Daniel Harris', 'Charlotte Martin', 'Matthew Thompson', 'Amelia Garcia',
     'Joseph Rodriguez', 'Harper Lewis', 'Christopher Lee', 'Evelyn Walker'
   ];
-  
+
   const chineseNames = [
     '张伟', '李娜', '王芳', '刘洋', '陈静', '杨帆', '赵敏', '黄磊',
     '周杰', '吴倩', '徐强', '孙丽', '马超', '朱婷', '胡军', '郭敏',
@@ -35,7 +38,7 @@ const generatePurchaseBanners = () => {
 
 export default function PaymentPage() {
   const { language } = useLanguage();
-  const { user, refreshProfile } = useAuth();
+  const { user, refreshProfile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -45,10 +48,67 @@ export default function PaymentPage() {
   const [timeLeft, setTimeLeft] = useState(6 * 60 + 26); // 6:26
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [purchaseBanners] = useState(generatePurchaseBanners());
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
+  const [gatewayConfig, setGatewayConfig] = useState<PaymentGatewayConfig | null>(null);
+  const [loadingPlan, setLoadingPlan] = useState(true);
+  
+  // OTP verification state
+  const [otpStep, setOtpStep] = useState<'email' | 'code'>('email');
+  const [otpEmail, setOtpEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [showOtpForm, setShowOtpForm] = useState(false);
 
+  // 从URL获取plan_id，如果没有则使用旧的type参数
+  const planId = searchParams.get('plan_id');
   const type = searchParams.get('type') as SubscriptionType || 'one_time';
   const amount = type === 'one_time' ? 1.98 : 28.80;
   const monthlyPrice = 28.80;
+
+  // 加载订阅包和支付网关配置
+  useEffect(() => {
+    const loadPlanAndConfig = async () => {
+      try {
+        setLoadingPlan(true);
+
+        // 并行加载订阅包和支付网关配置
+        const [planData, configData] = await Promise.all([
+          planId ? getSubscriptionPlan(planId) : getSubscriptionPlan('7b4640d2-c81c-4132-b1c6-9eea66fe66cd'),
+          getPaymentGatewayConfig(),
+        ]);
+
+        if (planData) {
+          setSelectedPlan(planData);
+        }
+
+        if (configData) {
+          setGatewayConfig(configData);
+        }
+      } catch (error) {
+        console.error('加载订阅包或支付网关配置失败:', error);
+        toast({
+          title: language === 'zh' ? '错误' : 'Error',
+          description: language === 'zh' ? '加载订阅信息失败' : 'Failed to load subscription info',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoadingPlan(false);
+      }
+    };
+
+    loadPlanAndConfig();
+  }, [planId, language, toast]);
+
+  // 获取时间单位标签
+  const getTimeUnitLabel = (unit: string, duration: number) => {
+    const labels: Record<string, { zh: string; en: string }> = {
+      DAY: { zh: '天', en: duration > 1 ? 'days' : 'day' },
+      WEEK: { zh: '周', en: duration > 1 ? 'weeks' : 'week' },
+      MONTH: { zh: '月', en: duration > 1 ? 'months' : 'month' },
+      YEAR: { zh: '年', en: duration > 1 ? 'years' : 'year' },
+    };
+    return labels[unit]?.[language] || unit;
+  };
 
   // 倒计时
   useEffect(() => {
@@ -80,6 +140,87 @@ export default function PaymentPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // OTP handling functions
+  const handleSendOTPCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!otpEmail || !otpEmail.includes('@')) {
+      toast({
+        title: language === 'zh' ? '错误' : 'Error',
+        description: language === 'zh' ? '请输入有效的邮箱地址' : 'Please enter a valid email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      await signInWithOTP(otpEmail);
+      setOtpStep('code');
+      toast({
+        title: language === 'zh' ? '成功' : 'Success',
+        description: language === 'zh' ? '验证码已发送' : 'Verification code sent',
+      });
+    } catch (error: any) {
+      toast({
+        title: language === 'zh' ? '错误' : 'Error',
+        description: error.message || (language === 'zh' ? '发送验证码失败' : 'Failed to send verification code'),
+        variant: 'destructive',
+      });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const [toProcessPaymentSuccess, setToProcessPaymentSuccess] = useState(false);
+  useEffect(() => {
+    if (toProcessPaymentSuccess && !authLoading) processPaymentSuccess();
+  }, [toProcessPaymentSuccess, user, authLoading])
+  const handleVerifyOTPCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!otpCode || otpCode.length !== 6) {
+      toast({
+        title: language === 'zh' ? '错误' : 'Error',
+        description: language === 'zh' ? '请输入有效的6位验证码' : 'Please enter a valid 6-digit code',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      // Verify OTP and get user session
+      const data = await verifyOTP(otpEmail, otpCode);
+      
+      // If we get a user from the verification result, update the user state
+      if (data?.user) {
+        // The onAuthStateChange listener in AuthContext should update the user state
+        // Wait a moment to ensure the user state is updated
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      // Refresh user profile to ensure we have the latest data
+      await refreshProfile();
+      
+      // Hide OTP form and continue with payment
+      setShowOtpForm(false);
+      
+      // Proceed with payment process
+      // await processPaymentSuccess();
+      setToProcessPaymentSuccess(true);
+    } catch (error: any) {
+      toast({
+        title: language === 'zh' ? '错误' : 'Error',
+        description: language === 'zh' ? '验证码错误' : 'Invalid verification code',
+        variant: 'destructive',
+      });
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+
   const calculateIQScore = (answers: Record<number, string>, questions: any[]) => {
     let correctCount = 0;
     const dimensionScores: Record<TestDimension, { correct: number; total: number }> = {
@@ -93,9 +234,9 @@ export default function PaymentPage() {
     questions.forEach((q) => {
       const userAnswer = answers[q.question_number];
       const dimension = q.dimension as TestDimension;
-      
+
       dimensionScores[dimension].total++;
-      
+
       if (userAnswer === q.correct_answer) {
         correctCount++;
         dimensionScores[dimension].correct++;
@@ -103,7 +244,7 @@ export default function PaymentPage() {
     });
 
     const iqScore = Math.round(100 + (correctCount / questions.length - 0.5) * 100);
-    
+
     const finalDimensionScores: Record<TestDimension, number> = {
       memory: Math.round((dimensionScores.memory.correct / dimensionScores.memory.total) * 100),
       speed: Math.round((dimensionScores.speed.correct / dimensionScores.speed.total) * 100),
@@ -119,119 +260,95 @@ export default function PaymentPage() {
     };
   };
 
-  const handlePayment = async () => {
-    setProcessing(true);
+  // 支付成功后的核心处理逻辑
+  const processPaymentSuccess = async () => {
     try {
-      // 获取用户信息
+      // 获取用户信息和支付详情
       const userInfoStr = localStorage.getItem('userInfo');
       const testAnswersStr = localStorage.getItem('testAnswers');
       const timeTakenStr = localStorage.getItem('testTimeTaken');
+      const paymentDetailsStr = localStorage.getItem('paymentDetails');
 
       // 检查是否有用户信息
       if (!userInfoStr) {
         toast({
           title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' 
-            ? '请先完成测试或提供邮箱信息' 
+          description: language === 'zh'
+            ? '请先完成测试或提供邮箱信息'
             : 'Please complete the test or provide email information first',
           variant: 'destructive',
         });
-        setProcessing(false);
         return;
       }
 
       const userInfo = JSON.parse(userInfoStr);
-
-      // 模拟PayPal支付流程
-      toast({
-        title: language === 'zh' ? '正在跳转到PayPal...' : 'Redirecting to PayPal...',
-        description: language === 'zh' 
-          ? '请在PayPal页面完成支付' 
-          : 'Please complete payment on PayPal page',
-      });
-
-      // 模拟支付处理时间
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const paymentDetails = paymentDetailsStr ? JSON.parse(paymentDetailsStr) : null;
 
       // PayPal支付成功后的处理
       toast({
         title: language === 'zh' ? '支付成功' : 'Payment Successful',
-        description: language === 'zh' 
-          ? '正在创建您的账号...' 
-          : 'Creating your account...',
+        description: language === 'zh'
+          ? '正在处理您的订单...'
+          : 'Processing your order...',
       });
 
-      let userId = user?.id;
-
-      // 如果用户未登录，自动注册账号
+      console.log(user)
+      // 用户必须已经通过OTP验证
       if (!user) {
-        // 使用邮箱自动注册账号（通过Supabase OTP）
-        const { error: otpError } = await supabase.auth.signInWithOtp({
-          email: userInfo.email,
-          options: {
-            shouldCreateUser: true,
-          },
+        toast({
+          title: language === 'zh' ? '错误' : 'Error',
+          description: language === 'zh'
+            ? '请先验证您的邮箱'
+            : 'Please verify your email first',
+          variant: 'destructive',
         });
+        return;
+      }
 
-        if (otpError) {
-          console.error('发送OTP失败:', otpError);
-        }
+      let userId = user.id;
 
-        // 检查是否已存在profile
-        const { data: existingProfile } = await supabase
+      // 检查是否已存在profile
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (!existingProfile) {
+        // 创建新的profile
+        const { data: newProfile, error: profileError } = await supabase
           .from('profiles')
-          .select('*')
-          .eq('email', userInfo.email)
-          .maybeSingle();
-
-        if (!existingProfile) {
-          // 创建新的profile
-          const { data: newProfile, error: profileError } = await supabase
-            .from('profiles')
-            .insert({
-              email: userInfo.email,
-              full_name: userInfo.fullName,
-              age: userInfo.age,
-              gender: userInfo.gender,
-              role: 'user',
-              has_paid: true,
-              subscription_type: type,
-              subscription_expires_at: type === 'monthly' 
-                ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-                : null,
-            })
-            .select()
-            .single();
-
-          if (profileError) {
-            console.error('创建profile失败:', profileError);
-            throw new Error('创建账号失败');
-          } else if (newProfile) {
-            userId = newProfile.id;
-          }
-        } else {
-          // 更新现有profile
-          userId = existingProfile.id;
-          await updateProfile(userId, {
+          .insert({
+            id: userId,
+            email: user.email || userInfo.email,
             full_name: userInfo.fullName,
             age: userInfo.age,
             gender: userInfo.gender,
+            role: 'user',
             has_paid: true,
             subscription_type: type,
-            subscription_expires_at: type === 'monthly' 
+            subscription_expires_at: type === 'monthly'
               ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
               : null,
-          });
+          })
+          .select()
+          .single();
+
+        if (profileError) {
+          console.error('创建profile失败:', profileError);
+          throw new Error('创建账号失败');
         }
       } else {
-        // 用户已登录，更新支付状态
-        userId = user.id;
+        // 更新现有profile
         await updateProfile(userId, {
+          full_name: userInfo.fullName || undefined,
+          age: userInfo.age,
+          gender: userInfo.gender || undefined,
           has_paid: true,
           subscription_type: type,
-          subscription_expires_at: type === 'monthly' 
+          subscription_expires_at: type === 'monthly'
             ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-            : null,
+            : undefined,
         });
       }
 
@@ -267,8 +384,15 @@ export default function PaymentPage() {
           user_id: userId,
           status: 'paid',
           subscription_type: type,
-          amount,
+          subscription_plan_id: paymentDetails?.planId || selectedPlan?.id || '',
+          amount: paymentDetails?.amount || amount,
+          paypal_order_id: paymentDetails?.orderId || paymentDetails?.subscriptionId,
         });
+        
+        // 清除支付详情
+        if (paymentDetails) {
+          localStorage.removeItem('paymentDetails');
+        }
       }
 
       // 刷新用户profile
@@ -278,14 +402,14 @@ export default function PaymentPage() {
       setPaymentSuccess(true);
       toast({
         title: language === 'zh' ? '账号创建成功' : 'Account Created Successfully',
-        description: language === 'zh' 
-          ? '正在跳转到仪表盘...' 
-          : 'Redirecting to dashboard...',
+        description: language === 'zh'
+          ? '正在跳转到结果页面...'
+          : 'Redirecting to results page...',
       });
 
-      // 跳转到Dashboard
+      // 跳转到结果页面
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/result');
       }, 2000);
     } catch (error: any) {
       console.error('支付失败:', error);
@@ -294,8 +418,6 @@ export default function PaymentPage() {
         description: language === 'zh' ? '支付失败，请重试' : 'Payment failed, please try again',
         variant: 'destructive',
       });
-    } finally {
-      setProcessing(false);
     }
   };
 
@@ -310,14 +432,121 @@ export default function PaymentPage() {
                 {language === 'zh' ? '支付成功！' : 'Payment Successful!'}
               </h2>
               <p className="text-muted-foreground mb-4">
-                {language === 'zh' 
-                  ? '正在跳转到仪表盘...' 
+                {language === 'zh'
+                  ? '正在跳转到仪表盘...'
                   : 'Redirecting to dashboard...'}
               </p>
               <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
             </div>
           </CardContent>
         </Card>
+      </div>
+    );
+  }
+
+  // OTP verification form overlay
+  if (showOtpForm) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* 标题 */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {language === 'zh' ? '验证您的邮箱' : 'Verify Your Email'}
+            </h1>
+            <p className="text-gray-600">
+              {language === 'zh' 
+                ? '输入验证码以继续完成支付' 
+                : 'Enter the verification code to complete your payment'}
+            </p>
+          </div>
+
+          {/* 表单 */}
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            {otpStep === 'email' ? (
+              <form onSubmit={handleSendOTPCode} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="otp-email" className="text-gray-700 font-medium">
+                    {language === 'zh' ? '邮箱地址' : 'Email Address'}
+                  </Label>
+                  <Input
+                    id="otp-email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={otpEmail}
+                    onChange={(e) => setOtpEmail(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold" 
+                  disabled={otpLoading}
+                >
+                  {otpLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                  {language === 'zh' ? '发送验证码' : 'Send Code'}
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-12"
+                  onClick={() => setShowOtpForm(false)}
+                >
+                  {language === 'zh' ? '取消' : 'Cancel'}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOTPCode} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="otp-code" className="text-gray-700 font-medium">
+                    {language === 'zh' ? '验证码' : 'Verification Code'}
+                  </Label>
+                  <Input
+                    id="otp-code"
+                    type="text"
+                    placeholder="000000"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                    className="h-12 text-center text-2xl tracking-widest"
+                    required
+                  />
+                  <p className="text-sm text-gray-500">
+                    {language === 'zh' ? '验证码已发送至：' : 'Code sent to: '}{otpEmail}
+                  </p>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold" 
+                  disabled={otpLoading}
+                >
+                  {otpLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                  {language === 'zh' ? '验证' : 'Verify'}
+                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 h-12"
+                    onClick={() => setOtpStep('email')}
+                  >
+                    {language === 'zh' ? '修改邮箱' : 'Change Email'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 h-12"
+                    onClick={() => setShowOtpForm(false)}
+                  >
+                    {language === 'zh' ? '取消' : 'Cancel'}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
@@ -364,8 +593,8 @@ export default function PaymentPage() {
               )}
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              {language === 'zh' 
-                ? '立即获取详细的认知评估报告、个性化训练计划和官方证书。加入全球超过100万用户的行列！' 
+              {language === 'zh'
+                ? '立即获取详细的认知评估报告、个性化训练计划和官方证书。加入全球超过100万用户的行列！'
                 : 'Get instant access to your detailed cognitive assessment, personalized training plan, and official certificate. Join over 1 million users worldwide!'}
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
@@ -416,8 +645,8 @@ export default function PaymentPage() {
                       {language === 'zh' ? '完整IQ分数和详细分析' : 'Full IQ Score & Breakdown'}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh' 
-                        ? '详细分析您在记忆、速度、逻辑等方面的认知优势' 
+                      {language === 'zh'
+                        ? '详细分析您在记忆、速度、逻辑等方面的认知优势'
                         : 'Detailed analysis of your cognitive strengths across memory, speed, logic, and more'}
                     </p>
                   </div>
@@ -432,8 +661,8 @@ export default function PaymentPage() {
                       {language === 'zh' ? '可打印证书' : 'Printable Certificate'}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh' 
-                        ? '官方IQ证书，您可以下载、打印和分享' 
+                      {language === 'zh'
+                        ? '官方IQ证书，您可以下载、打印和分享'
                         : 'Official IQ certificate you can download, print, and share'}
                     </p>
                   </div>
@@ -448,8 +677,8 @@ export default function PaymentPage() {
                       {language === 'zh' ? '个性化训练仪表盘' : 'Personalized Training Dashboard'}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh' 
-                        ? '访问根据您的档案定制的认知游戏和练习' 
+                      {language === 'zh'
+                        ? '访问根据您的档案定制的认知游戏和练习'
                         : 'Access to cognitive games and exercises tailored to your profile'}
                     </p>
                   </div>
@@ -464,8 +693,8 @@ export default function PaymentPage() {
                       {language === 'zh' ? '未来测试访问权限' : 'Future Test Access'}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh' 
-                        ? '进行包括职业、情商和焦虑测试在内的额外评估' 
+                      {language === 'zh'
+                        ? '进行包括职业、情商和焦虑测试在内的额外评估'
                         : 'Take additional assessments including Career, EQ, and Anxiety tests'}
                     </p>
                   </div>
@@ -482,41 +711,68 @@ export default function PaymentPage() {
               </h2>
 
               <div className="space-y-4 mb-6 flex-1">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">
-                    {language === 'zh' 
-                      ? '获得IQ分数并与名人比较' 
-                      : 'Get IQ score and compare with celebrities'}
-                  </p>
-                </div>
+                {loadingPlan ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : selectedPlan ? (
+                  <>
+                    {selectedPlan.description.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">{feature}</p>
+                      </div>
+                    ))}
+                    {selectedPlan.trial_price > 0 && (
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">
+                          {language === 'zh'
+                            ? `开始${selectedPlan.trial_duration}${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)}试用仅需$${selectedPlan.trial_price.toFixed(2)}，试用期后，续订费用为$${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration}${getTimeUnitLabel(selectedPlan.recurring_unit, selectedPlan.recurring_duration)}。随时取消。`
+                            : `Start ${selectedPlan.trial_duration}-${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)} trial for just $${selectedPlan.trial_price.toFixed(2)}, then $${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration} ${getTimeUnitLabel(selectedPlan.recurring_unit, selectedPlan.recurring_duration)}. Cancel anytime.`}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">
+                        {language === 'zh'
+                          ? '获得IQ分数并与名人比较'
+                          : 'Get IQ score and compare with celebrities'}
+                      </p>
+                    </div>
 
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">
-                    {language === 'zh' 
-                      ? '了解你的强项，人格和职业倾向' 
-                      : 'Understand your strengths, personality and career tendencies'}
-                  </p>
-                </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">
+                        {language === 'zh'
+                          ? '了解你的强项，人格和职业倾向'
+                          : 'Understand your strengths, personality and career tendencies'}
+                      </p>
+                    </div>
 
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">
-                    {language === 'zh' 
-                      ? '每周训练以提高你的认知能力' 
-                      : 'Weekly training to improve cognitive abilities'}
-                  </p>
-                </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">
+                        {language === 'zh'
+                          ? '每周训练以提高你的认知能力'
+                          : 'Weekly training to improve cognitive abilities'}
+                      </p>
+                    </div>
 
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-700">
-                    {language === 'zh' 
-                      ? `开始7天试用仅需€${amount.toFixed(2)}，试用期后，续订费用为€${monthlyPrice.toFixed(2)}/月起。随时取消。` 
-                      : `Start 7-day trial for just €${amount.toFixed(2)}, then €${monthlyPrice.toFixed(2)}/month. Cancel anytime.`}
-                  </p>
-                </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-gray-700">
+                        {language === 'zh'
+                          ? `开始7天试用仅需€${amount.toFixed(2)}，试用期后，续订费用为€${monthlyPrice.toFixed(2)}/月起。随时取消。`
+                          : `Start 7-day trial for just €${amount.toFixed(2)}, then €${monthlyPrice.toFixed(2)}/month. Cancel anytime.`}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className="mt-auto">
@@ -526,8 +782,12 @@ export default function PaymentPage() {
                       {language === 'zh' ? '今日特惠：' : 'Today\'s Special:'}
                     </span>
                     <div className="flex items-center gap-2">
-                      <span className="text-lg line-through text-gray-400">€6.99</span>
-                      <span className="text-3xl font-bold text-primary">€{amount.toFixed(2)}</span>
+                      <span className="text-lg line-through text-gray-400">
+                        ${selectedPlan ? (selectedPlan.trial_price * 3.5).toFixed(2) : '6.99'}
+                      </span>
+                      <span className="text-3xl font-bold text-primary">
+                        ${selectedPlan ? selectedPlan.trial_price.toFixed(2) : amount.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -536,27 +796,60 @@ export default function PaymentPage() {
                   </div>
                 </div>
 
-                <Button
-                  onClick={handlePayment}
-                  disabled={processing}
-                  className="w-full bg-[#ffc439] hover:bg-[#e6b033] text-[#003087] text-lg py-6 mb-4 font-bold"
-                >
-                  {processing ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      {language === 'zh' ? '处理中...' : 'Processing...'}
-                    </>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2">
-                      <Lock className="h-5 w-5" />
-                      <span>{language === 'zh' ? '使用卡支付' : 'Pay with Card'}</span>
-                    </div>
-                  )}
-                </Button>
+                <PayPalButtons disabled={loadingPlan} style={{ layout: 'horizontal', tagline: false }} createSubscription={async (data, actions) => {
+                  console.log(selectedPlan)
+
+                  try {
+                    // Just create subscription without checking user login status
+                    // We'll handle user verification and order creation after payment approval
+                    return actions.subscription.create({
+                      plan_id: selectedPlan?.paypal_plan_id || '',
+                      custom_id: `TEMP-${Date.now()}` // Use temporary custom ID for now
+                    })
+                  } catch (error) {
+                    console.error('Error creating subscription:', error)
+                    return Promise.reject(error)
+                  }
+                }} onApprove={async (data, actions) => {
+                  console.log(data, actions)
+                  setProcessing(true);
+                  try {
+                    // Store payment details in localStorage for later use after OTP verification
+                    localStorage.setItem('paymentDetails', JSON.stringify({
+                      subscriptionId: data.subscriptionID,
+                      orderId: data.orderID || data.subscriptionID, // Use orderID if available, otherwise subscriptionID
+                      // customId: data.custom_id,
+                      planId: selectedPlan?.id,
+                      amount: selectedPlan?.trial_price
+                    }));
+
+                    // If user is already logged in, process payment directly
+                    if (user) {
+                      await processPaymentSuccess();
+                    } else {
+                      // User not logged in, show OTP form after payment
+                      const userInfoStr = localStorage.getItem('userInfo');
+                      if (userInfoStr) {
+                        const userInfo = JSON.parse(userInfoStr);
+                        setOtpEmail(userInfo.email);
+                        setShowOtpForm(true);
+                      }
+                    }
+                  } catch (error) {
+                    console.error('Payment processing failed:', error);
+                    toast({
+                      title: language === 'zh' ? '错误' : 'Error',
+                      description: language === 'zh' ? '支付处理失败，请重试' : 'Payment processing failed, please try again',
+                      variant: 'destructive',
+                    });
+                  } finally {
+                    setProcessing(false);
+                  }
+                }} />
 
                 <p className="text-xs text-center text-gray-500">
-                  {language === 'zh' 
-                    ? '安全支付，支持所有主流信用卡' 
+                  {language === 'zh'
+                    ? '安全支付，支持所有主流信用卡'
                     : 'Secure payment, all major credit cards accepted'}
                 </p>
               </div>
@@ -573,20 +866,20 @@ export default function PaymentPage() {
             {[
               {
                 name: language === 'zh' ? '张明，32岁' : 'Anna Müller, 32',
-                feedback: language === 'zh' 
-                  ? '参加测试让我对自己有了全新的认识！报告非常详细，让我了解到自己的优势和需要改进的地方。强烈推荐！' 
+                feedback: language === 'zh'
+                  ? '参加测试让我对自己有了全新的认识！报告非常详细，让我了解到自己的优势和需要改进的地方。强烈推荐！'
                   : 'Taking the test gave me a whole new understanding of myself! The report was very detailed and helped me understand my strengths and areas for improvement. Highly recommended!',
               },
               {
                 name: language === 'zh' ? '李华，54岁' : 'Lukas Schmidt, 54',
-                feedback: language === 'zh' 
-                  ? '令人惊讶的准确！这个IQ测试帮助我在职业发展上做出了更明智的决策，这些自我认知对我的职业生涯产生了积极影响。' 
+                feedback: language === 'zh'
+                  ? '令人惊讶的准确！这个IQ测试帮助我在职业发展上做出了更明智的决策，这些自我认知对我的职业生涯产生了积极影响。'
                   : 'Surprisingly accurate! This IQ test helped me make smarter career decisions, and this self-awareness has had a positive impact on my career.',
               },
               {
                 name: language === 'zh' ? '王芳，24岁' : 'Leon Fischer, 24',
-                feedback: language === 'zh' 
-                  ? '我对自己的智商一直很好奇，但从未找到一个可信的测试。这个平台提供了专业的评估，而且价格合理。物超所值！' 
+                feedback: language === 'zh'
+                  ? '我对自己的智商一直很好奇，但从未找到一个可信的测试。这个平台提供了专业的评估，而且价格合理。物超所值！'
                   : 'I\'ve always been curious about my IQ but never found a reliable test. This platform provided a professional assessment at a reasonable price. Great value!',
               },
             ].map((testimonial, index) => (
@@ -621,20 +914,20 @@ export default function PaymentPage() {
             {[
               {
                 q: language === 'zh' ? '我的IQ测试结果什么时候可以看到？' : 'When can I see my IQ test results?',
-                a: language === 'zh' 
-                  ? '完成支付后，您将立即获得完整的IQ测试报告，包括详细的分析和建议。' 
+                a: language === 'zh'
+                  ? '完成支付后，您将立即获得完整的IQ测试报告，包括详细的分析和建议。'
                   : 'After completing payment, you will immediately receive your complete IQ test report with detailed analysis and recommendations.',
               },
               {
                 q: language === 'zh' ? '我可以在多个设备上访问我的测试结果吗？' : 'Can I access my test results on multiple devices?',
-                a: language === 'zh' 
-                  ? '是的，您可以使用同一账号在任何设备上登录并查看您的测试结果。' 
+                a: language === 'zh'
+                  ? '是的，您可以使用同一账号在任何设备上登录并查看您的测试结果。'
                   : 'Yes, you can log in with the same account on any device to view your test results.',
               },
               {
                 q: language === 'zh' ? '如果我对测试结果不满意怎么办？' : 'What if I\'m not satisfied with my test results?',
-                a: language === 'zh' 
-                  ? '我们提供7天无理由退款保证。如果您对结果不满意，可以随时申请退款。' 
+                a: language === 'zh'
+                  ? '我们提供7天无理由退款保证。如果您对结果不满意，可以随时申请退款。'
                   : 'We offer a 7-day money-back guarantee. If you\'re not satisfied with the results, you can request a refund at any time.',
               },
             ].map((faq, index) => (
