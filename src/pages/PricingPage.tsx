@@ -17,11 +17,30 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function PricingPage() {
   const { language } = useLanguage();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Check if user has an active subscription
+  const hasActiveSubscription = profile?.has_paid &&
+    profile?.subscription_type
+  //   && 
+  //  profile?.subscription_expires_at && 
+  //  new Date(profile.subscription_expires_at) > new Date();
+
+  // Format expiration date
+  const formatExpirationDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat(language === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
+  };
 
   // 加载订阅包
   useEffect(() => {
@@ -219,6 +238,48 @@ export default function PricingPage() {
           {t.title}
         </h1>
 
+        {/* 用户当前订阅信息 */}
+        {hasActiveSubscription && (
+          <div className="max-w-3xl mx-auto mb-12 bg-card p-6 rounded-lg border border-primary shadow-lg">
+            <h2 className="text-xl font-bold mb-4">
+              {language === 'zh' ? '您的当前订阅' : 'Your Current Subscription'}
+            </h2>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {language === 'zh' ? '订阅类型：' : 'Subscription Type:'}
+                </span>
+                <span className="font-semibold">
+                  {profile?.subscription_type === 'monthly'
+                    ? (language === 'zh' ? '月付' : 'Monthly')
+                    : (language === 'zh' ? '双周付' : 'Bi-weekly')}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">
+                  {language === 'zh' ? '到期日期：' : 'Expires On:'}
+                </span>
+                <span className="font-semibold">
+                  {formatExpirationDate(profile?.subscription_expires_at)}
+                </span>
+              </div>
+            </div>
+            <div className="mt-6">
+              <p className="text-sm text-muted-foreground mb-4">
+                {language === 'zh'
+                  ? '如果您想取消订阅，请发送邮件至：'
+                  : 'If you wish to cancel your subscription, please email us at:'}
+              </p>
+              <a
+                href="mailto:support@iqtrain.com"
+                className="text-primary hover:underline font-medium"
+              >
+                support@iqtrain.com
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* 加载状态 */}
         {loading ? (
           <div className="flex items-center justify-center py-12">
@@ -232,9 +293,9 @@ export default function PricingPage() {
           <>
             {/* 定价卡片 */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
-              {plans.map((plan, index) => (
-                <Card 
-                  key={plan.id} 
+              {hasActiveSubscription ? null : plans.map((plan, index) => (
+                <Card
+                  key={plan.id}
                   className={`relative hover:shadow-lg transition-shadow ${index === 0 ? 'border-primary' : ''}`}
                 >
                   <CardHeader>
@@ -281,7 +342,7 @@ export default function PricingPage() {
                     </ul>
                   </CardContent>
                   <CardFooter>
-                    <Button 
+                    <Button
                       className="w-full bg-primary hover:bg-primary/90"
                       onClick={() => handleSubscribe(plan.id)}
                     >
@@ -297,42 +358,42 @@ export default function PricingPage() {
               {t.disclaimer}
             </p>
 
-        {/* 您将获得 */}
-        <div className="mb-16">
-          <h2 className="text-2xl xl:text-3xl font-bold text-center mb-8">
-            {t.benefitsTitle}
-          </h2>
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {t.benefits.map((benefit, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="text-3xl shrink-0">{benefit.icon}</div>
-                    <p className="text-sm">{benefit.title}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+            {/* 您将获得 */}
+            <div className="mb-16">
+              <h2 className="text-2xl xl:text-3xl font-bold text-center mb-8">
+                {t.benefitsTitle}
+              </h2>
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {t.benefits.map((benefit, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow">
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4">
+                        <div className="text-3xl shrink-0">{benefit.icon}</div>
+                        <p className="text-sm">{benefit.title}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
 
             {/* 常见问题 */}
             <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl xl:text-3xl font-bold mb-8">
-            {t.faqTitle}
-          </h2>
-          <Accordion type="single" collapsible className="w-full">
-            {t.faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+              <h2 className="text-2xl xl:text-3xl font-bold mb-8">
+                {t.faqTitle}
+              </h2>
+              <Accordion type="single" collapsible className="w-full">
+                {t.faqs.map((faq, index) => (
+                  <AccordionItem key={index} value={`item-${index}`}>
+                    <AccordionTrigger className="text-left">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </>
         )}

@@ -19,9 +19,22 @@ import { ChevronRight, Shield } from 'lucide-react';
 
 export default function CollectionPage() {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // Check if user has complete profile information
+  const hasCompleteProfile = user && 
+                           profile?.full_name && 
+                           profile?.age && 
+                           profile?.gender && 
+                           profile?.email;
+  
+  // Check if user is already a subscribed user
+  const isSubscribed = profile?.has_paid && 
+                      profile?.subscription_type && 
+                      (!profile?.subscription_expires_at || 
+                       new Date(profile.subscription_expires_at) > new Date());
 
   // 当前步骤：1 或 2
   const [step, setStep] = useState(1);
@@ -47,8 +60,36 @@ export default function CollectionPage() {
         variant: 'destructive',
       });
       navigate('/test');
+      return;
     }
-  }, [language, navigate, toast]);
+    
+    // 如果用户有完整个人信息且已经是订阅用户，直接跳转到结果页面
+    if (hasCompleteProfile && isSubscribed) {
+      // 保存用户信息到localStorage
+      const userInfo = {
+        fullName: profile?.full_name || '',
+        age: profile?.age || 0,
+        gender: profile?.gender || '',
+        email: profile?.email || '',
+      };
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      
+      // 直接跳转到结果页面
+      navigate('/result');
+    }
+    
+    // 如果用户有完整个人信息但不是订阅用户，跳过第一步直接进入邮箱确认
+    if (hasCompleteProfile && !isSubscribed) {
+      // 预填充用户信息
+      setFullName(profile?.full_name || '');
+      setAge(profile?.age?.toString() || '');
+      setGender(profile?.gender || '');
+      setEmail(profile?.email || '');
+      
+      // 直接进入第二步
+      setStep(2);
+    }
+  }, [language, navigate, toast, hasCompleteProfile, isSubscribed, profile, setFullName, setAge, setGender, setEmail]);
 
   const content = {
     zh: {
@@ -172,17 +213,22 @@ export default function CollectionPage() {
     setSubmitting(true);
 
     try {
-      // 保存用户信息到localStorage
-      const userInfo = {
-        fullName,
-        age: parseInt(age),
-        gender,
-        email,
-      };
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        // 保存用户信息到localStorage
+        const userInfo = {
+          fullName,
+          age: parseInt(age),
+          gender,
+          email,
+        };
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-      // 跳转到支付页面
-      navigate('/payment');
+        // 如果用户已经是订阅用户，直接跳转到结果页面
+        if (isSubscribed) {
+          navigate('/results');
+        } else {
+          // 跳转到支付页面
+          navigate('/payment');
+        }
     } catch (error) {
       console.error('保存用户信息失败:', error);
       toast({
