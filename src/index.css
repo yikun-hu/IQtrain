@@ -1,0 +1,95 @@
+/* stylelint-disable */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    /* 主色调：深蓝灰 #303140 (228, 4%, 22%) */
+    --background: 0 0% 100%;
+    --foreground: 228 4% 22%;
+    --card: 0 0% 100%;
+    --card-foreground: 228 4% 22%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 228 4% 22%;
+    /* 科技蓝 #228CE9 (207, 79%, 52%) */
+    --primary: 207 79% 52%;
+    --primary-foreground: 0 0% 100%;
+    /* 活力橙 #F78739 (25, 92%, 59%) */
+    --secondary: 25 92% 59%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* 专业蓝 #3b82f6 (217, 91%, 60%) */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 207 79% 52%;
+    --chart-1: 207 79% 52%;
+    --chart-2: 25 92% 59%;
+    --chart-3: 217 91% 60%;
+    --chart-4: 228 4% 22%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 228 4% 22%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 207 79% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 228 8% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 228 8% 30%;
+    --sidebar-ring: 207 79% 52%;
+  }
+
+  .dark {
+    --background: 228 4% 22%;
+    --foreground: 0 0% 100%;
+    --card: 228 8% 30%;
+    --card-foreground: 0 0% 100%;
+    --popover: 228 8% 30%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 207 79% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 25 92% 59%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 228 8% 30%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%; 
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 8% 30%;
+    --input: 228 8% 30%;
+    --ring: 207 79% 52%;
+    --chart-1: 207 79% 52%;
+    --chart-2: 25 92% 59%;
+    --chart-3: 217 91% 60%;
+    --chart-4: 228 4% 22%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 228 4% 22%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 207 79% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 228 8% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 228 8% 30%;
+    --sidebar-ring: 207 79% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,22 @@
+-- 插入20道IQ测试题目
+INSERT INTO iq_questions (question_number, image_url, option_a, option_b, option_c, option_d, option_e, option_f, correct_answer, dimension) VALUES
+(1, 'https://miaoda-site-img.cdn.bcebos.com/images/dafe685b-7161-4a54-8c48-489deabea708.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'C', 'memory'),
+(2, 'https://miaoda-site-img.cdn.bcebos.com/images/f74a4312-f9ee-4a1e-8983-280d63aa7fa8.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'B', 'logic'),
+(3, 'https://miaoda-site-img.cdn.bcebos.com/images/7eee536a-1196-4a48-9652-9f107472429b.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'D', 'reaction'),
+(4, 'https://miaoda-site-img.cdn.bcebos.com/images/cf5e33b2-16fa-46c3-babd-9f2ef6c9e19a.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'A', 'speed'),
+(5, 'https://miaoda-site-img.cdn.bcebos.com/images/bfa4a3a5-10de-4879-8d73-7cacf38e207f.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'E', 'concentration'),
+(6, 'https://miaoda-site-img.cdn.bcebos.com/images/b3d210f1-0c33-4915-b574-e58930077975.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'C', 'memory'),
+(7, 'https://miaoda-site-img.cdn.bcebos.com/images/c35f84fd-addd-466d-bac9-c548acc1673a.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'F', 'logic'),
+(8, 'https://miaoda-site-img.cdn.bcebos.com/images/ca1a7f12-ad89-402d-a47f-a36e5b8f077a.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'B', 'reaction'),
+(9, 'https://miaoda-site-img.cdn.bcebos.com/images/836a6512-cfef-4a27-bb44-c84be0ad86fd.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'D', 'speed'),
+(10, 'https://miaoda-site-img.cdn.bcebos.com/images/dd315468-eb3a-4679-bacc-0150d8d7b853.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'A', 'concentration'),
+(11, 'https://miaoda-site-img.cdn.bcebos.com/images/52bde71a-9e2b-49bd-a680-e66848c28a3b.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'E', 'memory'),
+(12, 'https://miaoda-site-img.cdn.bcebos.com/images/6517a27c-e08c-4e9f-8a93-94a8c612ed84.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'C', 'speed'),
+(13, 'https://miaoda-site-img.cdn.bcebos.com/images/f85d9038-7197-4751-82e1-e1766b8aae94.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'F', 'reaction'),
+(14, 'https://miaoda-site-img.cdn.bcebos.com/images/1b403e5a-63e5-4013-8981-f258244ce53a.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'B', 'concentration'),
+(15, 'https://miaoda-site-img.cdn.bcebos.com/images/f6442dab-38f5-45d7-97fd-a1af074747a0.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'D', 'logic'),
+(16, 'https://miaoda-site-img.cdn.bcebos.com/images/646f3190-f982-47d0-9fc3-2d7b1a25ec0d.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'A', 'memory'),
+(17, 'https://miaoda-site-img.cdn.bcebos.com/images/38efb5cb-032b-4496-bb5b-4500562a4387.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'E', 'logic'),
+(18, 'https://miaoda-site-img.cdn.bcebos.com/images/c885f069-747f-44dd-ac1b-67b7c677bfd5.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'C', 'reaction'),
+(19, 'https://miaoda-site-img.cdn.bcebos.com/images/655b89ce-63d5-41da-8dd5-f09a030aea0f.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'F', 'speed'),
+(20, 'https://miaoda-site-img.cdn.bcebos.com/images/4caab437-8504-4f6a-b5aa-3f2a2bebb454.jpg', 'A', 'B', 'C', 'D', 'E', 'F', 'B', 'concentration');
