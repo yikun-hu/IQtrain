@@ -41,24 +41,11 @@ CREATE TABLE IF NOT EXISTS test_questions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 创建用户测试结果表（扩展现有test_results表的功能）
-CREATE TABLE IF NOT EXISTS user_test_results (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-  test_id UUID NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
-  answers JSONB NOT NULL,
-  score INTEGER NOT NULL,
-  result_data JSONB, -- 存储测试结果详细数据
-  time_taken INTEGER, -- 完成时间（秒）
-  completed_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 -- 创建索引
 CREATE INDEX IF NOT EXISTS idx_games_category ON games(category);
 CREATE INDEX IF NOT EXISTS idx_tests_type ON tests(type);
 CREATE INDEX IF NOT EXISTS idx_test_questions_test_id ON test_questions(test_id);
-CREATE INDEX IF NOT EXISTS idx_user_test_results_user_id ON user_test_results(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_test_results_test_id ON user_test_results(test_id);
 
 -- 插入示例游戏数据
 INSERT INTO games (title, title_zh, category, url, description, description_zh, thumbnail_url) VALUES
@@ -83,7 +70,6 @@ INSERT INTO tests (title, title_zh, type, description, description_zh, duration,
 ALTER TABLE games ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE test_questions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_test_results ENABLE ROW LEVEL SECURITY;
 
 -- 游戏表：所有人可读
 CREATE POLICY "Games are viewable by everyone" ON games FOR SELECT USING (true);
@@ -93,8 +79,3 @@ CREATE POLICY "Tests are viewable by everyone" ON tests FOR SELECT USING (true);
 
 -- 测试题目表：所有人可读
 CREATE POLICY "Test questions are viewable by everyone" ON test_questions FOR SELECT USING (true);
-
--- 用户测试结果表：用户只能查看自己的结果
-CREATE POLICY "Users can view own test results" ON user_test_results FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "Users can insert own test results" ON user_test_results FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "Users can update own test results" ON user_test_results FOR UPDATE USING (auth.uid() = user_id);

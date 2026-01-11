@@ -91,7 +91,7 @@ export default function Header() {
   };
 
   // 判断是否在Dashboard页面
-  const isDashboard = location.pathname === '/dashboard';
+  const isDashboard = location.pathname.startsWith('/dashboard');
   const showNav = location.pathname.startsWith("/result");
   useEffect(() => {
     if (location.pathname.startsWith("/result")) {

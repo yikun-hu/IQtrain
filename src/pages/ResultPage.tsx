@@ -413,7 +413,7 @@ export default function ResultPage() {
             <p dangerouslySetInnerHTML={safeHtml(overviewLeadHtml)} />
             <p>{t(level.overview.body, lang, '')}</p>
 
-            <div className="center-block">
+            {/* <div className="center-block">
               <button
                 type="button"
                 className="print-button"
@@ -425,7 +425,7 @@ export default function ResultPage() {
               >
                 {t(TABLE.commonSections.ui.printButtonText, lang, lang === 'zh-CN' ? '打印本报告' : 'Print This Report')}
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Cognitive Profile + Comparison */}
