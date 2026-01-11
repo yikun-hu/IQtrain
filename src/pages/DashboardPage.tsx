@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,11 @@ export default function DashboardPage() {
   const { language } = useLanguage();
   const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [activeTab, setActiveTab] = useState('training');
+  // 从URL参数中获取tab值，如果没有则默认为'training'
+  const initialTab = searchParams.get('tab') || 'training';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [loading, setLoading] = useState(true);
   
   // Training相关状态
@@ -262,7 +265,7 @@ export default function DashboardPage() {
                           </div>
                           <Button
                             variant="outline"
-                            onClick={() => navigate(`/results/${result.id}`)}
+                            onClick={() => navigate(`/result`)}
                           >
                             <FileText className="mr-2 h-4 w-4" />
                             {language === 'zh' ? '查看结果' : 'View Results'}

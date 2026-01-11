@@ -80,13 +80,24 @@ export default function Header() {
   };
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
+    if (tab === 'training') {
+      navigate('/dashboard?tab=training');
+    } else if (tab === 'tests') {
+      navigate('/dashboard?tab=tests');
+    }
     const event = new CustomEvent('dashboard-tab-change', { detail: tab });
     window.dispatchEvent(event);
+    setActiveTab(tab);
   };
 
   // 判断是否在Dashboard页面
   const isDashboard = location.pathname === '/dashboard';
+  const showNav = location.pathname.startsWith("/result");
+  useEffect(() => {
+    if (location.pathname.startsWith("/result")) {
+      setActiveTab("tests")
+    }
+  }, [location])
   
   // 判断用户是否有订阅
   const hasSubscription = profile?.subscription_type === 'monthly' && profile?.subscription_expires_at;
@@ -111,7 +122,7 @@ export default function Header() {
           </Link>
 
           {/* 中间导航 - 仅在Dashboard页面显示 */}
-          {isDashboard && user && (
+          {(isDashboard || showNav) && user && (
             <div className="flex items-center gap-8">
               <button
                 onClick={() => handleTabChange('training')}

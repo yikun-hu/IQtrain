@@ -1,112 +1,256 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useAuth } from '@/contexts/AuthContext';
 import { getLatestTestResult } from '@/db/api';
 import type { TestResult } from '@/types/types';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Award, Clock, Target, Brain, TrendingUp, Zap, Lock, Printer, Download } from 'lucide-react';
 
-// IQ分数区间定义
-interface IQLevel {
-  min: number;
-  max: number;
-  label: { zh: string; en: string };
-  description: { zh: string; en: string };
-  color: string;
-  bgColor: string;
+import iqTable from '@/components/result/iqtable';
+
+type Lang = 'zh-CN' | 'en-US';
+type I18nText = Record<string, string | undefined>;
+
+type IqLevelConfig = {
+  id: number;
+  name: I18nText;
+  iqRange: [number, number];
+  percentile: I18nText;
+  descriptionShort?: I18nText;
+  colors: {
+    headerGradient: string;
+    accent: string;
+    accentDark: string;
+    badgeText: string;
+    badgeGradient: string;
+  };
+  reportTitle?: I18nText;
+  overview: {
+    leadTemplate: I18nText;
+    body: I18nText;
+  };
+  cognitiveProfile: {
+    patternRecognition: number;
+    spatialReasoning: number;
+    logicalDeduction: number;
+    processingSpeed: number;
+  };
+  cognitiveLabels: { key: keyof IqLevelConfig['cognitiveProfile']; label: I18nText }[];
+  comparativeAnalysis: I18nText;
+  chart: {
+    type: string;
+    bars: Array<
+      | { label: I18nText; heightPct: number; color: string }
+      | { labelTemplate: I18nText; heightPct: number; colorFrom: string }
+    >;
+    note: I18nText;
+  };
+  strengths: { title: I18nText; detail: I18nText }[];
+  recommendations: { title: I18nText; detail: I18nText }[];
+  trainingPlan: {
+    title: I18nText;
+    intro: I18nText;
+    items: Array<I18nText>;
+    style?: { backgroundColor?: string; radius?: number; padding?: number };
+  };
+  certificate: {
+    titleTemplate: I18nText;
+    paragraphs: Array<I18nText>;
+    idTemplate?: string;
+    dateLineTemplate?: I18nText;
+    footnote?: I18nText;
+  };
+};
+
+type IqTableConfig = {
+  rendering: {
+    titleTemplate: I18nText;
+    header: {
+      watermarkText: I18nText;
+      title: I18nText;
+      subtitle: I18nText;
+    };
+    meta: {
+      items: Array<{
+        key: string;
+        label: I18nText;
+        valueFrom: string;
+      }>;
+    };
+    sectionsOrder: string[];
+  };
+  computedDefaults: {
+    accuracyByLevelId: Record<string, number>;
+    report: { idTemplate: string; seqDefault: string; version: string };
+  };
+  theme: {
+    page: {
+      backgroundColor: string;
+      textColor: string;
+      lineHeight: number;
+      fontFamily: string;
+    };
+    container: {
+      maxWidth: number;
+      backgroundColor: string;
+      shadow: string;
+    };
+    header: {
+      padding: string;
+      watermark: { fontSize: number; opacity: number; top: number; right: number };
+    };
+    badge: {
+      padding: string;
+      radius: number;
+      fontSize: string;
+      shadow: string;
+      defaultGradient: string;
+    };
+    meta: {
+      backgroundColor: string;
+      borderColor: string;
+      valueFontSize: string;
+      labelFontSize: string;
+    };
+    section: {
+      titleFontSize: string;
+      titleUnderlineColor: string;
+    };
+    card: {
+      backgroundColor: string;
+      borderColor: string;
+      radius: number;
+    };
+    lists: {
+      itemBackgroundColor: string;
+      itemPadding: string;
+      itemRadius: string;
+    };
+    certificate: {
+      borderWidth: number;
+      radius: number;
+      padding: number;
+      background: string;
+    };
+    footer: {
+      backgroundColor: string;
+      borderColor: string;
+      fontSize: string;
+      textColor: string;
+    };
+    disclaimer: {
+      backgroundColor: string;
+      borderLeftColor: string;
+      padding: number;
+      radius: string;
+    };
+    responsive: {
+      breakpoint: number;
+      mobilePadding: string;
+      cognitiveGridColumnsDesktop: number;
+      cognitiveGridColumnsMobile: number;
+    };
+    print: { hidePrintButton: boolean; containerShadow: string };
+  };
+  levels: IqLevelConfig[];
+  commonSections: {
+    science: {
+      title: I18nText;
+      intro: I18nText;
+      items: Array<{ title: I18nText; detail: I18nText }>;
+    };
+    disclaimer: {
+      title: I18nText;
+      items: Array<I18nText>;
+    };
+    footer: {
+      copyright: I18nText;
+      generatedAtTemplate: I18nText;
+      reportIdTemplate: I18nText;
+      miniDisclaimer: I18nText;
+    };
+    ui: {
+      printButtonText: I18nText;
+    };
+  };
+};
+
+const TABLE = iqTable as unknown as IqTableConfig;
+
+// ---------- helpers ----------
+function pickLang(appLang: string): Lang {
+  return appLang === 'zh' ? 'zh-CN' : 'en-US';
+}
+function t(map: I18nText | undefined, lang: Lang, fallback = ''): string {
+  if (!map) return fallback;
+  return (map[lang] ?? map['zh-CN'] ?? map['en-US'] ?? fallback) as string;
+}
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+function applyTemplate(template: string, vars: Record<string, string | number | undefined>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => {
+    const v = vars[key];
+    return v === undefined || v === null ? '' : String(v);
+  });
+}
+function safeHtml(html: string) {
+  // content from local iqtable.ts
+  return { __html: html };
+}
+function selectLevelByIq(levels: IqLevelConfig[], iq: number): IqLevelConfig | null {
+  for (const lv of levels) {
+    const [min, max] = lv.iqRange;
+    if (iq >= min && iq <= max) {
+      return lv;
+    }
+  }
+  return null;
+}
+function formatDateYYYYMMDD(d: Date) {
+  const y = d.getFullYear();
+  const m = `${d.getMonth() + 1}`.padStart(2, '0');
+  const day = `${d.getDate()}`.padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+function formatDateCN(d: Date) {
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  return `${y}年${m}月${day}日`;
+}
+function formatDateTime(d: Date) {
+  const y = d.getFullYear();
+  const m = `${d.getMonth() + 1}`.padStart(2, '0');
+  const day = `${d.getDate()}`.padStart(2, '0');
+  const hh = `${d.getHours()}`.padStart(2, '0');
+  const mm = `${d.getMinutes()}`.padStart(2, '0');
+  const ss = `${d.getSeconds()}`.padStart(2, '0');
+  return `${y}-${m}-${day} ${hh}:${mm}:${ss}`;
 }
 
-const IQ_LEVELS: IQLevel[] = [
-  {
-    min: 0,
-    max: 69,
-    label: { zh: '智力缺陷', en: 'Intellectual Disability' },
-    description: { zh: '需要特殊教育和支持', en: 'Requires special education and support' },
-    color: 'text-red-600',
-    bgColor: 'bg-red-50',
-  },
-  {
-    min: 70,
-    max: 79,
-    label: { zh: '临界智力', en: 'Borderline' },
-    description: { zh: '可能需要额外的学习支持', en: 'May need additional learning support' },
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50',
-  },
-  {
-    min: 80,
-    max: 89,
-    label: { zh: '中下水平', en: 'Low Average' },
-    description: { zh: '智力水平略低于平均值', en: 'Slightly below average intelligence' },
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-50',
-  },
-  {
-    min: 90,
-    max: 109,
-    label: { zh: '平均水平', en: 'Average' },
-    description: { zh: '大多数人的智力水平', en: 'Most common intelligence level' },
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
-  },
-  {
-    min: 110,
-    max: 119,
-    label: { zh: '中上水平', en: 'High Average' },
-    description: { zh: '智力水平略高于平均值', en: 'Slightly above average intelligence' },
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-  },
-  {
-    min: 120,
-    max: 129,
-    label: { zh: '优秀', en: 'Superior' },
-    description: { zh: '智力水平优秀，学习能力强', en: 'Superior intelligence with strong learning ability' },
-    color: 'text-indigo-600',
-    bgColor: 'bg-indigo-50',
-  },
-  {
-    min: 130,
-    max: 145,
-    label: { zh: '非常优秀', en: 'Very Superior' },
-    description: { zh: '智力水平非常优秀，具有天赋', en: 'Very superior intelligence, gifted' },
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
-  },
-  {
-    min: 146,
-    max: 999,
-    label: { zh: '天才', en: 'Genius' },
-    description: { zh: '极其罕见的智力水平', en: 'Extremely rare intelligence level' },
-    color: 'text-pink-600',
-    bgColor: 'bg-pink-50',
-  },
-];
-
+// ---------- component ----------
 export default function ResultPage() {
   const { language } = useLanguage();
-  const { user, profile, loading: authLoading } = useAuth();
+  const lang = useMemo(() => pickLang(language), [language]);
+
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
-  const [iqLevel, setIqLevel] = useState<IQLevel | null>(null);
 
   useEffect(() => {
-    // 等待认证状态加载完成
     if (authLoading) return;
-    
+
     if (!user) {
       navigate('/login');
       return;
     }
 
-    loadResult();
+    void loadResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
 
   const loadResult = async () => {
@@ -124,12 +268,6 @@ export default function ResultPage() {
         return;
       }
       setResult(data);
-      
-      // 根据IQ分数确定等级
-      const level = IQ_LEVELS.find(
-        (l) => data.iq_score >= l.min && data.iq_score <= l.max
-      );
-      setIqLevel(level || IQ_LEVELS[3]); // 默认为平均水平
     } catch (error) {
       console.error('加载测试结果失败:', error);
       toast({
@@ -142,437 +280,698 @@ export default function ResultPage() {
     }
   };
 
-  const handleUnlockReport = () => {
-    navigate('/payment?type=one_time');
-  };
+  const handlePrintReport = () => window.print();
 
-  const handlePrintReport = () => {
-    window.print();
-  };
-
-  // 如果认证状态或结果数据正在加载，显示加载界面
+  // loading screen (simple, matches HTML feel)
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-muted/30 via-background to-muted/30">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <div className="iqr-page">
+        <style>{css}</style>
+        <div className="iqr-loading">
+          <div className="iqr-spinner" />
+          <div className="iqr-loading-text">{lang === 'zh-CN' ? '报告生成中…' : 'Generating report…'}</div>
+        </div>
       </div>
     );
   }
 
-  if (!result || !iqLevel) {
-    return null;
-  }
+  if (!result) return null;
 
-  // 检查用户是否已支付
-  const hasPaid = profile?.has_paid;
+  // compute from data + iqtable.ts
+  const iq = clamp(Number(result.iq_score ?? 0), 0, 200);
+  const level = selectLevelByIq(TABLE.levels, iq) ?? TABLE.levels[0];
 
-  // 认知能力维度数据
-  const cognitiveDimensions = [
-    { id: 'pattern', label: { zh: '模式识别能力', en: 'Pattern Recognition' }, value: 96 },
-    { id: 'spatial', label: { zh: '空间推理能力', en: 'Spatial Reasoning' }, value: 94 },
-    { id: 'logic', label: { zh: '逻辑演绎能力', en: 'Logical Deduction' }, value: 92 },
-    { id: 'speed', label: { zh: '认知加工速度', en: 'Cognitive Processing Speed' }, value: 88 },
-  ];
+  const completedAt = new Date(result.completed_at || Date.now());
+  const testDateText = formatDateYYYYMMDD(completedAt);
+  const testDateCN = formatDateCN(completedAt);
+  const generatedAt = formatDateTime(new Date());
 
-  // 生成报告ID和日期
-  const testDate = new Date(result.completed_at || Date.now());
-  const formattedDate = testDate.toISOString().split('T')[0];
-  const reportId = `MENSA-REPORT-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}-${testDate.getFullYear()}-${result.iq_score}`;
+  const seq = TABLE.computedDefaults.report.seqDefault ?? '001';
+  const reportVersion = TABLE.computedDefaults.report.version ?? '2.1';
+  const reportId = applyTemplate(TABLE.computedDefaults.report.idTemplate, {
+    seq,
+    YYYY: completedAt.getFullYear(),
+    iq,
+  });
+
+  const accuracyValue =
+    (typeof result.score === 'number' ? result.score : undefined) ??
+    TABLE.computedDefaults.accuracyByLevelId[String(level.id)] ??
+    0;
+  const accuracyText = `${accuracyValue}%`;
+
+  const documentTitle = applyTemplate(t(TABLE.rendering.titleTemplate, lang, ''), {
+    levelName: t(level.name, lang, ''),
+  });
+
+  const metaItems = TABLE.rendering.meta.items.map((it) => {
+    let value = '';
+    switch (it.valueFrom) {
+      case 'score.iq':
+        value = String(iq);
+        break;
+      case 'level.percentile':
+        value = t(level.percentile, lang, '');
+        break;
+      case 'computed.accuracyText':
+        value = accuracyText;
+        break;
+      case 'computed.testDateText':
+        value = testDateText;
+        break;
+      default:
+        value = '';
+    }
+    return { key: it.key, label: t(it.label, lang, ''), value };
+  });
+
+  const overviewLeadHtml = applyTemplate(t(level.overview.leadTemplate, lang, ''), {
+    levelName: t(level.name, lang, ''),
+    iqMin: level.iqRange?.[0],
+    percentile: t(level.percentile, lang, ''),
+  });
+
+  const badgeText =
+    `${t(level.name, lang, '')}${lang === 'zh-CN' ? '级别' : ' Level'}` +
+    (level.descriptionShort ? ` (${t(level.descriptionShort, lang, '')})` : '');
+
+  const chartBars = level.chart?.bars ?? [];
+  const accent = level.colors?.accent ?? '#8A2BE2';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/30 py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        {/* 报告容器 */}
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden print:shadow-none">
-          {/* 报告头部 */}
-          <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white py-8 px-8">
-            <div className="flex flex-col items-center mb-6">
-              <h1 className="text-5xl font-bold tracking-tight mb-2">MENSA</h1>
-              <div className="h-0.5 w-24 bg-white/70 mb-4"></div>
-              <h2 className="text-2xl font-semibold mb-1">
-                {language === 'zh' ? '认知能力评估报告' : 'Cognitive Ability Assessment Report'}
-              </h2>
-              <p className="text-white/90 italic">
-                {language === 'zh' ? '基于图形推理测试的认知能力综合分析' : 'Comprehensive Analysis of Cognitive Ability Based on Figure Reasoning Test'}
-              </p>
-            </div>
-          </div>
+    <div className="iqr-page">
+      <style>{css}</style>
+      <title>{documentTitle}</title>
 
-          {/* 主要测试结果 */}
-          <div className="px-8 py-6 bg-white border-b">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="text-center md:text-left mb-6 md:mb-0">
-                <div className="text-2xl font-bold text-purple-700 mb-1">
-                  {language === 'zh' ? '卓越非凡级别 (门萨级别)' : 'Exceptional Level (Mensa Level)'}
-                </div>
-                <div className="text-6xl font-bold text-indigo-900 mb-1">{result.iq_score}</div>
-                <div className="text-lg text-gray-600">{language === 'zh' ? '智商估算 (SD=15)' : 'IQ Estimate (SD=15)'}</div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-700 mb-1">{language === 'zh' ? '前2%' : 'Top 2%'}</div>
-                  <div className="text-gray-600">{language === 'zh' ? '人群百分位' : 'Population Percentile'}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-700 mb-1">{result.score}%</div>
-                  <div className="text-gray-600">{language === 'zh' ? '测试准确率' : 'Test Accuracy'}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-center">
-              <div className="text-center">
-                <div className="text-sm text-gray-600 mb-1">{language === 'zh' ? '测试日期' : 'Test Date'}</div>
-                <div className="text-lg font-medium">{formattedDate}</div>
-              </div>
-            </div>
+      <div className="report-container">
+        <div
+          className="report-header"
+          style={{
+            background: level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+          }}
+        >
+          <div className="header-watermark">
+            {t(TABLE.rendering.header.watermarkText, lang, 'MENSA')}
           </div>
-
-          {/* 报告概览 */}
-          <div className="px-8 py-6 bg-gray-50 border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '报告概览' : 'Report Overview'}
-            </h3>
-            <div className="text-gray-700 space-y-4">
-              <p>
-                {language === 'zh' 
-                  ? '尊敬的测试者，根据您在图形推理测试中的表现，我们评估您的认知能力处于卓越非凡级别。此级别对应智商130以上，处于人群前2%的位置，达到国际高智商组织门萨(Mensa)的入会标准。' 
-                  : 'Dear test taker, based on your performance in the figure reasoning test, we assess your cognitive ability at the exceptional level. This level corresponds to an IQ above 130, placing you in the top 2% of the population, meeting the membership criteria for the international high IQ organization Mensa.'}
-              </p>
-              <p>
-                {language === 'zh' 
-                  ? '本报告基于您完成的20道图形推理题目，从多个维度分析您的认知能力特点，并提供个性化发展建议。' 
-                  : 'This report is based on the 20 figure reasoning questions you completed, analyzing your cognitive ability characteristics from multiple dimensions and providing personalized development recommendations.'}
-              </p>
-            </div>
-            
-            <div className="mt-6 flex justify-center">
-              <Button
-                className="bg-purple-700 hover:bg-purple-800 text-white"
-                onClick={handlePrintReport}
-              >
-                <Printer className="h-4 w-4 mr-2" />
-                {language === 'zh' ? '打印本报告' : 'Print This Report'}
-              </Button>
-            </div>
-          </div>
-
-          {/* 认知能力剖面分析 */}
-          <div className="px-8 py-6 bg-white border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-6">
-              {language === 'zh' ? '认知能力剖面分析' : 'Cognitive Ability Profile Analysis'}
-            </h3>
-            <p className="text-gray-700 mb-6">
-              {language === 'zh' 
-                ? '以下是根据您的测试表现分析出的各项认知能力指标：' 
-                : 'The following are the cognitive ability indicators analyzed based on your test performance:'}
-            </p>
-            
-            <div className="space-y-6">
-              {cognitiveDimensions.map((dimension) => (
-                <div key={dimension.id} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg font-medium text-gray-800">
-                      {dimension.label[language]}
-                    </span>
-                    <span className="text-2xl font-bold text-purple-700">{dimension.value}%</span>
-                  </div>
-                  <Progress value={dimension.value} className="h-3 bg-gray-200" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 与人群对比分析 */}
-          <div className="px-8 py-6 bg-gray-50 border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '与人群对比分析' : 'Comparison with Population'}
-            </h3>
-            <p className="text-gray-700 mb-6">
-              {language === 'zh' 
-                ? '您的认知能力超越98%的同龄人群，与科学、工程和技术领域的顶尖人才认知特征相似。' 
-                : 'Your cognitive ability surpasses 98% of your peers, with cognitive characteristics similar to top talents in science, engineering, and technology fields.'}
-            </p>
-            
-            {/* 人群分布可视化 */}
-            <div className="bg-white p-4 rounded-lg border mb-6">
-              <div className="flex items-center justify-between mb-2 text-sm font-medium text-gray-600">
-                <span>{language === 'zh' ? '前50%' : 'Top 50%'}</span>
-                <span>{language === 'zh' ? '前16%' : 'Top 16%'}</span>
-                <span>{language === 'zh' ? '前5%' : 'Top 5%'}</span>
-                <span className="text-purple-700">{language === 'zh' ? '前2%(您)' : 'Top 2% (You)'}</span>
-              </div>
-              <div className="h-8 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-100 via-blue-300 to-purple-600" 
-                  style={{ width: '98%' }}
-                ></div>
-              </div>
-              <p className="text-sm text-gray-600 mt-2">
-                {language === 'zh' 
-                  ? '解读：图表显示了您的认知能力在正态分布中的位置。右侧阴影区域表示您超越的人群比例。' 
-                  : 'Interpretation: The chart shows your cognitive ability position in the normal distribution. The shaded area on the right represents the proportion of the population you surpass.'}
-              </p>
-            </div>
-          </div>
-
-          {/* 认知优势分析 */}
-          <div className="px-8 py-6 bg-white border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '认知优势分析' : 'Cognitive Strength Analysis'}
-            </h3>
-            <p className="text-gray-700 mb-6">
-              {language === 'zh' 
-                ? '基于测试结果，我们识别出您的以下认知优势：' 
-                : 'Based on the test results, we have identified your cognitive strengths as follows:'}
-            </p>
-            
-            <div className="space-y-4">
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  <span className="font-medium">{language === 'zh' ? '极佳的模式识别能力：' : 'Excellent pattern recognition ability: '}</span>
-                  {language === 'zh' 
-                    ? '您能够快速识别复杂模式并预测其发展趋势，这种能力在解决抽象问题时尤其重要。' 
-                    : 'You can quickly identify complex patterns and predict their development trends, which is particularly important when solving abstract problems.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  <span className="font-medium">{language === 'zh' ? '优秀的空间想象能力：' : 'Excellent spatial imagination: '}</span>
-                  {language === 'zh' 
-                    ? '您能够在大脑中精确操作和转换空间关系，这是工程、建筑和设计领域的关键能力。' 
-                    : 'You can precisely manipulate and transform spatial relationships in your mind, which is a key ability in engineering, architecture, and design fields.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  <span className="font-medium">{language === 'zh' ? '高效的逻辑演绎能力：' : 'Efficient logical deduction ability: '}</span>
-                  {language === 'zh' 
-                    ? '您能够从已知前提推导出必然结论，并识别逻辑关系中的矛盾与一致性。' 
-                    : 'You can derive necessary conclusions from known premises and identify contradictions and consistencies in logical relationships.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  <span className="font-medium">{language === 'zh' ? '快速的认知加工速度：' : 'Fast cognitive processing speed: '}</span>
-                  {language === 'zh' 
-                    ? '您处理复杂信息的速度明显快于平均水平，能够在短时间内整合多源信息。' 
-                    : 'Your speed of processing complex information is significantly faster than average, enabling you to integrate multi-source information in a short time.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 发展建议与规划 */}
-          <div className="px-8 py-6 bg-gray-50 border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '发展建议与规划' : 'Development Suggestions and Planning'}
-            </h3>
-            <div className="space-y-4">
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  {language === 'zh' 
-                    ? '考虑参加正式门萨测试：您的认知表现已达到门萨入会标准，建议参加正式测试以获得会员资格，加入高智商社群。' 
-                    : 'Consider taking the official Mensa test: Your cognitive performance has met the Mensa membership criteria. It is recommended to take the official test to obtain membership and join the high IQ community.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  {language === 'zh' 
-                    ? '探索需要高抽象思维的领域：考虑深入研究理论物理、哲学、高等数学或人工智能等需要强大抽象思维的领域。' 
-                    : 'Explore fields requiring high abstract thinking: Consider in-depth study in fields that require strong abstract thinking, such as theoretical physics, philosophy, advanced mathematics, or artificial intelligence.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  {language === 'zh' 
-                    ? '参与复杂问题解决项目：寻找或创建需要复杂系统思维和跨学科整合能力的项目，充分发挥您的认知优势。' 
-                    : 'Participate in complex problem-solving projects: Seek or create projects that require complex systems thinking and interdisciplinary integration capabilities to fully utilize your cognitive strengths.'}
-                </p>
-              </div>
-              <div className="flex">
-                <div className="text-purple-700 font-bold mr-3">•</div>
-                <p className="text-gray-700">
-                  {language === 'zh' 
-                    ? '担任领导与指导角色：您的认知能力适合担任需要复杂决策和战略规划的领导者角色，或指导他人解决难题。' 
-                    : 'Assume leadership and guidance roles: Your cognitive abilities are suitable for leadership roles requiring complex decision-making and strategic planning, or for guiding others to solve difficult problems.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 持续认知训练计划 */}
-          <div className="px-8 py-6 bg-white border-b">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '持续认知训练计划' : 'Continuous Cognitive Training Plan'}
-            </h3>
-            <p className="text-gray-700 mb-6">
-              {language === 'zh' 
-                ? '为保持和进一步提升认知能力，建议：' 
-                : 'To maintain and further improve cognitive abilities, it is recommended to:'}
-            </p>
-            
-            <div className="space-y-3">
-              <div className="flex items-start">
-                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
-                <p className="text-gray-700">{language === 'zh' ? '每周进行3-4次高难度逻辑训练，每次30-45分钟' : 'Engage in high-difficulty logic training 3-4 times a week, 30-45 minutes each time'}</p>
-              </div>
-              <div className="flex items-start">
-                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
-                <p className="text-gray-700">{language === 'zh' ? '定期挑战国际高智商组织发布的难题' : 'Regularly challenge difficult problems released by international high IQ organizations'}</p>
-              </div>
-              <div className="flex items-start">
-                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
-                <p className="text-gray-700">{language === 'zh' ? '学习一门新的编程语言或复杂系统理论' : 'Learn a new programming language or complex system theory'}</p>
-              </div>
-              <div className="flex items-start">
-                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
-                <p className="text-gray-700">{language === 'zh' ? '参与国际性的问题解决竞赛或活动' : 'Participate in international problem-solving competitions or activities'}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* 卓越认知能力证书 */}
-          <div className="px-8 py-8 bg-gradient-to-b from-white to-gray-50 border-b">
-            <div className="text-center">
-              <div className="inline-block border-4 border-purple-700 rounded-lg p-8 bg-white max-w-2xl">
-                <h3 className="text-2xl font-bold text-indigo-900 mb-6">
-                  {language === 'zh' ? '卓越认知能力证书' : 'Certificate of Exceptional Cognitive Ability'}
-                </h3>
-                <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                  {language === 'zh' 
-                    ? '兹证明测试者在本图形推理测试中表现出卓越的认知能力，达到卓越非凡级别，智商估算值为' + result.iq_score + '。' 
-                    : 'This is to certify that the test taker has demonstrated exceptional cognitive ability in this figure reasoning test, reaching the exceptional level with an estimated IQ of ' + result.iq_score + '.'}
-                </p>
-                <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                  {language === 'zh' 
-                    ? '此级别对应人群前2%的认知水平，达到国际高智商组织门萨(Mensa)的入会标准。' 
-                    : 'This level corresponds to the top 2% of the population in cognitive ability, meeting the membership criteria of the international high IQ organization Mensa.'}
-                </p>
-                
-                <div className="grid grid-cols-2 gap-8 mb-8">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">{language === 'zh' ? '证书编号' : 'Certificate Number'}</p>
-                    <p className="text-lg font-medium text-purple-700">{reportId}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">{language === 'zh' ? '测试日期' : 'Test Date'}</p>
-                    <p className="text-lg font-medium text-purple-700">{formattedDate}</p>
-                  </div>
-                </div>
-                
-                <p className="text-xs text-gray-500 italic">
-                  {language === 'zh' 
-                    ? '* 此证书证明测试者在图形推理测试中的表现，非正式智商测试证书。' 
-                    : '* This certificate proves the test takers performance in the figure reasoning test and is not an official IQ test certificate.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 报告科学依据 */}
-          <div className="px-8 py-6 bg-white border-b">
-            <h3 className="text-xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '报告科学依据' : 'Scientific Basis of the Report'}
-            </h3>
-            <p className="text-gray-700 mb-4">
-              {language === 'zh' 
-                ? '本报告基于以下科学原理和方法：' 
-                : 'This report is based on the following scientific principles and methods:'}
-            </p>
-            <div className="space-y-2 pl-6 list-disc text-gray-700">
-              <li>{language === 'zh' ? '认知心理学理论：基于工作记忆、流体智力和执行功能等认知心理学理论' : 'Cognitive psychology theory: Based on cognitive psychology theories such as working memory, fluid intelligence, and executive function'}</li>
-              <li>{language === 'zh' ? '项目反应理论：采用IRT模型分析题目难度与测试者能力的匹配度' : 'Item response theory: Using IRT model to analyze the matching degree between item difficulty and test taker ability'}</li>
-              <li>{language === 'zh' ? '常模参照评估：基于大规模标准化样本建立评估标准' : 'Norm-referenced assessment: Establishing assessment standards based on large-scale standardized samples'}</li>
-              <li>{language === 'zh' ? '多维度分析：从模式识别、空间推理、逻辑演绎和加工速度四个维度评估认知能力' : 'Multi-dimensional analysis: Evaluating cognitive abilities from four dimensions: pattern recognition, spatial reasoning, logical deduction, and processing speed'}</li>
-            </div>
-          </div>
-
-          {/* 重要声明与使用说明 */}
-          <div className="px-8 py-6 bg-gray-50 border-b">
-            <h3 className="text-xl font-bold text-indigo-900 mb-4">
-              {language === 'zh' ? '重要声明与使用说明' : 'Important Declarations and Usage Instructions'}
-            </h3>
-            <div className="space-y-3 text-gray-700">
-              <p className="flex items-start">
-                <span className="font-medium mr-2">1.</span>
-                <span>{language === 'zh' ? '本测试为图形推理能力模拟测试，非正式标准化智商测试。' : 'This test is a figure reasoning ability simulation test, not an official standardized IQ test.'}</span>
-              </p>
-              <p className="flex items-start">
-                <span className="font-medium mr-2">2.</span>
-                <span>{language === 'zh' ? '测试结果受环境、状态、对题型熟悉度等多种因素影响，建议在最佳状态下测试。' : 'Test results are affected by various factors such as environment, state, and familiarity with question types. It is recommended to test in optimal conditions.'}</span>
-              </p>
-              <p className="flex items-start">
-                <span className="font-medium mr-2">3.</span>
-                <span>{language === 'zh' ? '认知能力可通过训练提升，本报告结果反映当前测试表现。' : 'Cognitive abilities can be improved through training. This report reflects current test performance.'}</span>
-              </p>
-              <p className="flex items-start">
-                <span className="font-medium mr-2">4.</span>
-                <span>{language === 'zh' ? '正式的智商测试需由专业人员在标准化环境下进行，本报告结果仅供参考。' : 'Official IQ tests must be conducted by professionals in a standardized environment. This report is for reference only.'}</span>
-              </p>
-              <p className="flex items-start">
-                <span className="font-medium mr-2">5.</span>
-                <span>{language === 'zh' ? '门萨协会的正式入会测试需通过其官方渠道报名参加。' : 'Official membership tests for Mensa must be registered through their official channels.'}</span>
-              </p>
-            </div>
-          </div>
-
-          {/* 报告底部 */}
-          <div className="px-8 py-6 bg-indigo-900 text-white">
-            <div className="text-center">
-              <p className="mb-2">© {new Date().getFullYear()} {language === 'zh' ? '认知能力评估中心' : 'Cognitive Ability Assessment Center'} | {language === 'zh' ? '本报告生成时间' : 'Report Generated Time'}: {new Date().toLocaleString()}</p>
-              <p className="text-white/80">{language === 'zh' ? '报告ID' : 'Report ID'}: {reportId} | {language === 'zh' ? '版本' : 'Version'}: 2.1</p>
-              <p className="text-white/80 text-sm mt-4 italic">
-                {language === 'zh' 
-                  ? '免责声明: 本报告基于模拟测试生成，仅供参考和教育目的，不作为正式评估或诊断依据。' 
-                  : 'Disclaimer: This report is generated based on a simulation test for reference and educational purposes only, not as an official assessment or diagnostic basis.'}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 操作按钮 */}
-        <div className="flex flex-col md:flex-row gap-4 mt-8 justify-center">
-          <Button
-            variant="outline"
-            size="lg"
-            className="flex-1 max-w-xs"
-            onClick={() => navigate('/dashboard')}
-          >
-            {language === 'zh' ? '返回仪表盘' : 'Back to Dashboard'}
-          </Button>
-          
-          <Button
-            className="bg-purple-700 hover:bg-purple-800 text-white flex-1 max-w-xs"
-            onClick={handlePrintReport}
-          >
-            <Printer className="h-5 w-5 mr-2" />
-            {language === 'zh' ? '打印报告' : 'Print Report'}
-          </Button>
-          
-          <Button
-            className="bg-indigo-700 hover:bg-indigo-800 text-white flex-1 max-w-xs"
-            onClick={() => {
-              // 这里可以添加下载PDF功能
-              toast({
-                title: language === 'zh' ? '提示' : 'Tip',
-                description: language === 'zh' ? '下载功能开发中' : 'Download function in development',
-              });
+          <h1 className="report-title">{t(TABLE.rendering.header.title, lang, '')}</h1>
+          <p className="report-subtitle">{t(TABLE.rendering.header.subtitle, lang, '')}</p>
+          <div
+            className="level-badge"
+            style={{
+              background: level.colors?.badgeGradient ?? TABLE.theme.badge.defaultGradient,
+              color: level.colors?.badgeText ?? '#5D0C9D',
             }}
           >
-            <Download className="h-5 w-5 mr-2" />
-            {language === 'zh' ? '下载报告' : 'Download Report'}
-          </Button>
+            {badgeText}
+          </div>
         </div>
+
+        <div className="report-meta">
+          {metaItems.map((m) => (
+            <div key={m.key} className="meta-item">
+              <div className="meta-value" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+                {m.value}
+              </div>
+              <div className="meta-label">{m.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="report-body">
+          {/* Overview */}
+          <div className="section">
+            <h2
+              className="section-title"
+              style={{
+                color: level.colors?.accentDark ?? '#5D0C9D',
+                borderBottomColor: TABLE.theme.section.titleUnderlineColor,
+              }}
+            >
+              {lang === 'zh-CN' ? '报告概览' : 'Report Overview'}
+            </h2>
+
+            <p dangerouslySetInnerHTML={safeHtml(overviewLeadHtml)} />
+            <p>{t(level.overview.body, lang, '')}</p>
+
+            <div className="center-block">
+              <button
+                type="button"
+                className="print-button"
+                onClick={handlePrintReport}
+                style={{
+                  background:
+                    level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+                }}
+              >
+                {t(TABLE.commonSections.ui.printButtonText, lang, lang === 'zh-CN' ? '打印本报告' : 'Print This Report')}
+              </button>
+            </div>
+          </div>
+
+          {/* Cognitive Profile + Comparison */}
+          <div className="section">
+            <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {lang === 'zh-CN' ? '认知能力剖面分析' : 'Cognitive Ability Profile Analysis'}
+            </h2>
+
+            <p>
+              {lang === 'zh-CN'
+                ? '以下是根据您的测试表现分析出的各项认知能力指标：'
+                : 'The following indicators are analyzed based on your performance:'}
+            </p>
+
+            <div className="cognitive-grid">
+              {level.cognitiveLabels.map((item) => {
+                const v = level.cognitiveProfile[item.key];
+                return (
+                  <div key={String(item.key)} className="cognitive-card">
+                    <div className="cognitive-value" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+                      {v}%
+                    </div>
+                    <div className="cognitive-label">{t(item.label, lang, '')}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="comparison-container">
+              <h3>{lang === 'zh-CN' ? '与人群对比分析' : 'Comparison with Population'}</h3>
+              <p>{t(level.comparativeAnalysis, lang, '')}</p>
+
+              <div className="chart-container" aria-label="comparison chart">
+                {chartBars.map((bar, idx) => {
+                  const leftPct = 10 + idx * 20; // mimic HTML demo
+                  const widthPct = 15;
+                  const heightPct = 'heightPct' in bar ? bar.heightPct : 60;
+
+                  const barColor =
+                    'color' in bar
+                      ? bar.color
+                      : accent;
+
+                  const label =
+                    'label' in bar
+                      ? t(bar.label, lang, '')
+                      : applyTemplate(t(bar.labelTemplate, lang, ''), {
+                          percentile: t(level.percentile, lang, ''),
+                        });
+
+                  const isYou = idx === chartBars.length - 1;
+
+                  return (
+                    <div key={idx}>
+                      <div
+                        className="chart-bar"
+                        style={{
+                          left: `${leftPct}%`,
+                          width: `${widthPct}%`,
+                          height: `${heightPct}%`,
+                          backgroundColor: barColor,
+                        }}
+                      />
+                      <div
+                        className={`chart-label ${isYou ? 'is-you' : ''}`}
+                        style={{
+                          left: `${leftPct}%`,
+                          width: `${widthPct}%`,
+                        }}
+                      >
+                        {label}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <p>
+                <strong>{lang === 'zh-CN' ? '解读：' : 'Interpretation: '}</strong>
+                {t(level.chart.note, lang, '')}
+              </p>
+            </div>
+          </div>
+
+          {/* Strengths */}
+          <div className="section">
+            <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {lang === 'zh-CN' ? '认知优势分析' : 'Cognitive Strength Analysis'}
+            </h2>
+
+            <p>{lang === 'zh-CN' ? '基于测试结果，我们识别出您的以下认知优势：' : 'Based on the results, your strengths include:'}</p>
+
+            <ul className="strength-list">
+              {level.strengths.map((s, i) => (
+                <li key={i} style={{ borderLeftColor: accent }}>
+                  <strong>{t(s.title, lang, '')}：</strong> {t(s.detail, lang, '')}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Recommendations + Training Plan */}
+          <div className="section">
+            <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {lang === 'zh-CN' ? '发展建议与规划' : 'Development Suggestions and Planning'}
+            </h2>
+
+            <p>{lang === 'zh-CN' ? '基于您的认知特点，我们为您制定以下发展计划：' : 'Based on your profile, we suggest:'}</p>
+
+            <ul className="recommendation-list">
+              {level.recommendations.map((r, i) => (
+                <li key={i} style={{ borderLeftColor: accent }}>
+                  <strong>{t(r.title, lang, '')}：</strong> {t(r.detail, lang, '')}
+                </li>
+              ))}
+            </ul>
+
+            <div
+              className="training-plan"
+              style={{
+                backgroundColor: level.trainingPlan.style?.backgroundColor ?? '#f0f8ff',
+                borderRadius: level.trainingPlan.style?.radius ?? 8,
+                padding: level.trainingPlan.style?.padding ?? 20,
+              }}
+            >
+              <h3>{t(level.trainingPlan.title, lang, '')}</h3>
+              <p>{t(level.trainingPlan.intro, lang, '')}</p>
+              <ol>
+                {level.trainingPlan.items.map((it, idx) => (
+                  <li key={idx}>{t(it, lang, '')}</li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          {/* Certificate */}
+          <div className="certificate" style={{ borderColor: accent }}>
+            <div className="certificate-bg" />
+            <h3 className="certificate-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {applyTemplate(t(level.certificate.titleTemplate, lang, ''), {
+                levelReportTitle: t(level.reportTitle, lang, t(level.name, lang, '')),
+              })}
+            </h3>
+
+            {level.certificate.paragraphs.map((p, idx) => {
+              const html = applyTemplate(t(p, lang, ''), {
+                levelName: t(level.name, lang, ''),
+                percentile: t(level.percentile, lang, ''),
+                iq,
+              });
+              return <p key={idx} dangerouslySetInnerHTML={safeHtml(html)} />;
+            })}
+
+            <div className="certificate-id">
+              {lang === 'zh-CN' ? '证书编号: ' : 'Certificate Number: '}
+              {applyTemplate(level.certificate.idTemplate ?? reportId, {
+                YYYY: completedAt.getFullYear(),
+                iq,
+                seq,
+              }) || reportId}
+            </div>
+
+            <p>
+              {applyTemplate(t(level.certificate.dateLineTemplate, lang, ''), {
+                testDateCN,
+              })}
+            </p>
+
+            <p className="certificate-footnote">{t(level.certificate.footnote, lang, '')}</p>
+          </div>
+
+          {/* Science */}
+          <div className="section">
+            <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {t(TABLE.commonSections.science.title, lang, '')}
+            </h2>
+            <p>{t(TABLE.commonSections.science.intro, lang, '')}</p>
+            <ul>
+              {TABLE.commonSections.science.items.map((it, i) => (
+                <li key={i}>
+                  <strong>{t(it.title, lang, '')}：</strong> {t(it.detail, lang, '')}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="disclaimer">
+            <h3>{t(TABLE.commonSections.disclaimer.title, lang, '')}</h3>
+            {TABLE.commonSections.disclaimer.items.map((it, i) => (
+              <p key={i}>
+                {i + 1}. {t(it, lang, '')}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <div className="footer">
+          <p>
+            {t(TABLE.commonSections.footer.copyright, lang, '')} |{' '}
+            {applyTemplate(t(TABLE.commonSections.footer.generatedAtTemplate, lang, ''), { generatedAt })}
+          </p>
+          <p>
+            {applyTemplate(t(TABLE.commonSections.footer.reportIdTemplate, lang, ''), {
+              reportId,
+              reportVersion,
+            })}
+          </p>
+          <p className="footer-mini">{t(TABLE.commonSections.footer.miniDisclaimer, lang, '')}</p>
+        </div>
+      </div>
+
+      {/* bottom actions (match HTML style; no shadcn ui) */}
+      <div className="iqr-actions">
+        <button className="iqr-action secondary" onClick={() => navigate('/dashboard')}>
+          {language === 'zh' ? '返回仪表盘' : 'Back to Dashboard'}
+        </button>
+
+        <button
+          className="iqr-action primary"
+          onClick={handlePrintReport}
+          style={{
+            background:
+              level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+          }}
+        >
+          {language === 'zh' ? '打印报告' : 'Print Report'}
+        </button>
+
+        <button
+          className="iqr-action dark"
+          onClick={() =>
+            toast({
+              title: language === 'zh' ? '提示' : 'Tip',
+              description: language === 'zh' ? '下载功能开发中' : 'Download function in development',
+            })
+          }
+        >
+          {language === 'zh' ? '下载报告' : 'Download Report'}
+        </button>
       </div>
     </div>
   );
 }
+
+const css = `
+/* Match the provided iq-result.html look & feel */
+.iqr-page{
+  box-sizing:border-box;
+  font-family:'Segoe UI','Microsoft YaHei',sans-serif;
+  background:#f5f7ff;
+  color:#333;
+  line-height:1.7;
+  margin:0;
+  padding:0;
+  min-height:100vh;
+}
+.iqr-page *{ box-sizing:border-box; font-family:inherit; }
+
+.report-container{
+  max-width:1000px;
+  margin:0 auto;
+  background:#fff;
+  box-shadow:0 0 30px rgba(0,0,0,.08);
+  position:relative;
+  overflow:hidden;
+}
+
+.report-header{
+  color:#fff;
+  padding:40px 50px 30px;
+  position:relative;
+}
+.header-watermark{
+  position:absolute;
+  font-size:180px;
+  font-weight:800;
+  opacity:.1;
+  top:-30px;
+  right:30px;
+  color:#fff;
+  line-height:1;
+  user-select:none;
+  pointer-events:none;
+}
+.report-title{
+  margin:0;
+  font-size:2.5rem;
+  font-weight:300;
+  letter-spacing:1px;
+}
+.report-subtitle{
+  margin:10px 0 0;
+  font-size:1.2rem;
+  font-weight:300;
+  opacity:.9;
+}
+.level-badge{
+  display:inline-block;
+  padding:8px 25px;
+  border-radius:50px;
+  font-weight:800;
+  font-size:1.3rem;
+  margin-top:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+
+.report-meta{
+  display:flex;
+  justify-content:space-between;
+  background:#f0f0ff;
+  padding:20px 50px;
+  border-bottom:1px solid #e0e0ff;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.meta-item{ text-align:center; flex:1 1 160px; }
+.meta-value{ font-size:1.8rem; font-weight:800; }
+.meta-label{ font-size:.9rem; color:#666; margin-top:5px; }
+
+.report-body{ padding:40px 50px; }
+
+.section{
+  margin-bottom:50px;
+  page-break-inside:avoid;
+  break-inside:avoid;
+}
+
+.section-title{
+  border-bottom:2px solid #e0e0ff;
+  padding-bottom:10px;
+  margin-top:0;
+  margin-bottom:25px;
+  font-size:1.6rem;
+  position:relative;
+}
+.section-title:after{
+  content:'';
+  position:absolute;
+  width:60px;
+  height:3px;
+  background:linear-gradient(90deg,#8A2BE2 0%, #5D0C9D 100%);
+  bottom:-2px;
+  left:0;
+}
+
+.center-block{ text-align:center; margin:30px 0; }
+
+.print-button{
+  color:#fff;
+  border:none;
+  padding:12px 30px;
+  border-radius:50px;
+  font-size:1rem;
+  cursor:pointer;
+  margin:20px 0;
+  transition:transform .25s, box-shadow .25s;
+}
+.print-button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 5px 15px rgba(138,43,226,.3);
+}
+
+.cognitive-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+  margin:30px 0;
+}
+.cognitive-card{
+  background:#f8f9ff;
+  border-radius:10px;
+  padding:20px;
+  text-align:center;
+  border:1px solid #e0e0ff;
+  transition:transform .3s, box-shadow .3s;
+}
+.cognitive-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 10px 20px rgba(138,43,226,.1);
+}
+.cognitive-value{
+  font-size:2.2rem;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.cognitive-label{ font-size:1rem; color:#666; }
+
+.strength-list,.recommendation-list{ list-style:none; padding:0; margin:0; }
+.strength-list li,.recommendation-list li{
+  padding:12px 20px;
+  margin-bottom:12px;
+  background:#f8f9ff;
+  border-left:4px solid #8A2BE2;
+  border-radius:0 8px 8px 0;
+}
+
+.comparison-container{
+  background:#f8f9ff;
+  border-radius:10px;
+  padding:30px;
+  margin:30px 0;
+}
+.chart-container{
+  height:200px;
+  background:linear-gradient(to top,#f0f0ff, #fff);
+  border-radius:8px;
+  margin:25px 0 35px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid #e0e0ff;
+}
+.chart-bar{
+  position:absolute;
+  bottom:0;
+  border-radius:4px 4px 0 0;
+}
+.chart-label{
+  position:absolute;
+  bottom:-25px;
+  text-align:center;
+  font-size:.8rem;
+}
+.chart-label.is-you{ font-weight:800; }
+
+.training-plan h3{ margin-top:0; }
+
+.certificate{
+  border:3px solid #8A2BE2;
+  border-radius:15px;
+  padding:40px;
+  text-align:center;
+  background:linear-gradient(to bottom,#f8f5ff, #fff);
+  margin:40px 0;
+  position:relative;
+  overflow:hidden;
+}
+.certificate-bg{
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><path d='M20,20 L80,20 L80,80 L20,80 Z' fill='none' stroke='%238A2BE2' stroke-width='1' opacity='0.1'/><circle cx='50' cy='50' r='20' fill='none' stroke='%238A2BE2' stroke-width='1' opacity='0.1'/></svg>");
+  background-size:100px;
+  opacity:.3;
+  pointer-events:none;
+}
+.certificate > *{ position:relative; }
+.certificate-title{
+  font-size:2.2rem;
+  margin-top:0;
+}
+.certificate-id{
+  font-family:'Courier New',monospace;
+  background:#f0f0ff;
+  padding:15px;
+  border-radius:8px;
+  margin:20px 0;
+  font-size:1.1rem;
+  display:inline-block;
+}
+.certificate-footnote{
+  margin-top:20px;
+  font-style:italic;
+}
+
+.disclaimer{
+  background:#fff5f5;
+  border-left:4px solid #ff6b6b;
+  padding:20px;
+  margin:30px 0;
+  border-radius:0 8px 8px 0;
+}
+.footer{
+  background:#f0f0ff;
+  padding:30px 50px;
+  text-align:center;
+  border-top:1px solid #e0e0ff;
+  font-size:.9rem;
+  color:#666;
+}
+.footer-mini{ margin-top:15px; font-size:.8rem; }
+
+.iqr-actions{
+  max-width:1000px;
+  margin:18px auto 40px;
+  padding:0 14px;
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.iqr-action{
+  border:none;
+  padding:12px 18px;
+  border-radius:999px;
+  cursor:pointer;
+  font-size:1rem;
+  transition:transform .2s, box-shadow .2s, background .2s;
+}
+.iqr-action:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,.12); }
+.iqr-action.secondary{
+  background:#fff;
+  border:1px solid #e0e0ff;
+  color:#333;
+}
+.iqr-action.primary{
+  color:#fff;
+}
+.iqr-action.dark{
+  background:#2d2a55;
+  color:#fff;
+}
+.iqr-action.dark:hover{ background:#241f45; }
+
+/* Loading */
+.iqr-loading{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+}
+.iqr-spinner{
+  width:46px; height:46px;
+  border-radius:50%;
+  border:4px solid rgba(93,12,157,.18);
+  border-top-color: rgba(93,12,157,.95);
+  animation:iqrspin 1s linear infinite;
+}
+@keyframes iqrspin{ to{ transform:rotate(360deg); } }
+.iqr-loading-text{ color:#5D0C9D; font-weight:600; }
+
+/* Print rules */
+@media print{
+  .iqr-page{ background:#fff; }
+  .report-container{ box-shadow:none; max-width:100%; }
+  .print-button, .iqr-actions{ display:none !important; }
+}
+
+/* Responsive */
+@media (max-width: 768px){
+  .report-header, .report-body, .report-meta, .footer{
+    padding:30px 20px;
+  }
+  .report-title{ font-size:2rem; }
+  .cognitive-grid{ grid-template-columns:repeat(2,1fr); }
+  .report-meta{ flex-direction:column; gap:20px; }
+}
+`;

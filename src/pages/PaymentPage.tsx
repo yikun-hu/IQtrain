@@ -532,7 +532,7 @@ export default function PaymentPage() {
 
       {/* 支付处理模态框 */}
       <Dialog open={showPaymentProcessingModal} onOpenChange={() => {}} aria-describedby="payment-processing-description">
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md z-[500]">
           <DialogHeader>
             <DialogTitle>
               {language === 'zh' ? '支付成功' : 'Payment Successful'}
