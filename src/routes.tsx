@@ -12,7 +12,6 @@ import AdminPage from './pages/AdminPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CookiePolicyPage from './pages/CookiePolicyPage';
-import GamePage from './pages/GamePage';
 import type { ReactNode } from 'react';
 
 interface RouteConfig {
@@ -23,11 +22,6 @@ interface RouteConfig {
 }
 
 const routes: RouteConfig[] = [
-    {
-        name: '2048 Game',
-        path: '/game',
-        element: <GamePage/>,
-    },
     {
         name: 'Home',
         path: '/',
