@@ -309,55 +309,6 @@ export async function getTestQuestions(testId: string) {
   return Array.isArray(data) ? data as TestQuestion[] : [];
 }
 
-// 保存用户测试结果
-export async function saveUserTestResult(result: Omit<UserTestResult, 'id' | 'completed_at'>) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .insert(result)
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return data as UserTestResult;
-}
-
-// 获取用户的所有测试结果
-export async function getUserTestResults(userId: string) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .select(`
-      *,
-      tests (
-        id,
-        title,
-        title_zh,
-        type,
-        description,
-        description_zh
-      )
-    `)
-    .eq('user_id', userId)
-    .order('completed_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data : [];
-}
-
-// 获取用户指定测试的结果
-export async function getUserTestResultByTestId(userId: string, testId: string) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('test_id', testId)
-    .order('completed_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as UserTestResult | null;
-}
-
 // ==================== 管理员统计相关 ====================
 
 // 获取统计总览
