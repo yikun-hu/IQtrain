@@ -200,3 +200,55 @@ export interface AdminOverview {
   subscription_users: number;
   subscription_amount: number;
 }
+
+// 量表测试类型
+export type ScaleTestType = 'emotional_recognition' | 'stress_index';
+
+// 量表测试题目
+export interface ScaleTestQuestion {
+  id: string;
+  test_type: ScaleTestType;
+  question_id: string;
+  question_text: string;
+  question_text_zh: string;
+  reverse_scored: boolean;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// 量表评分规则
+export interface ScaleScoringRule {
+  id: string;
+  test_type: ScaleTestType;
+  level: number;
+  score_min: number;
+  score_max: number;
+  label: string;
+  color: string;
+  interpretation: string;
+  feedback: string;
+  ability_dimensions?: Record<string, number>;
+  created_at: string;
+  updated_at: string;
+}
+
+// 量表测试配置
+export interface ScaleTestConfig {
+  id: string;
+  test_type: ScaleTestType;
+  name: string;
+  short_name: string;
+  recommendations: string[];
+  action_plan: string[];
+  dimensions: Record<string, number>;
+  percentiles: number[];
+  created_at: string;
+  updated_at: string;
+}
+
+// 量表测试答案
+export interface ScaleTestAnswer {
+  question_id: string;
+  score: number; // 1-5分
+}

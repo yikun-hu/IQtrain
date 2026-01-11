@@ -19,12 +19,12 @@ export default function DashboardPage() {
   const initialTab = searchParams.get('tab') || 'training';
   const [activeTab, setActiveTab] = useState(initialTab);
   const [loading, setLoading] = useState(true);
-  
+
   // Training相关状态
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
   const [allGames, setAllGames] = useState<Game[]>([]);
   const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
-  
+
   // Test相关状态
   const [availableTests, setAvailableTests] = useState<Test[]>([]);
   const [completedTests, setCompletedTests] = useState<any[]>([]);
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   useEffect(() => {
     // 等待认证状态加载完成
     if (authLoading) return;
-    
+
     loadData();
   }, [user, authLoading]);
 
@@ -41,9 +41,9 @@ export default function DashboardPage() {
     const handleTabChange = (event: any) => {
       setActiveTab(event.detail);
     };
-    
+
     window.addEventListener('dashboard-tab-change', handleTabChange);
-    
+
     return () => {
       window.removeEventListener('dashboard-tab-change', handleTabChange);
     };
@@ -67,7 +67,7 @@ export default function DashboardPage() {
 
       setRecommendedGames(recommended);
       setAllGames(games);
-      
+
       // 按类别分组游戏
       const grouped = games.reduce((acc, game) => {
         if (!acc[game.category]) {
@@ -195,8 +195,175 @@ export default function DashboardPage() {
 
           {/* Tests标签页 */}
           <TabsContent value="tests" className="space-y-8">
-            {/* 可用测试 */}
+            {/* 量表测试 */}
             <section>
+              <h2 className="text-2xl font-bold mb-4">
+                {language === 'zh' ? '可用测试' : 'Available Tests'}
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {/* 情绪识别能力测试 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您识别和理解他人情绪的能力，包括面部表情、语调和肢体语言的解读能力。'
+                        : 'Assess your ability to recognize and understand others\' emotions, including facial expressions, tone, and body language.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/emotional_recognition')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* 压力指数自检 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您当前的压力水平，了解压力来源和应对能力，获得个性化的压力管理建议。'
+                        : 'Assess your current stress level, understand stress sources and coping abilities, and receive personalized stress management advice.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/stress_index')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* 心理韧性测试 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '心理韧性测试' : 'Psychological Resilience Test'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您在面对压力和挑战时的恢复能力，包括情绪管理、心理调节和恢复能力。'
+                        : 'Assess your ability to recover from stress and challenges, including emotional management, psychological regulation, and recovery abilities.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/psychological_resilience')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+
+                {/* 生活满意度量表 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '生活满意度量表' : 'Life Satisfaction Scale'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您的生活满意度，包括工作、生活、情感和社会关系等方面。'
+                        : 'Assess your life satisfaction, including work, life, emotions, and social relationships.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/life_satisfaction')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+
+                {/* 领导力潜力测评 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '领导力潜力测评' : 'Leadership Potential Test'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您的领导力潜力，包括团队合作、决策能力和解决问题的能力。'
+                        : 'Assess your leadership potential, including team collaboration, decision-making abilities, and problem-solving skills.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/leadership_potential')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* 多元智能测试 */}
+                <Card className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle>
+                      {language === 'zh' ? '多元智能测试' : 'Multiple Intelligences Test'}
+                    </CardTitle>
+                    <CardDescription>
+                      {language === 'zh'
+                        ? '评估您的多个智能能力，包括视觉、听觉、运动和语言能力。'
+                        : 'Assess your multiple intelligences, including visual, auditory, motor, and language abilities.'}
+                    </CardDescription>
+                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
+                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Button
+                      className="w-full"
+                      onClick={() => navigate('/scale-test/multiple_intelligences')}
+                    >
+                      {language === 'zh' ? '开始测试' : 'Start Test'}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+              </div>
+            </section>
+
+            {/* 可用测试 */}
+            {/* <section>
               <h2 className="text-2xl font-bold mb-4">
                 {language === 'zh' ? '更多测试' : 'Available Tests'}
               </h2>
@@ -228,7 +395,7 @@ export default function DashboardPage() {
                   </Card>
                 ))}
               </div>
-            </section>
+            </section> */}
 
             {/* 已完成测试 */}
             <section>
@@ -243,36 +410,94 @@ export default function DashboardPage() {
                 </Card>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {completedTests.map((result: any) => (
-                    <Card key={result.id}>
-                      <CardHeader>
-                        <CardTitle className="text-lg">
-                          {language === 'zh' ? result.tests?.title_zh : result.tests?.title}
-                        </CardTitle>
-                        <CardDescription>
-                          {language === 'zh' ? '完成时间：' : 'Completed: '}
-                          {new Date(result.completed_at).toLocaleDateString()}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-2xl font-bold text-primary">{result.iq_score}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {language === 'zh' ? '分数' : 'Score'}
-                            </p>
+                  {completedTests.map((result: any) => {
+                    // 判断测试类型
+                    const isScaleTest = result.test_type && (result.test_type === 'emotional_recognition' || result.test_type === 'stress_index');
+
+                    // 获取测试名称
+                    const getTestName = () => {
+                      if (result.test_type === 'emotional_recognition') {
+                        return language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test';
+                      } else if (result.test_type === 'stress_index') {
+                        return language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment';
+                      } else if (result.test_type === 'psychological_resilience') {
+                        return language === 'zh' ? '心理韧性测试' : 'Psychological Resilience Test';
+                      } else if (result.test_type === 'multiple_intelligences') {
+                        return language === 'zh' ? '多元智能测试' : 'Multiple Intelligences Test';
+                      } else if (result.test_type === 'leadership_potential') {
+                        return language === 'zh' ? '领导力潜力测评' : 'Leadership Potential Assessment';
+                      } else if (result.test_type === 'life_satisfaction') {
+                        return language === 'zh' ? '生活满意度量表' : 'Life Satisfaction Scale';
+                      } else {
+                        return language === 'zh' ? 'IQ测试' : 'IQ Test';
+                      }
+                    };
+
+                    // 获取测试类型标签
+                    const getTestTypeLabel = () => {
+                      if (result.test_type === 'emotional_recognition') {
+                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
+                      } else if (result.test_type === 'stress_index') {
+                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
+                      } else {
+                        return language === 'zh' ? '智力测试' : 'Intelligence Test';
+                      }
+                    };
+
+                    // 获取分数显示
+                    const getScoreDisplay = () => {
+                      if (isScaleTest) {
+                        return result.iq_score || result.score || 0;
+                      } else {
+                        return result.iq_score || 0;
+                      }
+                    };
+
+                    // 获取查看结果的路径
+                    const getResultPath = () => {
+                      if (isScaleTest) {
+                        return `/scale-test-report/${result.id}`;
+                      } else {
+                        return `/result`;
+                      }
+                    };
+
+                    return (
+                      <Card key={result.id}>
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">
+                              {getTestName()}
+                            </CardTitle>
+                            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                              {getTestTypeLabel()}
+                            </span>
                           </div>
-                          <Button
-                            variant="outline"
-                            onClick={() => navigate(`/result`)}
-                          >
-                            <FileText className="mr-2 h-4 w-4" />
-                            {language === 'zh' ? '查看结果' : 'View Results'}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          <CardDescription>
+                            {language === 'zh' ? '完成时间：' : 'Completed: '}
+                            {new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-2xl font-bold text-primary">{getScoreDisplay()}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {language === 'zh' ? '分数' : 'Score'}
+                              </p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              onClick={() => navigate(getResultPath())}
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              {language === 'zh' ? '查看结果' : 'View Results'}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </section>
