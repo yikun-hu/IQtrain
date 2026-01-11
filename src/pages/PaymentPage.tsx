@@ -86,6 +86,9 @@ export default function PaymentPage() {
   const [otpLoading, setOtpLoading] = useState(false);
   const [showOtpForm, setShowOtpForm] = useState(false);
 
+  // Payment processing state
+  const [showPaymentProcessingModal, setShowPaymentProcessingModal] = useState(false);
+
   // 从URL获取plan_id，如果没有则使用旧的type参数
   const planId = searchParams.get('plan_id');
   const type = (searchParams.get('type') as SubscriptionType) || 'one_time';
@@ -286,11 +289,6 @@ export default function PaymentPage() {
       const userInfo = JSON.parse(userInfoStr);
       const paymentDetails = paymentDetailsStr ? JSON.parse(paymentDetailsStr) : null;
 
-      toast({
-        title: language === 'zh' ? '支付成功' : 'Payment Successful',
-        description: language === 'zh' ? '正在处理您的订单...' : 'Processing your order...',
-      });
-
       if (!user) {
         toast({
           title: language === 'zh' ? '错误' : 'Error',
@@ -299,6 +297,9 @@ export default function PaymentPage() {
         });
         return;
       }
+
+      // 显示支付处理模态框
+      setShowPaymentProcessingModal(true);
 
       const userId = user.id;
 
@@ -317,11 +318,11 @@ export default function PaymentPage() {
             full_name: userInfo.fullName,
             age: userInfo.age,
             gender: userInfo.gender,
-            role: 'user',
-            has_paid: true,
-            subscription_type: type,
-            subscription_expires_at:
-              type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null,
+            // role: 'user',
+            // has_paid: true,
+            // subscription_type: type,
+            // subscription_expires_at:
+            //   type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null,
           })
           .select()
           .single();
@@ -335,10 +336,10 @@ export default function PaymentPage() {
           full_name: userInfo.fullName || undefined,
           age: userInfo.age,
           gender: userInfo.gender || undefined,
-          has_paid: true,
-          subscription_type: type,
-          subscription_expires_at:
-            type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+          // has_paid: true,
+          // subscription_type: type,
+          // subscription_expires_at:
+          //   type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
         });
       }
 
@@ -358,10 +359,10 @@ export default function PaymentPage() {
           time_taken: timeTaken,
         });
 
-        localStorage.removeItem('testAnswers');
-        localStorage.removeItem('testTimeTaken');
-        localStorage.removeItem('userInfo');
-        localStorage.removeItem('currentTestResultId');
+        // localStorage.removeItem('testAnswers');
+        // localStorage.removeItem('testTimeTaken');
+        // localStorage.removeItem('userInfo');
+        // localStorage.removeItem('currentTestResultId');
       }
 
       if (userId) {
@@ -384,16 +385,15 @@ export default function PaymentPage() {
       await refreshProfile();
 
       setPaymentSuccess(true);
-      toast({
-        title: language === 'zh' ? '账号创建成功' : 'Account Created Successfully',
-        description: language === 'zh' ? '正在跳转到结果页面...' : 'Redirecting to results page...',
-      });
 
       setTimeout(() => {
+        // 跳转到结果页面
         navigate('/result');
-      }, 2000);
+      }, 1000);
     } catch (error: any) {
       console.error('支付失败:', error);
+      // 关闭处理模态框
+      setShowPaymentProcessingModal(false);
       toast({
         title: language === 'zh' ? '错误' : 'Error',
         description: language === 'zh' ? '支付失败，请重试' : 'Payment failed, please try again',
@@ -527,6 +527,26 @@ export default function PaymentPage() {
               </div>
             </form>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* 支付处理模态框 */}
+      <Dialog open={showPaymentProcessingModal} onOpenChange={() => {}} aria-describedby="payment-processing-description">
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {language === 'zh' ? '支付成功' : 'Payment Successful'}
+            </DialogTitle>
+            <DialogDescription id="payment-processing-description">
+              {language === 'zh' ? '正在处理您的订单...' : 'Processing your order...'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col items-center justify-center py-8">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <p className="text-sm text-muted-foreground">
+              {language === 'zh' ? '请稍候，我们正在为您准备结果...' : 'Please wait while we prepare your results...'}
+            </p>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -769,56 +789,58 @@ export default function PaymentPage() {
                   </div>
                 </div>
 
-                <PayPalButtons
-                  disabled={loadingPlan}
-                  style={{ layout: 'horizontal', tagline: false }}
-                  createSubscription={async (data, actions) => {
-                    try {
-                      return actions.subscription.create({
-                        plan_id: selectedPlan?.paypal_plan_id || '',
-                        custom_id: `TEMP-${Date.now()}`,
-                      });
-                    } catch (error) {
-                      console.error('Error creating subscription:', error);
-                      return Promise.reject(error);
-                    }
-                  }}
-                  onApprove={async (data, actions) => {
-                    setProcessing(true);
-                    try {
-                      localStorage.setItem(
-                        'paymentDetails',
-                        JSON.stringify({
-                          subscriptionId: data.subscriptionID,
-                          orderId: data.orderID || data.subscriptionID,
-                          planId: selectedPlan?.id,
-                          amount: selectedPlan?.trial_price,
-                        }),
-                      );
-
-                      if (user) {
-                        await processPaymentSuccess();
-                      } else {
-                        const userInfoStr = localStorage.getItem('userInfo');
-                        if (userInfoStr) {
-                          const userInfo = JSON.parse(userInfoStr);
-                          setOtpEmail(userInfo.email);
-                        }
-                        // ✅ 打开模态框，不再整页跳转
-                        setShowOtpForm(true);
+                <div className={showOtpForm ? 'opacity-50 pointer-events-none' : ''}>
+                  <PayPalButtons
+                    disabled={loadingPlan || showOtpForm}
+                    style={{ layout: 'horizontal', tagline: false }}
+                    createSubscription={async (data, actions) => {
+                      try {
+                        return actions.subscription.create({
+                          plan_id: selectedPlan?.paypal_plan_id || '',
+                          custom_id: `TEMP-${Date.now()}`,
+                        });
+                      } catch (error) {
+                        console.error('Error creating subscription:', error);
+                        return Promise.reject(error);
                       }
-                    } catch (error) {
-                      console.error('Payment processing failed:', error);
-                      toast({
-                        title: language === 'zh' ? '错误' : 'Error',
-                        description: language === 'zh' ? '支付处理失败，请重试' : 'Payment processing failed, please try again',
-                        variant: 'destructive',
-                      });
-                    } finally {
-                      setProcessing(false);
-                    }
-                  }}
-                />
+                    }}
+                    onApprove={async (data, actions) => {
+                      setProcessing(true);
+                      try {
+                        localStorage.setItem(
+                          'paymentDetails',
+                          JSON.stringify({
+                            subscriptionId: data.subscriptionID,
+                            orderId: data.orderID || data.subscriptionID,
+                            planId: selectedPlan?.id,
+                            amount: selectedPlan?.trial_price,
+                          }),
+                        );
+
+                        if (user) {
+                          await processPaymentSuccess();
+                        } else {
+                          const userInfoStr = localStorage.getItem('userInfo');
+                          if (userInfoStr) {
+                            const userInfo = JSON.parse(userInfoStr);
+                            setOtpEmail(userInfo.email);
+                          }
+                          // ✅ 打开模态框，不再整页跳转
+                          setShowOtpForm(true);
+                        }
+                      } catch (error) {
+                        console.error('Payment processing failed:', error);
+                        toast({
+                          title: language === 'zh' ? '错误' : 'Error',
+                          description: language === 'zh' ? '支付处理失败，请重试' : 'Payment processing failed, please try again',
+                          variant: 'destructive',
+                        });
+                      } finally {
+                        setProcessing(false);
+                      }
+                    }}
+                  />
+                </div>
 
                 <p className="text-xs text-center text-gray-500">
                   {language === 'zh' ? '安全支付，支持所有主流信用卡' : 'Secure payment, all major credit cards accepted'}

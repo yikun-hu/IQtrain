@@ -122,6 +122,7 @@ export const translations = {
       question: 'Question',
       of: 'of',
       selectAnswer: 'Select your answer',
+      answerPrompt: 'Select the most appropriate option from below',
       submit: 'Submit Test',
       confirmSubmit: 'Are you sure you want to submit your test?',
       progress: {
@@ -338,6 +339,7 @@ export const translations = {
       question: '题目',
       of: '/',
       selectAnswer: '选择您的答案',
+      answerPrompt: '从下方选项中选择最符合的一项',
       submit: '提交测试',
       confirmSubmit: '确定要提交测试吗？',
       progress: {

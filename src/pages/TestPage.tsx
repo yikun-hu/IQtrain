@@ -391,7 +391,10 @@ export default function TestPage() {
             <CardContent className="pt-6 pb-6">
               <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                 {/* 左侧：问题图片 */}
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center flex-col">
+                  <h3 className="text-lg font-semibold mb-4">
+                    {language === 'zh' ? '从下方选项中选择最符合的一项：' : 'Select the most appropriate option from below:'}
+                  </h3>
                   <div className="w-full max-w-sm">
                     <div className="aspect-square border-2 border-border rounded-lg overflow-hidden shadow-inner bg-muted/30">
                       <img
@@ -430,8 +433,12 @@ export default function TestPage() {
                           }`}>
                             {option.number}
                           </div>
-                          <div className="flex items-center justify-center h-full">
-                            <span className="text-2xl font-bold text-foreground">{option.label}</span>
+                          <div className="flex items-center justify-center h-full p-2">
+                            <img
+                              src={option.value}
+                              alt={`Option ${option.label}`}
+                              className="w-full h-full object-contain"
+                            />
                           </div>
                         </button>
                       );
