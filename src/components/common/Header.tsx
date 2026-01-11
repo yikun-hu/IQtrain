@@ -105,11 +105,7 @@ export default function Header() {
   // 判断用户是否是管理员
   const isAdmin = profile?.role === 'admin';
 
-  useEffect(() => {
-    if (isDashboard && !hasSubscription) {
-      navigate('/');
-    }
-  }, [isDashboard, hasSubscription, navigate]);
+
 
   return (
     <>
@@ -282,7 +278,7 @@ export default function Header() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUnsubscribing}>
+            <AlertDialogCancel onClick={() => setShowUnsubscribeDialog(false)}>
               {language === 'zh' ? '取消' : 'Cancel'}
             </AlertDialogCancel>
             <AlertDialogAction 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAllGames, getRandomGames, getAllTests, getTestResults } from '@/db/api';
@@ -36,6 +37,52 @@ export default function DashboardPage() {
   const [isGameDialogOpen, setIsGameDialogOpen] = useState(false);
   const [currentGameUrl, setCurrentGameUrl] = useState('');
   const [currentGameTitle, setCurrentGameTitle] = useState('');
+  
+  // 订阅提示模态框状态
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
+  
+  // 检查用户是否有有效订阅
+  const hasValidSubscription = profile?.subscription_type === 'monthly' && profile?.subscription_expires_at;
+  
+  // 打开订阅提示模态框
+  const openSubscriptionModal = () => {
+    setIsSubscriptionModalOpen(true);
+  };
+  
+  // 关闭订阅提示模态框
+  const closeSubscriptionModal = () => {
+    setIsSubscriptionModalOpen(false);
+  };
+  
+  // 跳转到订阅页面
+  const goToPricingPage = () => {
+    closeSubscriptionModal();
+    navigate('/pricing');
+  };
+  
+  // 处理测试开始按钮点击事件
+  const handleStartTest = (testPath: string) => {
+    // 检查用户是否有有效订阅
+    if (!hasValidSubscription) {
+      openSubscriptionModal();
+      return;
+    }
+    
+    // 跳转到测试页面
+    navigate(testPath);
+  };
+  
+  // 处理查看报告按钮点击事件
+  const handleViewReport = (reportPath: string) => {
+    // 检查用户是否有有效订阅
+    if (!hasValidSubscription) {
+      openSubscriptionModal();
+      return;
+    }
+    
+    // 跳转到报告页面
+    navigate(reportPath);
+  };
 
   useEffect(() => {
     // 等待认证状态加载完成
@@ -106,6 +153,12 @@ export default function DashboardPage() {
   };
 
   const handlePlayGame = (game: Game) => {
+    // 检查用户是否有有效订阅
+    if (!hasValidSubscription) {
+      openSubscriptionModal();
+      return;
+    }
+    
     // 确保路径以斜杠开头，这样React会从public目录正确加载
     const gameUrl = game.url.startsWith('/') ? game.url : `/${game.url}`;
     setCurrentGameUrl(gameUrl);
@@ -235,11 +288,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/emotional_recognition')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/emotional_recognition')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -261,11 +314,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/stress_index')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/stress_index')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -287,11 +340,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/psychological_resilience')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/psychological_resilience')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -314,11 +367,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/life_satisfaction')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/life_satisfaction')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -341,11 +394,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/leadership_potential')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/leadership_potential')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -367,11 +420,11 @@ export default function DashboardPage() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      className="w-full"
-                      onClick={() => navigate('/scale-test/multiple_intelligences')}
-                    >
-                      {language === 'zh' ? '开始测试' : 'Start Test'}
-                    </Button>
+                        className="w-full"
+                        onClick={() => handleStartTest('/scale-test/multiple_intelligences')}
+                      >
+                        {language === 'zh' ? '开始测试' : 'Start Test'}
+                      </Button>
                   </CardContent>
                 </Card>
 
@@ -504,7 +557,7 @@ export default function DashboardPage() {
                             </div>
                             <Button
                               variant="outline"
-                              onClick={() => navigate(getResultPath())}
+                              onClick={() => handleViewReport(getResultPath())}
                             >
                               <FileText className="mr-2 h-4 w-4" />
                               {language === 'zh' ? '查看结果' : 'View Results'}
@@ -541,6 +594,31 @@ export default function DashboardPage() {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* 订阅提示模态框 */}
+      <AlertDialog open={isSubscriptionModalOpen} onOpenChange={setIsSubscriptionModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {language === 'zh' ? '需要订阅才能继续' : 'Subscription Required'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {language === 'zh' 
+                ? '您需要先订阅才能开始游戏或测试。订阅后您将获得完整的功能访问权限。'
+                : 'You need to subscribe first to start games or tests. With a subscription, you will get full access to all features.'
+              }
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={closeSubscriptionModal}>
+              {language === 'zh' ? '取消' : 'Cancel'}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={goToPricingPage} className="bg-primary">
+              {language === 'zh' ? '前往订阅' : 'Go to Subscription'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -1,8 +1,14 @@
-# 欢迎使用你的秒哒应用代码包
-秒哒应用链接
-    URL:https://www.miaoda.cn/projects/app-876katbvqjgh
-
 # IQ Train - 智商测试和训练平台
+## Build
+```bash
+pnpm i
+pnpm build
+```
+
+## Deploy
+```bash
+pnpx wrangler deploy
+```
 
 ## 介绍
 
