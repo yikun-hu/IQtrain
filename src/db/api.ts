@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult } from '@/types/types';
+import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult, SubscriptionPlan, PaymentGatewayConfig } from '@/types/types';
 
 // ==================== 用户相关 ====================
 
@@ -109,6 +109,18 @@ export async function getLatestTestResult(userId: string) {
 }
 
 // ==================== 订单相关 ====================
+export async function createVerifiedOrder(userId: string, paypalOrderId: string, subscriptionPlanId: string) {
+  const { data, error } = await supabase.functions.invoke('createVerifiedOrder', {
+    body: {
+      user_id: userId,
+      paypal_order_id: paypalOrderId,
+      subscription_plan_id: subscriptionPlanId,
+    }
+  })
+  
+  if (error) throw error;
+  return data as Order | null;
+}
 
 export async function createOrder(order: Omit<Order, 'id' | 'created_at' | 'updated_at'>) {
   const { data, error } = await supabase
@@ -372,7 +384,7 @@ export async function getAdminOverview() {
   const { data: subscriptionData, error: subscriptionError } = await supabase
     .from('profiles')
     .select('subscription_type, subscription_expires_at')
-    .eq('subscription_type', 'monthly')
+    .eq('subscription_type', 'recurring')
     .not('subscription_expires_at', 'is', null);
   
   if (subscriptionError) throw subscriptionError;
@@ -421,4 +433,103 @@ export async function getUserList(page: number = 1, pageSize: number = 20) {
     pageSize,
     totalPages: Math.ceil((count || 0) / pageSize),
   };
+}
+
+// ==================== 订阅包管理 ====================
+
+// 获取所有订阅包
+export async function getAllSubscriptionPlans() {
+  const { data, error } = await supabase
+    .from('subscription_plans')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return Array.isArray(data) ? data as SubscriptionPlan[] : [];
+}
+
+// 获取激活的订阅包
+export async function getActiveSubscriptionPlans() {
+  const { data, error } = await supabase
+    .from('subscription_plans')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return Array.isArray(data) ? data as SubscriptionPlan[] : [];
+}
+
+// 获取单个订阅包
+export async function getSubscriptionPlan(id: string) {
+  const { data, error } = await supabase
+    .from('subscription_plans')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as SubscriptionPlan | null;
+}
+
+// 创建订阅包
+export async function createSubscriptionPlan(plan: Omit<SubscriptionPlan, 'id' | 'created_at' | 'updated_at'>) {
+  const { data, error } = await supabase
+    .from('subscription_plans')
+    .insert(plan)
+    .select()
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as SubscriptionPlan | null;
+}
+
+// 更新订阅包
+export async function updateSubscriptionPlan(id: string, updates: Partial<SubscriptionPlan>) {
+  const { data, error } = await supabase
+    .from('subscription_plans')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as SubscriptionPlan | null;
+}
+
+// 删除订阅包
+export async function deleteSubscriptionPlan(id: string) {
+  const { error } = await supabase
+    .from('subscription_plans')
+    .delete()
+    .eq('id', id);
+  
+  if (error) throw error;
+}
+
+// ==================== 支付网关配置管理 ====================
+
+// 获取支付网关配置
+export async function getPaymentGatewayConfig() {
+  const { data, error } = await supabase
+    .from('payment_gateway_config')
+    .select('*')
+    .eq('is_active', true)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as PaymentGatewayConfig | null;
+}
+
+// 更新支付网关配置
+export async function updatePaymentGatewayConfig(id: string, updates: Partial<PaymentGatewayConfig>) {
+  const { data, error } = await supabase
+    .from('payment_gateway_config')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as PaymentGatewayConfig | null;
 }

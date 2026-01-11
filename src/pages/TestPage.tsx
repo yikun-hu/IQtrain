@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllQuestions } from '@/db/api';
+import { getAllQuestions, saveTestResult } from '@/db/api';
 import type { IQQuestion } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Clock, ChevronLeft, ChevronRight, CheckCircle2, Brain, ListChecks, Lightbulb } from 'lucide-react';
@@ -93,11 +93,27 @@ export default function TestPage() {
   };
 
   const handleStartTest = async () => {
+    // 安全检查：确保题目已加载
+    if (questions.length === 0) {
+      toast({
+        title: t.common.error,
+        description: language === 'zh' ? '题目尚未加载完成，请稍候' : 'Questions not loaded yet',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setTestStarted(true);
     setStartTime(Date.now());
   };
 
   const handleAnswer = (answer: string) => {
+    // 安全检查：确保当前题目存在
+    if (!questions[currentQuestion]) {
+      console.error('当前题目不存在');
+      return;
+    }
+
     setSelectedOption(answer);
     const newAnswers = {
       ...answers,
@@ -114,7 +130,10 @@ export default function TestPage() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        setShowCompletionModal(true);
+        // 只有当所有问题都已回答时才显示完成模态框
+        if (allQuestionsAnswered()) {
+          setShowCompletionModal(true);
+        }
       }
     }, 400);
   };
@@ -131,12 +150,81 @@ export default function TestPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const timeTaken = elapsedTime;
     
-    // 保存答案和用时到localStorage
+    // 保存答案和用时到localStorage（作为备份）
     localStorage.setItem('testAnswers', JSON.stringify(answers));
     localStorage.setItem('testTimeTaken', timeTaken.toString());
+    
+    // 如果用户已登录，直接保存到后端
+    if (user) {
+      try {
+        // 计算分数
+        const correctCount = questions.reduce((count, question) => {
+          const userAnswer = answers[question.question_number];
+          return userAnswer === question.correct_answer ? count + 1 : count;
+        }, 0);
+        
+        const score = Math.round((correctCount / questions.length) * 100);
+        const iqScore = Math.round(85 + (score / 100) * 60); // IQ范围: 85-145
+        
+        // 计算各维度分数
+        const dimensionScores: Record<string, number> = {
+          memory: 0,
+          speed: 0,
+          reaction: 0,
+          concentration: 0,
+          logic: 0,
+        };
+        
+        const dimensionCounts: Record<string, number> = {
+          memory: 0,
+          speed: 0,
+          reaction: 0,
+          concentration: 0,
+          logic: 0,
+        };
+        
+        questions.forEach((question) => {
+          const userAnswer = answers[question.question_number];
+          const isCorrect = userAnswer === question.correct_answer;
+          const dimension = question.dimension;
+          
+          if (dimensionScores[dimension] !== undefined) {
+            dimensionScores[dimension] += isCorrect ? 1 : 0;
+            dimensionCounts[dimension] += 1;
+          }
+        });
+        
+        // 转换为百分比
+        Object.keys(dimensionScores).forEach((dimension) => {
+          if (dimensionCounts[dimension] > 0) {
+            dimensionScores[dimension] = Math.round(
+              (dimensionScores[dimension] / dimensionCounts[dimension]) * 100
+            );
+          }
+        });
+        
+        // 保存测试结果
+        await saveTestResult({
+          user_id: user.id,
+          answers,
+          score,
+          iq_score: iqScore,
+          dimension_scores: dimensionScores,
+          time_taken: timeTaken,
+        });
+        
+        toast({
+          title: language === 'zh' ? '成功' : 'Success',
+          description: language === 'zh' ? '测试结果已保存' : 'Test results saved',
+        });
+      } catch (error) {
+        console.error('保存测试结果失败:', error);
+        // 即使保存失败也继续流程
+      }
+    }
     
     // 跳转到加载分析页面
     navigate('/loading-analysis');
@@ -149,6 +237,11 @@ export default function TestPage() {
   };
 
   const answeredCount = Object.keys(answers).length;
+
+  // 检查是否所有问题都已回答
+  const allQuestionsAnswered = () => {
+    return questions.every(question => answers[question.question_number] !== undefined);
+  };
 
   if (loading) {
     return (
@@ -254,6 +347,25 @@ export default function TestPage() {
   }
 
   const question = questions[currentQuestion];
+  
+  // 安全检查：确保question对象存在
+  if (!question) {
+    return (
+      <div className="min-h-screen bg-muted flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+              <p className="text-muted-foreground">
+                {language === 'zh' ? '加载题目中...' : 'Loading questions...'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const options = [
     { label: 'A', value: question.option_a, number: 1 },
@@ -287,7 +399,10 @@ export default function TestPage() {
             <CardContent className="pt-6 pb-6">
               <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                 {/* 左侧：问题图片 */}
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center flex-col">
+                  <h3 className="text-lg font-semibold mb-4">
+                    {language === 'zh' ? '从下方选项中选择最符合的一项：' : 'Select the most appropriate option from below:'}
+                  </h3>
                   <div className="w-full max-w-sm">
                     <div className="aspect-square border-2 border-border rounded-lg overflow-hidden shadow-inner bg-muted/30">
                       <img
@@ -326,8 +441,12 @@ export default function TestPage() {
                           }`}>
                             {option.number}
                           </div>
-                          <div className="flex items-center justify-center h-full">
-                            <span className="text-2xl font-bold text-foreground">{option.label}</span>
+                          <div className="flex items-center justify-center h-full p-2">
+                            <img
+                              src={option.value}
+                              alt={`Option ${option.label}`}
+                              className="w-full h-full object-contain"
+                            />
                           </div>
                         </button>
                       );
@@ -348,14 +467,25 @@ export default function TestPage() {
                     </Button>
 
                     {currentQuestion === questions.length - 1 ? (
-                      <Button
-                        onClick={() => setShowCompletionModal(true)}
-                        className="bg-secondary hover:bg-secondary/90 gap-1"
-                        size="sm"
-                      >
-                        {language === 'zh' ? '提交' : 'Submit'}
-                        <CheckCircle2 className="h-4 w-4" />
-                      </Button>
+                      allQuestionsAnswered() ? (
+                        <Button
+                          onClick={() => setShowCompletionModal(true)}
+                          className="bg-secondary hover:bg-secondary/90 gap-1"
+                          size="sm"
+                        >
+                          {language === 'zh' ? '提交' : 'Submit'}
+                          <CheckCircle2 className="h-4 w-4" />
+                        </Button>
+                      ) : (
+                        <div className="flex flex-col items-end">
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {language === 'zh' ? '请完成所有题目后提交' : 'Please complete all questions before submitting'}
+                          </p>
+                          <Button variant="outline" size="sm" className="gap-1">
+                            {language === 'zh' ? '最后一题' : 'Final Question'}
+                          </Button>
+                        </div>
+                      )
                     ) : (
                       <Button onClick={handleNext} size="sm" className="gap-1">
                         {language === 'zh' ? '下一页' : 'Next'}

@@ -54,6 +54,7 @@ export interface Order {
   user_id: string;
   status: OrderStatus;
   subscription_type: SubscriptionType;
+  subscription_plan_id: string;
   amount: number;
   paypal_order_id?: string;
   paypal_payment_id?: string;
@@ -124,6 +125,37 @@ export interface UserTestResult {
   result_data?: any; // 测试结果详细数据
   time_taken?: number;
   completed_at: string;
+}
+
+// 时间单位类型
+export type TimeUnit = 'DAY' | 'MONTH' | 'WEEK' | 'YEAR';
+
+// 订阅包类型
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  trial_price: number;
+  trial_duration: number;
+  trial_unit: TimeUnit;
+  recurring_price: number;
+  recurring_duration: number;
+  recurring_unit: TimeUnit;
+  paypal_plan_id: string | null;
+  description: string[]; // bullet points数组
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// 支付网关配置类型
+export interface PaymentGatewayConfig {
+  id: string;
+  gateway_name: string;
+  client_id: string;
+  secret_key: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // 语言类型

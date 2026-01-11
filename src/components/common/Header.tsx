@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -93,6 +93,12 @@ export default function Header() {
   
   // 判断用户是否是管理员
   const isAdmin = profile?.role === 'admin';
+
+  useEffect(() => {
+    if (isDashboard && !hasSubscription) {
+      navigate('/');
+    }
+  }, [isDashboard, hasSubscription, navigate]);
 
   return (
     <>

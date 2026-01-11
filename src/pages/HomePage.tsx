@@ -371,17 +371,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* 2048游戏部分 */}
-            <section className="py-16 xl:py-24 bg-background">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {language === 'zh' ? '挑战你的思维' : 'Challenge Your Mind'}
-                    </h2>
-                    <Game2048/>
-                </div>
-            </section>
-
-
             {/* 客户评价部分 */}
             <section className="py-16 xl:py-24 bg-muted">
                 <div className="container mx-auto px-4">

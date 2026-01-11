@@ -52,10 +52,10 @@ export default function LoginPage() {
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!code || code.length !== 8) {
+    if (!code || code.length !== 6) {
       toast({
         title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '请输入有效的8位验证码' : 'Please enter a valid 8-digit code',
+        description: language === 'zh' ? '请输入有效的6位验证码' : 'Please enter a valid 6-digit code',
         variant: 'destructive',
       });
       return;
@@ -151,10 +151,10 @@ export default function LoginPage() {
                 <Input
                   id="code"
                   type="text"
-                  placeholder="00000000"
+                  placeholder="000000"
                   value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 8))}
-                  maxLength={8}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  maxLength={6}
                   className="h-12 text-center text-2xl tracking-widest"
                   required
                 />

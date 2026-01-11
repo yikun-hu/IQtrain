@@ -109,7 +109,7 @@ export const translations = {
       emailPlaceholder: 'your@email.com',
       sendCode: 'Send Code',
       verificationCode: 'Verification Code',
-      codePlaceholder: 'Enter 8-digit code',
+      codePlaceholder: 'Enter 6-digit code',
       verify: 'Verify & Login',
       codeSent: 'Verification code sent to your email',
       codeError: 'Invalid verification code',
@@ -122,6 +122,7 @@ export const translations = {
       question: 'Question',
       of: 'of',
       selectAnswer: 'Select your answer',
+      answerPrompt: 'Select the most appropriate option from below',
       submit: 'Submit Test',
       confirmSubmit: 'Are you sure you want to submit your test?',
       progress: {
@@ -325,7 +326,7 @@ export const translations = {
       emailPlaceholder: 'your@email.com',
       sendCode: '发送验证码',
       verificationCode: '验证码',
-      codePlaceholder: '输入8位验证码',
+      codePlaceholder: '输入6位验证码',
       verify: '验证并登录',
       codeSent: '验证码已发送到您的邮箱',
       codeError: '验证码无效',
@@ -338,6 +339,7 @@ export const translations = {
       question: '题目',
       of: '/',
       selectAnswer: '选择您的答案',
+      answerPrompt: '从下方选项中选择最符合的一项',
       submit: '提交测试',
       confirmSubmit: '确定要提交测试吗？',
       progress: {
