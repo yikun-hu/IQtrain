@@ -109,6 +109,18 @@ export async function getLatestTestResult(userId: string) {
 }
 
 // ==================== 订单相关 ====================
+export async function createVerifiedOrder(userId: string, paypalOrderId: string, subscriptionPlanId: string) {
+  const { data, error } = await supabase.functions.invoke('createVerifiedOrder', {
+    body: {
+      user_id: userId,
+      paypal_order_id: paypalOrderId,
+      subscription_plan_id: subscriptionPlanId,
+    }
+  })
+  
+  if (error) throw error;
+  return data as Order | null;
+}
 
 export async function createOrder(order: Omit<Order, 'id' | 'created_at' | 'updated_at'>) {
   const { data, error } = await supabase
@@ -372,7 +384,7 @@ export async function getAdminOverview() {
   const { data: subscriptionData, error: subscriptionError } = await supabase
     .from('profiles')
     .select('subscription_type, subscription_expires_at')
-    .eq('subscription_type', 'monthly')
+    .eq('subscription_type', 'recurring')
     .not('subscription_expires_at', 'is', null);
   
   if (subscriptionError) throw subscriptionError;

@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import {
-  createOrder,
+  createVerifiedOrder,
   updateProfile,
   saveTestResult,
   getAllQuestions,
@@ -366,17 +366,19 @@ export default function PaymentPage() {
 
       if (userId) {
         const orderNo = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        await createOrder({
-          order_no: orderNo,
+        console.log(paymentDetails);
+        const orderData = {
+          // order_no: orderNo,
           user_id: userId,
-          status: 'paid',
-          subscription_type: type,
+          // status: 'paid',
+          // subscription_type: type,
           subscription_plan_id: paymentDetails?.planId || selectedPlan?.id || '',
-          amount: paymentDetails?.amount || amount,
-          paypal_order_id: paymentDetails?.orderId || paymentDetails?.subscriptionId,
-        });
+          // amount: paymentDetails?.amount || amount,
+          paypal_order_id: paymentDetails?.subscriptionId,
+        };
+        await createVerifiedOrder(userId, orderData.paypal_order_id, orderData.subscription_plan_id);
 
-        if (paymentDetails) localStorage.removeItem('paymentDetails');
+        // if (paymentDetails) localStorage.removeItem('paymentDetails');
       }
 
       await refreshProfile();
