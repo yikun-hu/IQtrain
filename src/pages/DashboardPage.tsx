@@ -426,36 +426,94 @@ export default function DashboardPage() {
                 </Card>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {completedTests.map((result: any) => (
-                    <Card key={result.id}>
-                      <CardHeader>
-                        <CardTitle className="text-lg">
-                          {language === 'zh' ? result.tests?.title_zh : result.tests?.title}
-                        </CardTitle>
-                        <CardDescription>
-                          {language === 'zh' ? '完成时间：' : 'Completed: '}
-                          {new Date(result.completed_at).toLocaleDateString()}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-2xl font-bold text-primary">{result.score}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {language === 'zh' ? '分数' : 'Score'}
-                            </p>
+                  {completedTests.map((result: any) => {
+                    // 判断测试类型
+                    const isScaleTest = result.test_type && (result.test_type === 'emotional_recognition' || result.test_type === 'stress_index');
+
+                    // 获取测试名称
+                    const getTestName = () => {
+                      if (result.test_type === 'emotional_recognition') {
+                        return language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test';
+                      } else if (result.test_type === 'stress_index') {
+                        return language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment';
+                      } else if (result.test_type === 'psychological_resilience') {
+                        return language === 'zh' ? '心理韧性测试' : 'Psychological Resilience Test';
+                      } else if (result.test_type === 'multiple_intelligences') {
+                        return language === 'zh' ? '多元智能测试' : 'Multiple Intelligences Test';
+                      } else if (result.test_type === 'leadership_potential') {
+                        return language === 'zh' ? '领导力潜力测评' : 'Leadership Potential Assessment';
+                      } else if (result.test_type === 'life_satisfaction') {
+                        return language === 'zh' ? '生活满意度量表' : 'Life Satisfaction Scale';
+                      } else {
+                        return language === 'zh' ? 'IQ测试' : 'IQ Test';
+                      }
+                    };
+
+                    // 获取测试类型标签
+                    const getTestTypeLabel = () => {
+                      if (result.test_type === 'emotional_recognition') {
+                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
+                      } else if (result.test_type === 'stress_index') {
+                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
+                      } else {
+                        return language === 'zh' ? '智力测试' : 'Intelligence Test';
+                      }
+                    };
+
+                    // 获取分数显示
+                    const getScoreDisplay = () => {
+                      if (isScaleTest) {
+                        return result.iq_score || result.score || 0;
+                      } else {
+                        return result.iq_score || 0;
+                      }
+                    };
+
+                    // 获取查看结果的路径
+                    const getResultPath = () => {
+                      if (isScaleTest) {
+                        return `/scale-test-report/${result.id}`;
+                      } else {
+                        return `/result`;
+                      }
+                    };
+
+                    return (
+                      <Card key={result.id}>
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg">
+                              {getTestName()}
+                            </CardTitle>
+                            <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                              {getTestTypeLabel()}
+                            </span>
                           </div>
-                          <Button
-                            variant="outline"
-                            onClick={() => navigate(`/results/${result.id}`)}
-                          >
-                            <FileText className="mr-2 h-4 w-4" />
-                            {language === 'zh' ? '查看结果' : 'View Results'}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          <CardDescription>
+                            {language === 'zh' ? '完成时间：' : 'Completed: '}
+                            {new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-2xl font-bold text-primary">{getScoreDisplay()}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {language === 'zh' ? '分数' : 'Score'}
+                              </p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              onClick={() => navigate(getResultPath())}
+                            >
+                              <FileText className="mr-2 h-4 w-4" />
+                              {language === 'zh' ? '查看结果' : 'View Results'}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </section>
