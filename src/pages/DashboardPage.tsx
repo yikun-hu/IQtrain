@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllGames, getRandomGames, getAllTests, getUserTestResults, getIQTestResults } from '@/db/api';
+import { getAllGames, getRandomGames, getAllTests, getTestResults } from '@/db/api';
 import type { Game, Test } from '@/types/types';
 import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
 
@@ -58,12 +58,11 @@ export default function DashboardPage() {
     setLoading(true);
     try {
       // 加载游戏数据
-      const [recommended, games, tests, userResults, testResults] = await Promise.all([
+      const [recommended, games, tests, testResults] = await Promise.all([
         getRandomGames(3),
         getAllGames(),
         getAllTests(),
-        getUserTestResults(user.id),
-        getIQTestResults(user.id),
+        getTestResults(user.id),
       ]);
 
       setRecommendedGames(recommended);

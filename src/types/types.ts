@@ -44,6 +44,7 @@ export interface TestResult {
   iq_score: number;
   dimension_scores: Record<TestDimension, number>;
   time_taken: number;
+  test_type: string;
   completed_at: string;
   created_at: string;
 }
