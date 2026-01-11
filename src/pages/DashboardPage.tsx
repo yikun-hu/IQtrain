@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllGames, getRandomGames, getAllTests, getUserTestResults } from '@/db/api';
+import { getAllGames, getRandomGames, getAllTests, getUserTestResults, getIQTestResults } from '@/db/api';
 import type { Game, Test } from '@/types/types';
 import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
 
@@ -55,11 +55,12 @@ export default function DashboardPage() {
     setLoading(true);
     try {
       // 加载游戏数据
-      const [recommended, games, tests, userResults] = await Promise.all([
+      const [recommended, games, tests, userResults, testResults] = await Promise.all([
         getRandomGames(3),
         getAllGames(),
         getAllTests(),
         getUserTestResults(user.id),
+        getIQTestResults(user.id),
       ]);
 
       setRecommendedGames(recommended);
@@ -76,7 +77,7 @@ export default function DashboardPage() {
       setGamesByCategory(grouped);
 
       setAvailableTests(tests);
-      setCompletedTests(userResults);
+      setCompletedTests(testResults);
     } catch (error) {
       console.error('加载数据失败:', error);
     } finally {
@@ -254,7 +255,7 @@ export default function DashboardPage() {
                       <CardContent>
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-2xl font-bold text-primary">{result.score}</p>
+                            <p className="text-2xl font-bold text-primary">{result.iq_score}</p>
                             <p className="text-sm text-muted-foreground">
                               {language === 'zh' ? '分数' : 'Score'}
                             </p>

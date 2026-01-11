@@ -130,7 +130,10 @@ export default function TestPage() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        setShowCompletionModal(true);
+        // 只有当所有问题都已回答时才显示完成模态框
+        if (allQuestionsAnswered()) {
+          setShowCompletionModal(true);
+        }
       }
     }, 400);
   };
@@ -234,6 +237,11 @@ export default function TestPage() {
   };
 
   const answeredCount = Object.keys(answers).length;
+
+  // 检查是否所有问题都已回答
+  const allQuestionsAnswered = () => {
+    return questions.every(question => answers[question.question_number] !== undefined);
+  };
 
   if (loading) {
     return (
@@ -459,14 +467,25 @@ export default function TestPage() {
                     </Button>
 
                     {currentQuestion === questions.length - 1 ? (
-                      <Button
-                        onClick={() => setShowCompletionModal(true)}
-                        className="bg-secondary hover:bg-secondary/90 gap-1"
-                        size="sm"
-                      >
-                        {language === 'zh' ? '提交' : 'Submit'}
-                        <CheckCircle2 className="h-4 w-4" />
-                      </Button>
+                      allQuestionsAnswered() ? (
+                        <Button
+                          onClick={() => setShowCompletionModal(true)}
+                          className="bg-secondary hover:bg-secondary/90 gap-1"
+                          size="sm"
+                        >
+                          {language === 'zh' ? '提交' : 'Submit'}
+                          <CheckCircle2 className="h-4 w-4" />
+                        </Button>
+                      ) : (
+                        <div className="flex flex-col items-end">
+                          <p className="text-sm text-muted-foreground mb-2">
+                            {language === 'zh' ? '请完成所有题目后提交' : 'Please complete all questions before submitting'}
+                          </p>
+                          <Button variant="outline" size="sm" className="gap-1">
+                            {language === 'zh' ? '最后一题' : 'Final Question'}
+                          </Button>
+                        </div>
+                      )
                     ) : (
                       <Button onClick={handleNext} size="sm" className="gap-1">
                         {language === 'zh' ? '下一页' : 'Next'}

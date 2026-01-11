@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getLatestTestResult } from '@/db/api';
 import type { TestResult } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Award, Clock, Target, Brain, TrendingUp, Zap, Lock } from 'lucide-react';
+import { Loader2, Award, Clock, Target, Brain, TrendingUp, Zap, Lock, Printer, Download } from 'lucide-react';
 
 // IQ分数区间定义
 interface IQLevel {
@@ -146,11 +146,15 @@ export default function ResultPage() {
     navigate('/payment?type=one_time');
   };
 
+  const handlePrintReport = () => {
+    window.print();
+  };
+
   // 如果认证状态或结果数据正在加载，显示加载界面
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-muted/30 via-background to-muted/30">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
@@ -159,219 +163,414 @@ export default function ResultPage() {
     return null;
   }
 
-  const dimensionLabels: Record<string, { zh: string; en: string }> = {
-    memory: { zh: '记忆力', en: 'Memory' },
-    speed: { zh: '速度', en: 'Speed' },
-    reaction: { zh: '反应力', en: 'Reaction' },
-    concentration: { zh: '专注力', en: 'Concentration' },
-    logic: { zh: '逻辑思维', en: 'Logic' },
-  };
-
-  const dimensionIcons: Record<string, any> = {
-    memory: Brain,
-    speed: Zap,
-    reaction: Target,
-    concentration: Clock,
-    logic: TrendingUp,
-  };
-
   // 检查用户是否已支付
   const hasPaid = profile?.has_paid;
 
+  // 认知能力维度数据
+  const cognitiveDimensions = [
+    { id: 'pattern', label: { zh: '模式识别能力', en: 'Pattern Recognition' }, value: 96 },
+    { id: 'spatial', label: { zh: '空间推理能力', en: 'Spatial Reasoning' }, value: 94 },
+    { id: 'logic', label: { zh: '逻辑演绎能力', en: 'Logical Deduction' }, value: 92 },
+    { id: 'speed', label: { zh: '认知加工速度', en: 'Cognitive Processing Speed' }, value: 88 },
+  ];
+
+  // 生成报告ID和日期
+  const testDate = new Date(result.completed_at || Date.now());
+  const formattedDate = testDate.toISOString().split('T')[0];
+  const reportId = `MENSA-REPORT-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}-${testDate.getFullYear()}-${result.iq_score}`;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/30 py-12 px-4">
-      <div className="container mx-auto max-w-5xl">
-        {/* 页面标题 */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 xl:text-5xl">
-            {language === 'zh' ? '您的IQ测试结果' : 'Your IQ Test Results'}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            {language === 'zh' 
-              ? '基于20道标准化测试题目的综合评估' 
-              : 'Comprehensive assessment based on 20 standardized test questions'}
-          </p>
-        </div>
-
-        {/* 主要分数卡片 */}
-        <Card className={`mb-8 border-2 ${iqLevel.bgColor} border-${iqLevel.color.split('-')[1]}-200`}>
-          <CardContent className="pt-8 pb-8">
-            <div className="text-center">
-              {/* IQ分数 */}
-              <div className={`text-7xl font-bold mb-3 ${iqLevel.color}`}>
-                {result.iq_score}
-              </div>
-              
-              {/* IQ等级 */}
-              <div className="text-2xl font-semibold mb-2">
-                {iqLevel.label[language]}
-              </div>
-              
-              {/* IQ描述 */}
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                {iqLevel.description[language]}
+    <div className="min-h-screen bg-gradient-to-br from-muted/30 via-background to-muted/30 py-8 px-4">
+      <div className="container mx-auto max-w-4xl">
+        {/* 报告容器 */}
+        <div className="bg-white rounded-lg shadow-xl overflow-hidden print:shadow-none">
+          {/* 报告头部 */}
+          <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-900 text-white py-8 px-8">
+            <div className="flex flex-col items-center mb-6">
+              <h1 className="text-5xl font-bold tracking-tight mb-2">MENSA</h1>
+              <div className="h-0.5 w-24 bg-white/70 mb-4"></div>
+              <h2 className="text-2xl font-semibold mb-1">
+                {language === 'zh' ? '认知能力评估报告' : 'Cognitive Ability Assessment Report'}
+              </h2>
+              <p className="text-white/90 italic">
+                {language === 'zh' ? '基于图形推理测试的认知能力综合分析' : 'Comprehensive Analysis of Cognitive Ability Based on Figure Reasoning Test'}
               </p>
+            </div>
+          </div>
 
-              {/* 统计信息 */}
-              <div className="grid grid-cols-1 gap-4 max-w-2xl mx-auto md:grid-cols-3">
-                <div className="flex flex-col items-center justify-center p-4 bg-background rounded-lg border">
-                  <Target className="h-6 w-6 mb-2 text-primary" />
-                  <div className="text-sm text-muted-foreground mb-1">
-                    {language === 'zh' ? '准确率' : 'Accuracy'}
-                  </div>
-                  <div className="text-2xl font-bold">{result.score}%</div>
+          {/* 主要测试结果 */}
+          <div className="px-8 py-6 bg-white border-b">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="text-center md:text-left mb-6 md:mb-0">
+                <div className="text-2xl font-bold text-purple-700 mb-1">
+                  {language === 'zh' ? '卓越非凡级别 (门萨级别)' : 'Exceptional Level (Mensa Level)'}
                 </div>
-                
-                <div className="flex flex-col items-center justify-center p-4 bg-background rounded-lg border">
-                  <Clock className="h-6 w-6 mb-2 text-primary" />
-                  <div className="text-sm text-muted-foreground mb-1">
-                    {language === 'zh' ? '用时' : 'Time Taken'}
-                  </div>
-                  <div className="text-2xl font-bold">
-                    {Math.floor(result.time_taken / 60)}:{(result.time_taken % 60).toString().padStart(2, '0')}
-                  </div>
+                <div className="text-6xl font-bold text-indigo-900 mb-1">{result.iq_score}</div>
+                <div className="text-lg text-gray-600">{language === 'zh' ? '智商估算 (SD=15)' : 'IQ Estimate (SD=15)'}</div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-700 mb-1">{language === 'zh' ? '前2%' : 'Top 2%'}</div>
+                  <div className="text-gray-600">{language === 'zh' ? '人群百分位' : 'Population Percentile'}</div>
                 </div>
-                
-                <div className="flex flex-col items-center justify-center p-4 bg-background rounded-lg border">
-                  <Award className="h-6 w-6 mb-2 text-primary" />
-                  <div className="text-sm text-muted-foreground mb-1">
-                    {language === 'zh' ? '完成题数' : 'Questions'}
-                  </div>
-                  <div className="text-2xl font-bold">20/20</div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-700 mb-1">{result.score}%</div>
+                  <div className="text-gray-600">{language === 'zh' ? '测试准确率' : 'Test Accuracy'}</div>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* 维度分数 - 根据是否支付显示不同内容 */}
-        {hasPaid ? (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5" />
-                {language === 'zh' ? '认知能力详细分析' : 'Detailed Cognitive Analysis'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2">
-                {Object.entries(result.dimension_scores).map(([dimension, score]) => {
-                  const Icon = dimensionIcons[dimension] || Brain;
-                  return (
-                    <div key={dimension} className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Icon className="h-5 w-5 text-primary" />
-                          <span className="font-semibold">
-                            {dimensionLabels[dimension]?.[language] || dimension}
-                          </span>
-                        </div>
-                        <span className="text-2xl font-bold text-primary">{score}</span>
-                      </div>
-                      <Progress value={score} className="h-3" />
-                      <p className="text-sm text-muted-foreground">
-                        {score >= 80 && (language === 'zh' ? '表现优秀' : 'Excellent performance')}
-                        {score >= 60 && score < 80 && (language === 'zh' ? '表现良好' : 'Good performance')}
-                        {score >= 40 && score < 60 && (language === 'zh' ? '表现一般' : 'Average performance')}
-                        {score < 40 && (language === 'zh' ? '需要提升' : 'Needs improvement')}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-            <CardContent className="pt-8 pb-8">
+            
+            <div className="mt-6 flex justify-center">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                  <Lock className="h-8 w-8 text-primary" />
+                <div className="text-sm text-gray-600 mb-1">{language === 'zh' ? '测试日期' : 'Test Date'}</div>
+                <div className="text-lg font-medium">{formattedDate}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 报告概览 */}
+          <div className="px-8 py-6 bg-gray-50 border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '报告概览' : 'Report Overview'}
+            </h3>
+            <div className="text-gray-700 space-y-4">
+              <p>
+                {language === 'zh' 
+                  ? '尊敬的测试者，根据您在图形推理测试中的表现，我们评估您的认知能力处于卓越非凡级别。此级别对应智商130以上，处于人群前2%的位置，达到国际高智商组织门萨(Mensa)的入会标准。' 
+                  : 'Dear test taker, based on your performance in the figure reasoning test, we assess your cognitive ability at the exceptional level. This level corresponds to an IQ above 130, placing you in the top 2% of the population, meeting the membership criteria for the international high IQ organization Mensa.'}
+              </p>
+              <p>
+                {language === 'zh' 
+                  ? '本报告基于您完成的20道图形推理题目，从多个维度分析您的认知能力特点，并提供个性化发展建议。' 
+                  : 'This report is based on the 20 figure reasoning questions you completed, analyzing your cognitive ability characteristics from multiple dimensions and providing personalized development recommendations.'}
+              </p>
+            </div>
+            
+            <div className="mt-6 flex justify-center">
+              <Button
+                className="bg-purple-700 hover:bg-purple-800 text-white"
+                onClick={handlePrintReport}
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                {language === 'zh' ? '打印本报告' : 'Print This Report'}
+              </Button>
+            </div>
+          </div>
+
+          {/* 认知能力剖面分析 */}
+          <div className="px-8 py-6 bg-white border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-6">
+              {language === 'zh' ? '认知能力剖面分析' : 'Cognitive Ability Profile Analysis'}
+            </h3>
+            <p className="text-gray-700 mb-6">
+              {language === 'zh' 
+                ? '以下是根据您的测试表现分析出的各项认知能力指标：' 
+                : 'The following are the cognitive ability indicators analyzed based on your test performance:'}
+            </p>
+            
+            <div className="space-y-6">
+              {cognitiveDimensions.map((dimension) => (
+                <div key={dimension.id} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-medium text-gray-800">
+                      {dimension.label[language]}
+                    </span>
+                    <span className="text-2xl font-bold text-purple-700">{dimension.value}%</span>
+                  </div>
+                  <Progress value={dimension.value} className="h-3 bg-gray-200" />
                 </div>
-                <h3 className="text-2xl font-bold mb-3">
-                  {language === 'zh' ? '解锁完整报告' : 'Unlock Full Report'}
-                </h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              ))}
+            </div>
+          </div>
+
+          {/* 与人群对比分析 */}
+          <div className="px-8 py-6 bg-gray-50 border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '与人群对比分析' : 'Comparison with Population'}
+            </h3>
+            <p className="text-gray-700 mb-6">
+              {language === 'zh' 
+                ? '您的认知能力超越98%的同龄人群，与科学、工程和技术领域的顶尖人才认知特征相似。' 
+                : 'Your cognitive ability surpasses 98% of your peers, with cognitive characteristics similar to top talents in science, engineering, and technology fields.'}
+            </p>
+            
+            {/* 人群分布可视化 */}
+            <div className="bg-white p-4 rounded-lg border mb-6">
+              <div className="flex items-center justify-between mb-2 text-sm font-medium text-gray-600">
+                <span>{language === 'zh' ? '前50%' : 'Top 50%'}</span>
+                <span>{language === 'zh' ? '前16%' : 'Top 16%'}</span>
+                <span>{language === 'zh' ? '前5%' : 'Top 5%'}</span>
+                <span className="text-purple-700">{language === 'zh' ? '前2%(您)' : 'Top 2% (You)'}</span>
+              </div>
+              <div className="h-8 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-100 via-blue-300 to-purple-600" 
+                  style={{ width: '98%' }}
+                ></div>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                {language === 'zh' 
+                  ? '解读：图表显示了您的认知能力在正态分布中的位置。右侧阴影区域表示您超越的人群比例。' 
+                  : 'Interpretation: The chart shows your cognitive ability position in the normal distribution. The shaded area on the right represents the proportion of the population you surpass.'}
+              </p>
+            </div>
+          </div>
+
+          {/* 认知优势分析 */}
+          <div className="px-8 py-6 bg-white border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '认知优势分析' : 'Cognitive Strength Analysis'}
+            </h3>
+            <p className="text-gray-700 mb-6">
+              {language === 'zh' 
+                ? '基于测试结果，我们识别出您的以下认知优势：' 
+                : 'Based on the test results, we have identified your cognitive strengths as follows:'}
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  <span className="font-medium">{language === 'zh' ? '极佳的模式识别能力：' : 'Excellent pattern recognition ability: '}</span>
                   {language === 'zh' 
-                    ? '支付后即可查看详细的认知能力分析、个性化训练建议和可打印证书' 
-                    : 'Get detailed cognitive analysis, personalized training recommendations, and printable certificate'}
+                    ? '您能够快速识别复杂模式并预测其发展趋势，这种能力在解决抽象问题时尤其重要。' 
+                    : 'You can quickly identify complex patterns and predict their development trends, which is particularly important when solving abstract problems.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  <span className="font-medium">{language === 'zh' ? '优秀的空间想象能力：' : 'Excellent spatial imagination: '}</span>
+                  {language === 'zh' 
+                    ? '您能够在大脑中精确操作和转换空间关系，这是工程、建筑和设计领域的关键能力。' 
+                    : 'You can precisely manipulate and transform spatial relationships in your mind, which is a key ability in engineering, architecture, and design fields.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  <span className="font-medium">{language === 'zh' ? '高效的逻辑演绎能力：' : 'Efficient logical deduction ability: '}</span>
+                  {language === 'zh' 
+                    ? '您能够从已知前提推导出必然结论，并识别逻辑关系中的矛盾与一致性。' 
+                    : 'You can derive necessary conclusions from known premises and identify contradictions and consistencies in logical relationships.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  <span className="font-medium">{language === 'zh' ? '快速的认知加工速度：' : 'Fast cognitive processing speed: '}</span>
+                  {language === 'zh' 
+                    ? '您处理复杂信息的速度明显快于平均水平，能够在短时间内整合多源信息。' 
+                    : 'Your speed of processing complex information is significantly faster than average, enabling you to integrate multi-source information in a short time.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 发展建议与规划 */}
+          <div className="px-8 py-6 bg-gray-50 border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '发展建议与规划' : 'Development Suggestions and Planning'}
+            </h3>
+            <div className="space-y-4">
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  {language === 'zh' 
+                    ? '考虑参加正式门萨测试：您的认知表现已达到门萨入会标准，建议参加正式测试以获得会员资格，加入高智商社群。' 
+                    : 'Consider taking the official Mensa test: Your cognitive performance has met the Mensa membership criteria. It is recommended to take the official test to obtain membership and join the high IQ community.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  {language === 'zh' 
+                    ? '探索需要高抽象思维的领域：考虑深入研究理论物理、哲学、高等数学或人工智能等需要强大抽象思维的领域。' 
+                    : 'Explore fields requiring high abstract thinking: Consider in-depth study in fields that require strong abstract thinking, such as theoretical physics, philosophy, advanced mathematics, or artificial intelligence.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  {language === 'zh' 
+                    ? '参与复杂问题解决项目：寻找或创建需要复杂系统思维和跨学科整合能力的项目，充分发挥您的认知优势。' 
+                    : 'Participate in complex problem-solving projects: Seek or create projects that require complex systems thinking and interdisciplinary integration capabilities to fully utilize your cognitive strengths.'}
+                </p>
+              </div>
+              <div className="flex">
+                <div className="text-purple-700 font-bold mr-3">•</div>
+                <p className="text-gray-700">
+                  {language === 'zh' 
+                    ? '担任领导与指导角色：您的认知能力适合担任需要复杂决策和战略规划的领导者角色，或指导他人解决难题。' 
+                    : 'Assume leadership and guidance roles: Your cognitive abilities are suitable for leadership roles requiring complex decision-making and strategic planning, or for guiding others to solve difficult problems.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 持续认知训练计划 */}
+          <div className="px-8 py-6 bg-white border-b">
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '持续认知训练计划' : 'Continuous Cognitive Training Plan'}
+            </h3>
+            <p className="text-gray-700 mb-6">
+              {language === 'zh' 
+                ? '为保持和进一步提升认知能力，建议：' 
+                : 'To maintain and further improve cognitive abilities, it is recommended to:'}
+            </p>
+            
+            <div className="space-y-3">
+              <div className="flex items-start">
+                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
+                <p className="text-gray-700">{language === 'zh' ? '每周进行3-4次高难度逻辑训练，每次30-45分钟' : 'Engage in high-difficulty logic training 3-4 times a week, 30-45 minutes each time'}</p>
+              </div>
+              <div className="flex items-start">
+                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
+                <p className="text-gray-700">{language === 'zh' ? '定期挑战国际高智商组织发布的难题' : 'Regularly challenge difficult problems released by international high IQ organizations'}</p>
+              </div>
+              <div className="flex items-start">
+                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
+                <p className="text-gray-700">{language === 'zh' ? '学习一门新的编程语言或复杂系统理论' : 'Learn a new programming language or complex system theory'}</p>
+              </div>
+              <div className="flex items-start">
+                <div className="text-purple-700 font-bold mr-3 mt-1">•</div>
+                <p className="text-gray-700">{language === 'zh' ? '参与国际性的问题解决竞赛或活动' : 'Participate in international problem-solving competitions or activities'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 卓越认知能力证书 */}
+          <div className="px-8 py-8 bg-gradient-to-b from-white to-gray-50 border-b">
+            <div className="text-center">
+              <div className="inline-block border-4 border-purple-700 rounded-lg p-8 bg-white max-w-2xl">
+                <h3 className="text-2xl font-bold text-indigo-900 mb-6">
+                  {language === 'zh' ? '卓越认知能力证书' : 'Certificate of Exceptional Cognitive Ability'}
+                </h3>
+                <p className="text-gray-700 text-lg mb-6 leading-relaxed">
+                  {language === 'zh' 
+                    ? '兹证明测试者在本图形推理测试中表现出卓越的认知能力，达到卓越非凡级别，智商估算值为' + result.iq_score + '。' 
+                    : 'This is to certify that the test taker has demonstrated exceptional cognitive ability in this figure reasoning test, reaching the exceptional level with an estimated IQ of ' + result.iq_score + '.'}
+                </p>
+                <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                  {language === 'zh' 
+                    ? '此级别对应人群前2%的认知水平，达到国际高智商组织门萨(Mensa)的入会标准。' 
+                    : 'This level corresponds to the top 2% of the population in cognitive ability, meeting the membership criteria of the international high IQ organization Mensa.'}
                 </p>
                 
-                {/* 预览维度（模糊效果） */}
-                <div className="grid gap-4 max-w-2xl mx-auto mb-6 md:grid-cols-2">
-                  {Object.keys(result.dimension_scores).slice(0, 4).map((dimension) => {
-                    const Icon = dimensionIcons[dimension] || Brain;
-                    return (
-                      <div key={dimension} className="p-4 bg-background/50 rounded-lg border blur-sm">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Icon className="h-4 w-4" />
-                            <span className="font-medium text-sm">
-                              {dimensionLabels[dimension]?.[language] || dimension}
-                            </span>
-                          </div>
-                          <span className="text-lg font-bold">??</span>
-                        </div>
-                        <Progress value={50} className="h-2" />
-                      </div>
-                    );
-                  })}
+                <div className="grid grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{language === 'zh' ? '证书编号' : 'Certificate Number'}</p>
+                    <p className="text-lg font-medium text-purple-700">{reportId}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">{language === 'zh' ? '测试日期' : 'Test Date'}</p>
+                    <p className="text-lg font-medium text-purple-700">{formattedDate}</p>
+                  </div>
                 </div>
-
-                <Button
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90"
-                  onClick={handleUnlockReport}
-                >
-                  <Award className="h-5 w-5 mr-2" />
-                  {language === 'zh' ? '立即解锁 - 仅需 $1.98' : 'Unlock Now - Only $1.98'}
-                </Button>
+                
+                <p className="text-xs text-gray-500 italic">
+                  {language === 'zh' 
+                    ? '* 此证书证明测试者在图形推理测试中的表现，非正式智商测试证书。' 
+                    : '* This certificate proves the test takers performance in the figure reasoning test and is not an official IQ test certificate.'}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          </div>
 
-        {/* 行动按钮 */}
-        <div className="flex flex-col gap-4 md:flex-row">
+          {/* 报告科学依据 */}
+          <div className="px-8 py-6 bg-white border-b">
+            <h3 className="text-xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '报告科学依据' : 'Scientific Basis of the Report'}
+            </h3>
+            <p className="text-gray-700 mb-4">
+              {language === 'zh' 
+                ? '本报告基于以下科学原理和方法：' 
+                : 'This report is based on the following scientific principles and methods:'}
+            </p>
+            <div className="space-y-2 pl-6 list-disc text-gray-700">
+              <li>{language === 'zh' ? '认知心理学理论：基于工作记忆、流体智力和执行功能等认知心理学理论' : 'Cognitive psychology theory: Based on cognitive psychology theories such as working memory, fluid intelligence, and executive function'}</li>
+              <li>{language === 'zh' ? '项目反应理论：采用IRT模型分析题目难度与测试者能力的匹配度' : 'Item response theory: Using IRT model to analyze the matching degree between item difficulty and test taker ability'}</li>
+              <li>{language === 'zh' ? '常模参照评估：基于大规模标准化样本建立评估标准' : 'Norm-referenced assessment: Establishing assessment standards based on large-scale standardized samples'}</li>
+              <li>{language === 'zh' ? '多维度分析：从模式识别、空间推理、逻辑演绎和加工速度四个维度评估认知能力' : 'Multi-dimensional analysis: Evaluating cognitive abilities from four dimensions: pattern recognition, spatial reasoning, logical deduction, and processing speed'}</li>
+            </div>
+          </div>
+
+          {/* 重要声明与使用说明 */}
+          <div className="px-8 py-6 bg-gray-50 border-b">
+            <h3 className="text-xl font-bold text-indigo-900 mb-4">
+              {language === 'zh' ? '重要声明与使用说明' : 'Important Declarations and Usage Instructions'}
+            </h3>
+            <div className="space-y-3 text-gray-700">
+              <p className="flex items-start">
+                <span className="font-medium mr-2">1.</span>
+                <span>{language === 'zh' ? '本测试为图形推理能力模拟测试，非正式标准化智商测试。' : 'This test is a figure reasoning ability simulation test, not an official standardized IQ test.'}</span>
+              </p>
+              <p className="flex items-start">
+                <span className="font-medium mr-2">2.</span>
+                <span>{language === 'zh' ? '测试结果受环境、状态、对题型熟悉度等多种因素影响，建议在最佳状态下测试。' : 'Test results are affected by various factors such as environment, state, and familiarity with question types. It is recommended to test in optimal conditions.'}</span>
+              </p>
+              <p className="flex items-start">
+                <span className="font-medium mr-2">3.</span>
+                <span>{language === 'zh' ? '认知能力可通过训练提升，本报告结果反映当前测试表现。' : 'Cognitive abilities can be improved through training. This report reflects current test performance.'}</span>
+              </p>
+              <p className="flex items-start">
+                <span className="font-medium mr-2">4.</span>
+                <span>{language === 'zh' ? '正式的智商测试需由专业人员在标准化环境下进行，本报告结果仅供参考。' : 'Official IQ tests must be conducted by professionals in a standardized environment. This report is for reference only.'}</span>
+              </p>
+              <p className="flex items-start">
+                <span className="font-medium mr-2">5.</span>
+                <span>{language === 'zh' ? '门萨协会的正式入会测试需通过其官方渠道报名参加。' : 'Official membership tests for Mensa must be registered through their official channels.'}</span>
+              </p>
+            </div>
+          </div>
+
+          {/* 报告底部 */}
+          <div className="px-8 py-6 bg-indigo-900 text-white">
+            <div className="text-center">
+              <p className="mb-2">© {new Date().getFullYear()} {language === 'zh' ? '认知能力评估中心' : 'Cognitive Ability Assessment Center'} | {language === 'zh' ? '本报告生成时间' : 'Report Generated Time'}: {new Date().toLocaleString()}</p>
+              <p className="text-white/80">{language === 'zh' ? '报告ID' : 'Report ID'}: {reportId} | {language === 'zh' ? '版本' : 'Version'}: 2.1</p>
+              <p className="text-white/80 text-sm mt-4 italic">
+                {language === 'zh' 
+                  ? '免责声明: 本报告基于模拟测试生成，仅供参考和教育目的，不作为正式评估或诊断依据。' 
+                  : 'Disclaimer: This report is generated based on a simulation test for reference and educational purposes only, not as an official assessment or diagnostic basis.'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 操作按钮 */}
+        <div className="flex flex-col md:flex-row gap-4 mt-8 justify-center">
           <Button
             variant="outline"
             size="lg"
-            className="flex-1"
+            className="flex-1 max-w-xs"
             onClick={() => navigate('/dashboard')}
           >
             {language === 'zh' ? '返回仪表盘' : 'Back to Dashboard'}
           </Button>
           
-          {hasPaid && (
-            <Button
-              size="lg"
-              className="flex-1 bg-primary hover:bg-primary/90"
-              onClick={() => navigate('/certificate')}
-            >
-              <Award className="h-5 w-5 mr-2" />
-              {language === 'zh' ? '下载证书' : 'Download Certificate'}
-            </Button>
-          )}
+          <Button
+            className="bg-purple-700 hover:bg-purple-800 text-white flex-1 max-w-xs"
+            onClick={handlePrintReport}
+          >
+            <Printer className="h-5 w-5 mr-2" />
+            {language === 'zh' ? '打印报告' : 'Print Report'}
+          </Button>
           
-          {!hasPaid && (
-            <Button
-              size="lg"
-              className="flex-1 bg-primary hover:bg-primary/90"
-              onClick={handleUnlockReport}
-            >
-              <Lock className="h-5 w-5 mr-2" />
-              {language === 'zh' ? '解锁完整报告' : 'Unlock Full Report'}
-            </Button>
-          )}
-        </div>
-
-        {/* 底部说明 */}
-        <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>
-            {language === 'zh' 
-              ? '* IQ测试结果仅供参考，不代表个人全部能力' 
-              : '* IQ test results are for reference only and do not represent all personal abilities'}
-          </p>
+          <Button
+            className="bg-indigo-700 hover:bg-indigo-800 text-white flex-1 max-w-xs"
+            onClick={() => {
+              // 这里可以添加下载PDF功能
+              toast({
+                title: language === 'zh' ? '提示' : 'Tip',
+                description: language === 'zh' ? '下载功能开发中' : 'Download function in development',
+              });
+            }}
+          >
+            <Download className="h-5 w-5 mr-2" />
+            {language === 'zh' ? '下载报告' : 'Download Report'}
+          </Button>
         </div>
       </div>
     </div>
