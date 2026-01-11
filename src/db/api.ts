@@ -34,15 +34,9 @@ export async function updateProfile(userId: string, updates: Partial<Profile>) {
 
 // 取消订阅
 export async function cancelSubscription(userId: string) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({
-      subscription_type: null,
-      subscription_expires_at: null,
-    })
-    .eq('id', userId)
-    .select()
-    .maybeSingle();
+  const { data, error } = await supabase.functions.invoke('unsubscribe', {
+    body: { userId },
+  })
   
   if (error) throw error;
   return data as Profile | null;
@@ -84,10 +78,11 @@ export async function saveTestResult(result: Omit<TestResult, 'id' | 'created_at
   return data as TestResult | null;
 }
 
-export async function getIQTestResults(userId: string) {
+export async function getTestResults(userId: string, testType: string = 'iq') {
   const { data, error } = await supabase
     .from('test_results')
     .select('*')
+    .eq('test_type', testType)
     .eq('user_id', userId)
     .order('completed_at', { ascending: false });
   
@@ -95,11 +90,12 @@ export async function getIQTestResults(userId: string) {
   return Array.isArray(data) ? data as TestResult[] : [];
 }
 
-export async function getLatestTestResult(userId: string) {
+export async function getLatestTestResult(userId: string, testType: string = 'iq') {
   const { data, error } = await supabase
     .from('test_results')
     .select('*')
     .eq('user_id', userId)
+    .eq('test_type', testType)
     .order('completed_at', { ascending: false })
     .limit(1)
     .maybeSingle();

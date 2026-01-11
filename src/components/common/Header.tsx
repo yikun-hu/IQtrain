@@ -40,6 +40,9 @@ export default function Header() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('training');
   const [showUnsubscribeDialog, setShowUnsubscribeDialog] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isUnsubscribing, setIsUnsubscribing] = useState(false);
 
   const handleLogout = async () => {
@@ -58,18 +61,15 @@ export default function Header() {
     try {
       await cancelSubscription(user.id);
       await refreshProfile(); // 刷新用户资料
-      toast({
-        title: language === 'zh' ? '成功' : 'Success',
-        description: language === 'zh' ? '已成功取消订阅' : 'Subscription cancelled successfully',
-      });
+      // 操作完成后关闭确认对话框并显示成功模态框
       setShowUnsubscribeDialog(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error('取消订阅失败:', error);
-      toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '取消订阅失败，请稍后重试' : 'Failed to cancel subscription',
-        variant: 'destructive',
-      });
+      setErrorMessage(language === 'zh' ? '取消订阅失败，请稍后重试' : 'Failed to cancel subscription. Please contact us with your email: support@iqtrain.ai');
+      // 操作失败后关闭确认对话框并显示错误模态框
+      setShowUnsubscribeDialog(false);
+      setShowErrorModal(true);
     } finally {
       setIsUnsubscribing(false);
     }
@@ -269,7 +269,7 @@ export default function Header() {
       </header>
 
       {/* 退订确认对话框 */}
-      <AlertDialog open={showUnsubscribeDialog} onOpenChange={setShowUnsubscribeDialog}>
+      <AlertDialog open={showUnsubscribeDialog} >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -293,6 +293,44 @@ export default function Header() {
               {isUnsubscribing 
                 ? (language === 'zh' ? '处理中...' : 'Processing...') 
                 : (language === 'zh' ? '确认退订' : 'Confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 错误提示对话框 */}
+      <AlertDialog open={showErrorModal} onOpenChange={setShowErrorModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-500">
+              {language === 'zh' ? '错误' : 'Error'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {errorMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowErrorModal(false)}>
+              {language === 'zh' ? '确定' : 'OK'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 成功提示对话框 */}
+      <AlertDialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-green-500">
+              {language === 'zh' ? '成功' : 'Success'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {language === 'zh' ? '已成功取消订阅' : 'Subscription cancelled successfully'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setShowSuccessModal(false)}>
+              {language === 'zh' ? '确定' : 'OK'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
