@@ -92,7 +92,7 @@ export default function Header() {
 
   // 判断是否在Dashboard页面
   const isDashboard = location.pathname.startsWith('/dashboard');
-  const showNav = location.pathname.startsWith("/result");
+  const showNav = location.pathname.startsWith("/result") || location.pathname.startsWith("/scale");
   useEffect(() => {
     if (location.pathname.startsWith("/result")) {
       setActiveTab("tests")

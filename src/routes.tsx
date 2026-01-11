@@ -12,6 +12,8 @@ import AdminPage from './pages/AdminPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CookiePolicyPage from './pages/CookiePolicyPage';
+import ScaleTestPage from './pages/ScaleTestPage';
+import ScaleTestReportPage from './pages/ScaleTestReportPage';
 import type { ReactNode } from 'react';
 
 interface RouteConfig {
@@ -25,72 +27,82 @@ const routes: RouteConfig[] = [
     {
         name: 'Home',
         path: '/',
-        element: <HomePage/>,
+        element: <HomePage />,
     },
     {
         name: 'Login',
         path: '/login',
-        element: <LoginPage/>,
+        element: <LoginPage />,
     },
     {
         name: 'IQ Test',
         path: '/test',
-        element: <TestPage/>,
+        element: <TestPage />,
     },
     {
         name: 'Loading Analysis',
         path: '/loading-analysis',
-        element: <LoadingAnalysisPage/>,
+        element: <LoadingAnalysisPage />,
     },
     {
         name: 'Collection',
         path: '/collection',
-        element: <CollectionPage/>,
+        element: <CollectionPage />,
     },
     {
         name: 'Results',
         path: '/results',
-        element: <ResultsPage/>,
+        element: <ResultsPage />,
     },
     {
         name: 'Results',
         path: '/result',
-        element: <ResultPage/>,
+        element: <ResultPage />,
     },
     {
         name: 'Dashboard',
         path: '/dashboard',
-        element: <DashboardPage/>,
+        element: <DashboardPage />,
     },
     {
         name: 'Payment',
         path: '/payment',
-        element: <PaymentPage/>,
+        element: <PaymentPage />,
     },
     {
         name: 'Pricing',
         path: '/pricing',
-        element: <PricingPage/>,
+        element: <PricingPage />,
     },
     {
         name: 'Admin',
         path: '/admin',
-        element: <AdminPage/>,
+        element: <AdminPage />,
     },
     {
         name: 'Privacy Policy',
         path: '/privacy-policy',
-        element: <PrivacyPolicyPage/>,
+        element: <PrivacyPolicyPage />,
     },
     {
         name: 'Terms of Service',
         path: '/terms',
-        element: <TermsPage/>,
+        element: <TermsPage />,
     },
     {
         name: 'Cookie Policy',
         path: '/cookie-policy',
-        element: <CookiePolicyPage/>,
+        element: <CookiePolicyPage />,
+    },
+    {
+        name: 'Scale Test',
+        path: '/scale-test/:testType',
+        element: <ScaleTestPage />,
+    },
+    {
+        name: 'Scale Test Report',
+        path: '/scale-test-report/:resultId',
+        element: <ScaleTestReportPage />,
     },
 ];
 
