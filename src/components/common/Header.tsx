@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -37,6 +37,7 @@ export default function Header() {
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('training');
   const [showUnsubscribeDialog, setShowUnsubscribeDialog] = useState(false);
@@ -80,6 +81,7 @@ export default function Header() {
   };
 
   const handleTabChange = (tab: string) => {
+    // 无论在哪个页面，点击按钮都导航到Dashboard的对应tab
     if (tab === 'training') {
       navigate('/dashboard?tab=training');
     } else if (tab === 'tests') {
@@ -93,11 +95,25 @@ export default function Header() {
   // 判断是否在Dashboard页面
   const isDashboard = location.pathname.startsWith('/dashboard');
   const showNav = location.pathname.startsWith("/result") || location.pathname.startsWith("/scale");
+  // 登录后始终显示导航按钮
+  const alwaysShowNav = user; // 登录后始终显示导航
   useEffect(() => {
     if (location.pathname.startsWith("/result")) {
       setActiveTab("tests")
+    } else if (location.pathname.startsWith("/dashboard")) {
+      // 检查URL参数中的tab
+      const tabParam = searchParams.get('tab');
+      if (tabParam && (tabParam === 'training' || tabParam === 'tests')) {
+        setActiveTab(tabParam);
+      } else {
+        // 默认显示training tab
+        setActiveTab('training');
+      }
+    } else {
+      // 不在相关页面时，两个导航按钮都不高亮
+      setActiveTab('');
     }
-  }, [location])
+  }, [location, searchParams])
   
   // 判断用户是否有订阅
   const hasSubscription = profile?.subscription_type === 'monthly' && profile?.subscription_expires_at;
@@ -117,8 +133,8 @@ export default function Header() {
             IQ Train
           </Link>
 
-          {/* 中间导航 - 仅在Dashboard页面显示 */}
-          {(isDashboard || showNav) && user && (
+          {/* 中间导航 - 登录后始终显示 */}
+          {alwaysShowNav && (
             <div className="flex items-center gap-8">
               <button
                 onClick={() => handleTabChange('training')}
@@ -132,9 +148,12 @@ export default function Header() {
                   <Gamepad2 className="h-5 w-5" />
                   <span>Training</span>
                 </div>
-                {activeTab === 'training' && (
-                  <div className="w-full h-0.5 bg-white rounded-full" />
-                )}
+                {/* 始终显示下划线占位符，避免布局跳动 */}
+                <div className={`w-full h-0.5 rounded-full transition-colors ${
+                  activeTab === 'training'
+                    ? 'bg-white'
+                    : 'bg-transparent'
+                }`} />
               </button>
               <button
                 onClick={() => handleTabChange('tests')}
@@ -148,9 +167,12 @@ export default function Header() {
                   <ClipboardList className="h-5 w-5" />
                   <span>Tests</span>
                 </div>
-                {activeTab === 'tests' && (
-                  <div className="w-full h-0.5 bg-white rounded-full" />
-                )}
+                {/* 始终显示下划线占位符，避免布局跳动 */}
+                <div className={`w-full h-0.5 rounded-full transition-colors ${
+                  activeTab === 'tests'
+                    ? 'bg-white'
+                    : 'bg-transparent'
+                }`} />
               </button>
             </div>
           )}
@@ -199,7 +221,7 @@ export default function Header() {
                   )}
                   
                   {/* Dashboard按钮 */}
-                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                  <DropdownMenuItem onClick={() => navigate('/dashboard?tab=training')}>
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     <span>{language === 'zh' ? '仪表盘' : 'Dashboard'}</span>
                   </DropdownMenuItem>
