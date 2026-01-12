@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // 监听认证状态变化
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      console.log("serUser done", session?.user);
+      // console.log("serUser done", session?.user);
       if (session?.user) {
         getProfile(session.user.id).then(setProfile).catch(console.error);
       } else {

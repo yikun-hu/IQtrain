@@ -30,6 +30,7 @@ export default function TestPage() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showInsufficientModal, setShowInsufficientModal] = useState(false);
   const [startTime, setStartTime] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
@@ -157,15 +158,21 @@ export default function TestPage() {
     localStorage.setItem('testAnswers', JSON.stringify(answers));
     localStorage.setItem('testTimeTaken', timeTaken.toString());
     
+    // 计算分数
+    const correctCount = questions.reduce((count, question) => {
+      const userAnswer = answers[question.question_number];
+      return userAnswer === question.correct_answer ? count + 1 : count;
+    }, 0);
+    
+    // 检查正确答案数量是否小于等于7道
+    if (correctCount <= 7) {
+      setShowInsufficientModal(true);
+      return;
+    }
+    
     // 如果用户已登录，直接保存到后端
     if (user) {
       try {
-        // 计算分数
-        const correctCount = questions.reduce((count, question) => {
-          const userAnswer = answers[question.question_number];
-          return userAnswer === question.correct_answer ? count + 1 : count;
-        }, 0);
-        
         const score = Math.round((correctCount / questions.length) * 100);
         const iqScore = Math.round(85 + (score / 100) * 60); // IQ范围: 85-145
         
@@ -211,6 +218,7 @@ export default function TestPage() {
           user_id: user.id,
           answers,
           score,
+          test_type: 'iq',
           iq_score: iqScore,
           dimension_scores: dimensionScores,
           time_taken: timeTaken,
@@ -559,6 +567,41 @@ export default function TestPage() {
               className="flex-1 bg-secondary hover:bg-secondary/90"
             >
               {language === 'zh' ? '提交答案' : 'Submit'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* 信息不足模态框 */}
+      <Dialog open={showInsufficientModal} onOpenChange={setShowInsufficientModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-center">
+              ⚠️ {language === 'zh' ? '信息不足' : 'Insufficient Information'}
+            </DialogTitle>
+            <DialogDescription className="text-center space-y-4 pt-4">
+              <p className="text-lg">
+                {language === 'zh' ? '答对的题目小于等于7道，不足以支撑IQ分析。' : 'Correct answers are less than or equal to 7, which is not enough to support IQ analysis.'}
+              </p>
+              <p className="text-lg">
+                {language === 'zh' ? '请重新答题。' : 'Please retake the test.'}
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-4 mt-4">
+            <Button
+              onClick={() => {
+                // 重置测试状态，让用户重新开始
+                setShowInsufficientModal(false);
+                setTestStarted(false);
+                setCurrentQuestion(0);
+                setAnswers({});
+                setElapsedTime(0);
+                localStorage.removeItem('testAnswers');
+              }}
+              className="flex-1 bg-primary hover:bg-primary/90"
+            >
+              {language === 'zh' ? '重新开始' : 'Restart'}
             </Button>
           </div>
         </DialogContent>

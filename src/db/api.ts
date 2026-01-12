@@ -34,15 +34,9 @@ export async function updateProfile(userId: string, updates: Partial<Profile>) {
 
 // 取消订阅
 export async function cancelSubscription(userId: string) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update({
-      subscription_type: null,
-      subscription_expires_at: null,
-    })
-    .eq('id', userId)
-    .select()
-    .maybeSingle();
+  const { data, error } = await supabase.functions.invoke('unsubscribe', {
+    body: { userId },
+  })
   
   if (error) throw error;
   return data as Profile | null;
@@ -84,10 +78,11 @@ export async function saveTestResult(result: Omit<TestResult, 'id' | 'created_at
   return data as TestResult | null;
 }
 
-export async function getIQTestResults(userId: string) {
+export async function getTestResults(userId: string, testType: string = 'iq') {
   const { data, error } = await supabase
     .from('test_results')
     .select('*')
+    // .eq('test_type', testType)
     .eq('user_id', userId)
     .order('completed_at', { ascending: false });
   
@@ -95,11 +90,12 @@ export async function getIQTestResults(userId: string) {
   return Array.isArray(data) ? data as TestResult[] : [];
 }
 
-export async function getLatestTestResult(userId: string) {
+export async function getLatestTestResult(userId: string, testType: string = 'iq') {
   const { data, error } = await supabase
     .from('test_results')
     .select('*')
     .eq('user_id', userId)
+    .eq('test_type', testType)
     .order('completed_at', { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -297,67 +293,6 @@ export async function getAllTests() {
   return Array.isArray(data) ? data as Test[] : [];
 }
 
-// 获取指定测试的题目
-export async function getTestQuestions(testId: string) {
-  const { data, error } = await supabase
-    .from('test_questions')
-    .select('*')
-    .eq('test_id', testId)
-    .order('question_number');
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as TestQuestion[] : [];
-}
-
-// 保存用户测试结果
-export async function saveUserTestResult(result: Omit<UserTestResult, 'id' | 'completed_at'>) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .insert(result)
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return data as UserTestResult;
-}
-
-// 获取用户的所有测试结果
-export async function getUserTestResults(userId: string) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .select(`
-      *,
-      tests (
-        id,
-        title,
-        title_zh,
-        type,
-        description,
-        description_zh
-      )
-    `)
-    .eq('user_id', userId)
-    .order('completed_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data : [];
-}
-
-// 获取用户指定测试的结果
-export async function getUserTestResultByTestId(userId: string, testId: string) {
-  const { data, error } = await supabase
-    .from('user_test_results')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('test_id', testId)
-    .order('completed_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as UserTestResult | null;
-}
-
 // ==================== 管理员统计相关 ====================
 
 // 获取统计总览
@@ -532,4 +467,157 @@ export async function updatePaymentGatewayConfig(id: string, updates: Partial<Pa
   
   if (error) throw error;
   return data as PaymentGatewayConfig | null;
+}
+
+// ==================== 量表测试相关 ====================
+
+import type { ScaleTestQuestion, ScaleScoringRule, ScaleTestConfig, ScaleTestType } from '@/types/types';
+
+// 获取量表测试题目
+export async function getScaleTestQuestions(testType: ScaleTestType) {
+  const { data, error } = await supabase
+    .from('scale_test_questions')
+    .select('*')
+    .eq('test_type', testType)
+    .order('display_order', { ascending: true });
+  
+  if (error) throw error;
+  return (data || []) as ScaleTestQuestion[];
+}
+
+// 获取量表评分规则
+export async function getScaleScoringRules(testType: ScaleTestType, language: string = 'en') {
+  const { data, error } = await supabase
+    .from('scale_scoring_rules')
+    .select('*')
+    .eq('language', language)
+    .eq('test_type', testType)
+    .order('level', { ascending: true });
+  
+  if (error) throw error;
+  return (data || []) as ScaleScoringRule[];
+}
+
+// 根据分数获取对应的评分规则
+export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number, language: string = 'en') {
+  const { data, error } = await supabase
+    .from('scale_scoring_rules')
+    .select('*')
+    .eq('language', language)
+    .eq('test_type', testType)
+    .lte('score_min', score)
+    .gte('score_max', score)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as ScaleScoringRule | null;
+}
+
+// 获取测试配置
+export async function getScaleTestConfig(testType: ScaleTestType, language: string = 'en') {
+  const { data, error } = await supabase
+    .from('scale_test_configs')
+    .select('*')
+    .eq('language', language)
+    .eq('test_type', testType)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data as ScaleTestConfig | null;
+}
+
+// 保存量表测试结果（使用test_results表）
+export async function saveScaleTestResult(
+  userId: string,
+  testType: ScaleTestType,
+  answers: Record<string, number>,
+  totalScore: number,
+  level: number,
+  percentile: number
+) {
+  const { data, error } = await supabase
+    .from('test_results')
+    .insert({
+      user_id: userId,
+      test_type: testType,
+      answers,
+      score: totalScore,
+      iq_score: totalScore, // 复用iq_score字段存储总分
+      dimension_scores: { level, percentile }, // 存储等级和百分位
+      time_taken: 0,
+      completed_at: new Date().toISOString(),
+    })
+    .select()
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data;
+}
+
+// 获取用户的量表测试结果
+export async function getUserScaleTestResults(userId: string, testType?: ScaleTestType) {
+  let query = supabase
+    .from('test_results')
+    .select('*')
+    .eq('user_id', userId)
+    .not('test_type', 'is', null)
+    .order('completed_at', { ascending: false });
+  
+  if (testType) {
+    query = query.eq('test_type', testType);
+  }
+  
+  const { data, error } = await query;
+  
+  if (error) throw error;
+  return data || [];
+}
+
+// 获取单个量表测试结果
+export async function getScaleTestResultById(resultId: string) {
+  const { data, error } = await supabase
+    .from('test_results')
+    .select('*')
+    .eq('id', resultId)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data;
+}
+
+// 计算量表测试分数
+export function calculateScaleTestScore(
+  answers: Record<string, number>,
+  questions: ScaleTestQuestion[]
+): number {
+  let totalScore = 0;
+  
+  questions.forEach((question) => {
+    const answer = answers[question.question_id];
+    if (answer !== undefined) {
+      // 如果是反向计分题，需要反转分数 (1->5, 2->4, 3->3, 4->2, 5->1)
+      const score = question.reverse_scored ? (6 - answer) : answer;
+      totalScore += score;
+    }
+  });
+  
+  return totalScore;
+}
+
+// 计算百分位（简化版本，实际应该基于历史数据）
+export function calculatePercentile(score: number, maxScore: number): number {
+  // 简化计算：假设正态分布，平均分为60%
+  const percentage = (score / maxScore) * 100;
+  
+  // 映射到百分位
+  if (percentage >= 95) return 98;
+  if (percentage >= 85) return 90;
+  if (percentage >= 75) return 80;
+  if (percentage >= 65) return 70;
+  if (percentage >= 55) return 60;
+  if (percentage >= 45) return 50;
+  if (percentage >= 35) return 40;
+  if (percentage >= 25) return 30;
+  if (percentage >= 15) return 20;
+  return 10;
 }
