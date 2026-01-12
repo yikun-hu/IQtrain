@@ -27,11 +27,6 @@ export default function DashboardPage() {
   const [availableTests, setAvailableTests] = useState<Test[]>([]);
   const [completedTests, setCompletedTests] = useState<any[]>([]);
 
-  // 游戏弹窗相关状态
-  const [isGameDialogOpen, setIsGameDialogOpen] = useState(false);
-  const [currentGameUrl, setCurrentGameUrl] = useState('');
-  const [currentGameTitle, setCurrentGameTitle] = useState('');
-
   // 订阅提示模态框状态
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
@@ -146,19 +141,6 @@ export default function DashboardPage() {
     return language === 'zh' ? names[category]?.zh : names[category]?.en;
   };
 
-  const handlePlayGame = (game: Game) => {
-    // 检查用户是否有有效订阅
-    if (!hasValidSubscription) {
-      openSubscriptionModal();
-      return;
-    }
-
-    // 确保路径以斜杠开头，这样React会从public目录正确加载
-    const gameUrl = game.url.startsWith('/') ? game.url : `/${game.url}`;
-    setCurrentGameUrl(gameUrl);
-    setCurrentGameTitle(language === 'zh' ? game.title_zh : game.title);
-    setIsGameDialogOpen(true);
-  };
 
   // 如果认证状态或数据正在加载，显示加载界面
   if (authLoading || loading) {
@@ -203,7 +185,7 @@ export default function DashboardPage() {
                     <CardContent>
                       <Button
                         className="w-full"
-                        onClick={() => handlePlayGame(game)}
+                        onClick={() => window.open(game.url, '_blank')}
                       >
                         <Play className="mr-2 h-4 w-4" />
                         {language === 'zh' ? '开始游戏' : 'Play Now'}
@@ -242,7 +224,7 @@ export default function DashboardPage() {
                             size="sm"
                             variant="outline"
                             className="w-full"
-                            onClick={() => handlePlayGame(game)}
+                            onClick={() => window.open(game.url, '_blank')}
                           >
                             <ExternalLink className="mr-2 h-3 w-3" />
                             {language === 'zh' ? '玩' : 'Play'}
@@ -567,27 +549,6 @@ export default function DashboardPage() {
           </TabsContent>
         </Tabs>
       </div>
-
-      {/* 游戏弹窗 - 完整覆盖当前页面 */}
-      <Dialog open={isGameDialogOpen} onOpenChange={setIsGameDialogOpen}>
-        <DialogContent
-          className="w-full h-full max-w-none max-h-none p-0 overflow-hidden fixed inset-0 top-0 left-0 right-0 bottom-0 translate-x-0 translate-y-0 rounded-none"
-        >
-          <DialogHeader
-            className="p-4 border-b bg-background/90 backdrop-blur-sm z-10 absolute top-0 left-0 right-0">
-            <DialogTitle>{currentGameTitle}</DialogTitle>
-          </DialogHeader>
-          <div className="w-full h-full pt-16">
-            <iframe
-              src={currentGameUrl}
-              title={currentGameTitle}
-              className="w-full h-full border-0"
-              sandbox="allow-scripts allow-same-origin allow-popups"
-              allowFullScreen
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* 订阅提示模态框 */}
       <AlertDialog open={isSubscriptionModalOpen} onOpenChange={setIsSubscriptionModalOpen}>
