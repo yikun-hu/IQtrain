@@ -204,10 +204,10 @@ export default function Header() {
                     <span>{language === 'zh' ? '仪表盘' : 'Dashboard'}</span>
                   </DropdownMenuItem>
                   
-                  <DropdownMenuItem onClick={() => navigate('/reset-password')}>
+                  {/* <DropdownMenuItem onClick={() => navigate('/reset-password')}>
                     <Lock className="mr-2 h-4 w-4" />
                     <span>{language === 'zh' ? '重设密码' : 'Reset Password'}</span>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   
                   <DropdownMenuSeparator />
                   
