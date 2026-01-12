@@ -4,7 +4,6 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {useLanguage} from '@/contexts/LanguageContext';
 import {Brain, Zap, Target, Award, TrendingUp, Clock, Star, ChevronLeft, ChevronRight} from 'lucide-react';
-import Game2048 from '@/components/games/2048Game';
 
 export default function HomePage() {
     const {t, language} = useLanguage();

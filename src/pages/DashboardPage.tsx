@@ -8,16 +8,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getAllGames, getRandomGames, getAllTests, getUserTestResults, getIQTestResults } from '@/db/api';
 import type { Game, Test } from '@/types/types';
 import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
 
 export default function DashboardPage() {
     const {language} = useLanguage();
-    const {user, profile, loading: authLoading} = useAuth();
+    const {user, loading: authLoading} = useAuth();
     const navigate = useNavigate();
 
     const [activeTab, setActiveTab] = useState('training');
@@ -25,17 +19,12 @@ export default function DashboardPage() {
 
     // Training相关状态
     const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
-    const [allGames, setAllGames] = useState<Game[]>([]);
+    const [, setAllGames] = useState<Game[]>([]);
     const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
 
     // Test相关状态
     const [availableTests, setAvailableTests] = useState<Test[]>([]);
     const [completedTests, setCompletedTests] = useState<any[]>([]);
-
-    // 游戏弹窗相关状态
-    const [isGameDialogOpen, setIsGameDialogOpen] = useState(false);
-    const [currentGameUrl, setCurrentGameUrl] = useState('');
-    const [currentGameTitle, setCurrentGameTitle] = useState('');
 
     useEffect(() => {
         // 等待认证状态加载完成
@@ -66,7 +55,7 @@ export default function DashboardPage() {
     setLoading(true);
     try {
       // 加载游戏数据
-      const [recommended, games, tests, userResults, testResults] = await Promise.all([
+      const [recommended, games, tests, , testResults] = await Promise.all([
         getRandomGames(3),
         getAllGames(),
         getAllTests(),
@@ -104,14 +93,6 @@ export default function DashboardPage() {
             logic_games: {en: 'Logic Games', zh: '逻辑游戏'},
         };
         return language === 'zh' ? names[category]?.zh : names[category]?.en;
-    };
-
-    const handlePlayGame = (game: Game) => {
-        // 确保路径以斜杠开头，这样React会从public目录正确加载
-        const gameUrl = game.url.startsWith('/') ? game.url : `/${game.url}`;
-        setCurrentGameUrl(gameUrl);
-        setCurrentGameTitle(language === 'zh' ? game.title_zh : game.title);
-        setIsGameDialogOpen(true);
     };
 
     // 如果认证状态或数据正在加载，显示加载界面
@@ -157,7 +138,7 @@ export default function DashboardPage() {
                                         <CardContent>
                                             <Button
                                                 className="w-full"
-                                                onClick={() => handlePlayGame(game)}
+                                                onClick={() => window.open(game.url, '_blank')}
                                             >
                                                 <Play className="mr-2 h-4 w-4"/>
                                                 {language === 'zh' ? '开始游戏' : 'Play Now'}
@@ -196,7 +177,7 @@ export default function DashboardPage() {
                                                         size="sm"
                                                         variant="outline"
                                                         className="w-full"
-                                                        onClick={() => handlePlayGame(game)}
+                                                        onClick={() => window.open(game.url, '_blank')}
                                                     >
                                                         <ExternalLink className="mr-2 h-3 w-3"/>
                                                         {language === 'zh' ? '玩' : 'Play'}
@@ -296,27 +277,6 @@ export default function DashboardPage() {
                     </TabsContent>
                 </Tabs>
             </div>
-
-            {/* 游戏弹窗 - 完整覆盖当前页面 */}
-            <Dialog open={isGameDialogOpen} onOpenChange={setIsGameDialogOpen}>
-                <DialogContent
-                    className="w-full h-full max-w-none max-h-none p-0 overflow-hidden fixed inset-0 top-0 left-0 right-0 bottom-0 translate-x-0 translate-y-0 rounded-none"
-                >
-                    <DialogHeader
-                        className="p-4 border-b bg-background/90 backdrop-blur-sm z-10 absolute top-0 left-0 right-0">
-                        <DialogTitle>{currentGameTitle}</DialogTitle>
-                    </DialogHeader>
-                    <div className="w-full h-full pt-16">
-                        <iframe
-                            src={currentGameUrl}
-                            title={currentGameTitle}
-                            className="w-full h-full border-0"
-                            sandbox="allow-scripts allow-same-origin allow-popups"
-                            allowFullScreen
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
