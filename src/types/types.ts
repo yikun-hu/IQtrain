@@ -2,7 +2,7 @@
 
 export type UserRole = 'user' | 'admin';
 export type OrderStatus = 'pending' | 'paid' | 'cancelled' | 'refunded';
-export type SubscriptionType = 'one_time' | 'monthly';
+export type SubscriptionType = 'one_time' | 'monthly' | 'biweekly';
 export type TestDimension = 'memory' | 'speed' | 'reaction' | 'concentration' | 'logic';
 export type GameCategory = 'puzzles' | 'number_games' | 'memory_games' | 'logic_games';
 export type TestType = 'iq' | 'career' | 'eq' | 'anxiety' | 'personality';

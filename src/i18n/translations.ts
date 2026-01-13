@@ -18,6 +18,7 @@ import collection from './collection'
 import loadingAnalysis from './loading-analysis'
 import scaleTestReport from './scale-test-report'
 import cookiePolicy from './cookie-policy'
+import header from './header'
 
 export const translations = {
   en: {
@@ -53,6 +54,7 @@ export const translations = {
     loadingAnalysis: loadingAnalysis.en,
     scaleTestReport: scaleTestReport.en,
     cookiePolicy: cookiePolicy.en,
+    header: header.en,
   },
   zh: {
     // 通用
@@ -87,6 +89,7 @@ export const translations = {
     loadingAnalysis: loadingAnalysis.zh,
     scaleTestReport: scaleTestReport.zh,
     cookiePolicy: cookiePolicy.zh,
+    header: header.zh,
   },
 };
 

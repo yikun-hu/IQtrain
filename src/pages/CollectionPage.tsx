@@ -5,18 +5,10 @@ import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronRight, Shield } from 'lucide-react';
-import { Clock, Zap, Brain, PartyPopper, FileText, BarChart3, PieChart } from 'lucide-react';
+import { ChevronRight, Shield, Clock, Zap, Brain } from 'lucide-react';
 
 export default function CollectionPage() {
   const { language, t } = useLanguage();
@@ -24,207 +16,96 @@ export default function CollectionPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Check if user has complete profile information
-  const hasCompleteProfile = user &&
+  const hasCompleteProfile =
+    user &&
     profile?.full_name &&
     profile?.age &&
     profile?.gender &&
     profile?.email;
 
-  // Check if user is already a subscribed user
-  const isSubscribed = profile?.has_paid &&
+  const isSubscribed =
+    profile?.has_paid &&
     profile?.subscription_type &&
     (!profile?.subscription_expires_at ||
       new Date(profile.subscription_expires_at) > new Date());
 
-  // 当前步骤：1 或 2
   const [step, setStep] = useState(1);
-
-  // 第一步：姓名、性别、年龄
   const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
-
-  // 年龄段选项
-  const ageGroups = [
-    { value: '11', label: { zh: '12岁以下', en: 'Under 12' } },
-    { value: '12', label: { zh: '12-18岁', en: '12-18' } },
-    { value: '18', label: { zh: '18-24岁', en: '18-24' } },
-    { value: '25', label: { zh: '25-44岁', en: '25-34' } },
-    { value: '45', label: { zh: '45-64岁', en: '45-64' } },
-    { value: '65', label: { zh: '65岁以上', en: '65+' } },
-  ];
-
-  // 将数字年龄转换为年龄段
-  const getAgeGroupFromAge = (age: number) => {
-    if (age >= 18 && age <= 24) return '18-24';
-    if (age >= 25 && age <= 34) return '25-34';
-    if (age >= 35 && age <= 44) return '35-44';
-    if (age >= 45 && age <= 54) return '45-54';
-    if (age >= 55 && age <= 64) return '55-64';
-    if (age >= 65) return '65+';
-    return '';
-  };
-
-  // 第二步：邮箱、隐私政策同意
   const [email, setEmail] = useState(user?.email || '');
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-
   const [submitting, setSubmitting] = useState(false);
 
+  const tCollection = t.collection;
+
   useEffect(() => {
-    // 检查是否有测试答案
     const testAnswers = localStorage.getItem('testAnswers');
     if (!testAnswers) {
       toast({
         title: t.common.error,
-        description: language === 'zh' ? '未找到测试答案，请先完成测试' : 'No test answers found, please complete the test first',
+        description: tCollection.testAnswerMissing,
         variant: 'destructive',
       });
       navigate('/test');
       return;
     }
 
-    // 如果用户有完整个人信息且已经是订阅用户，直接跳转到结果页面
     if (hasCompleteProfile && isSubscribed) {
-      // 保存用户信息到localStorage
-      const userInfo = {
-        fullName: profile?.full_name || '',
-        age: profile?.age || 0,
-        gender: profile?.gender || '',
-        email: profile?.email || '',
-      };
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
-
-      // 直接跳转到结果页面
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify({
+          fullName: profile?.full_name || '',
+          age: profile?.age || 0,
+          gender: profile?.gender || '',
+          email: profile?.email || '',
+        }),
+      );
       navigate('/result');
     }
 
-    // 如果用户有完整个人信息但不是订阅用户，跳过第一步直接进入邮箱确认
     if (hasCompleteProfile && !isSubscribed) {
-      // 预填充用户信息
       setFullName(profile?.full_name || '');
-      setAge(profile?.age ? getAgeGroupFromAge(profile.age) : '');
+      setAge(profile?.age ? String(profile.age) : '');
       setGender(profile?.gender || '');
       setEmail(profile?.email || '');
-
-      // 直接进入第二步
       setStep(2);
     }
-  }, [language, navigate, toast, hasCompleteProfile, isSubscribed, profile, setFullName, setAge, setGender, setEmail, getAgeGroupFromAge]);
+  }, [language]);
 
-  const tCollection = t.collection;
-
-  const formatEvaluatedDate = () => {
-    try {
-      const d = new Date();
-      return d.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-      });
-    } catch {
-      return 'Today';
-    }
-  };
-
-  // 获取测试完成时间
-  const durationSecRaw = Number(localStorage.getItem('testTimeTaken') || '');
-  const durationSec = Number.isFinite(durationSecRaw) && durationSecRaw > 0 ? durationSecRaw : 0;
+  const durationSec = Number(localStorage.getItem('testTimeTaken') || 0);
   const m = Math.floor(durationSec / 60);
   const s = durationSec % 60;
   const completionTime = `${m}m ${String(s).padStart(2, '0')}s`;
 
-  // 获取或生成最强技能，并持久化到localStorage
-  const strongestSkills = ['Pattern Recognition', 'Logical Reasoning', 'Spatial Thinking', 'Numerical Reasoning', 'Working Memory'];
-  let strongestSkill = localStorage.getItem('iqTestStrongestSkill');
+  const strongestSkill =
+    localStorage.getItem('iqTestStrongestSkill') || 'Logical Reasoning';
 
-  // 如果没有保存的技能，则生成一个并保存
-  if (!strongestSkill) {
-    // 使用一个更稳定的随机种子
-    const seed = durationSec + (email ? email.length : 0);
-    strongestSkill = strongestSkills[seed % strongestSkills.length];
-    localStorage.setItem('iqTestStrongestSkill', strongestSkill);
-  }
+  const validateEmail = (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  // 验证邮箱格式
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  // 处理第一步提交
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!fullName || !age || !gender) {
-      toast({
-        title: tCollection.step1.fillAll,
-        description: tCollection.step1.fillAllDesc,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // 进入第二步
+    if (!fullName || !age || !gender) return;
     setStep(2);
   };
 
-  // 处理第二步提交
   const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email) {
-      toast({
-        title: tCollection.step2.fillEmail,
-        description: tCollection.step2.fillEmailDesc,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      toast({
-        title: tCollection.step2.invalidEmail,
-        description: tCollection.step2.invalidEmailDesc,
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (!agreedToPrivacy) {
-      toast({
-        title: tCollection.step2.agreePrivacy,
-        description: tCollection.step2.agreePrivacyDesc,
-        variant: 'destructive',
-      });
-      return;
-    }
+    if (!email || !validateEmail(email) || !agreedToPrivacy) return;
 
     setSubmitting(true);
-
     try {
-      // 保存用户信息到localStorage
-      const userInfo = {
-        fullName,
-        age,
-        gender,
-        email,
-      };
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
-
-      // 如果用户已经是订阅用户，直接跳转到结果页面
-      if (isSubscribed) {
-        navigate('/results');
-      } else {
-        // 跳转到支付页面
-        navigate('/payment');
-      }
-    } catch (error) {
-      console.error('保存用户信息失败:', error);
+      localStorage.setItem(
+        'userInfo',
+        JSON.stringify({ fullName, age, gender, email }),
+      );
+      navigate(isSubscribed ? '/results' : '/payment');
+    } catch {
       toast({
         title: t.common.error,
-        description: language === 'zh' ? '保存信息失败，请重试' : 'Failed to save information, please try again',
+        description: tCollection.saveInfoFailed,
         variant: 'destructive',
       });
     } finally {
@@ -233,199 +114,58 @@ export default function CollectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-start justify-center p-4 pt-24">
-      {/* 背景装饰 */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      </div>
-
-      <Card className="w-full max-w-2xl shadow-2xl relative z-10 border-2">
+    <div className="min-h-screen flex justify-center p-4 pt-24">
+      <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
-          <CardDescription className="text-base">
-            {tCollection.description}
-          </CardDescription>
+          <CardDescription>{tCollection.description}</CardDescription>
         </CardHeader>
 
         <CardContent>
-          {/* 第一步：基本信息 */}
-          {step === 1 && (
-            <form onSubmit={handleStep1Submit} className="space-y-6">
-              {/* 姓名 */}
-              <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-base font-semibold">
-                  {tCollection.step1.fullName}
-                </Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder={tCollection.step1.fullNamePlaceholder}
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="h-12 text-base"
-                  required
-                />
-              </div>
-
-              {/* 年龄 */}
-              <div className="space-y-2">
-                <Label className="text-base font-semibold">
-                  {tCollection.step1.age}
-                </Label>
-                <div className="grid grid-cols-3 gap-3">
-                  {ageGroups.map((group) => (
-                    <Button
-                      key={group.value}
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setAge(group.value)}
-                      className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${age === group.value ? 'border-primary border-2 scale-105' : ''}`}
-                    >
-                      {group.label[language]}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/* 性别 */}
-              <div className="space-y-2">
-                <Label className="text-base font-semibold">
-                  {tCollection.step1.gender}
-                </Label>
-                <div className="grid grid-cols-3 gap-3">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setGender("male")}
-                    className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "male" ? 'border-primary border-2 scale-105' : ''}`}
-                  >
-                    {tCollection.step1.male}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setGender("female")}
-                    className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "female" ? 'border-primary border-2 scale-105' : ''}`}
-                  >
-                    {tCollection.step1.female}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setGender("other")}
-                    className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "other" ? 'border-primary border-2 scale-105' : ''}`}
-                  >
-                    {tCollection.step1.other}
-                  </Button>
-                </div>
-              </div>
-
-              {/* 下一步按钮 */}
-              <Button
-                type="submit"
-                className="w-full h-12 text-base font-semibold"
-                size="lg"
-              >
-                {tCollection.step1.continue}
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </Button>
-            </form>
-          )}
-
-          {/* 第二步：邮箱和隐私政策 */}
           {step === 2 && (
-            <div className="space-y-6">
-              {/* 表单 */}
-              <form onSubmit={handleStep2Submit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-base font-semibold">
-                    {tCollection.step2.email}
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder={tCollection.step2.emailPlaceholder}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 text-base"
-                    required
-                  />
+            <form onSubmit={handleStep2Submit} className="space-y-4">
+              <Label>{tCollection.step2.email}</Label>
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={tCollection.step2.emailPlaceholder}
+              />
 
-                  {/* 隐私政策同意 */}
-                  <div className="flex items-start space-x-2 pt-2">
-                    <Checkbox
-                      id="privacy"
-                      checked={agreedToPrivacy}
-                      onCheckedChange={(checked) => setAgreedToPrivacy(checked as boolean)}
-                      className="mt-1"
-                    />
-                    <Label
-                      htmlFor="privacy"
-                      className="text-sm font-medium leading-relaxed cursor-pointer flex items-center gap-1 flex-wrap"
-                    >
-                      <Shield className="h-4 w-4 text-primary inline" />
-                      {tCollection.step2.privacy}{' '}
-                      <Link
-                        to="/privacy-policy"
-                        target="_blank"
-                        className="text-primary hover:underline font-semibold"
-                      >
-                        {tCollection.step2.privacyLink}
-                      </Link>
-                    </Label>
-                  </div>
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  checked={agreedToPrivacy}
+                  onCheckedChange={(v) => setAgreedToPrivacy(Boolean(v))}
+                />
+                <Label className="flex items-center gap-1">
+                  <Shield className="h-4 w-4" />
+                  {tCollection.step2.privacy}
+                  <Link to="/privacy-policy" target="_blank">
+                    {tCollection.step2.privacyLink}
+                  </Link>
+                </Label>
+              </div>
+
+              <Button disabled={submitting}>
+                {submitting ? tCollection.submitting : tCollection.step2.submit}
+              </Button>
+
+              <div className="grid grid-cols-3 gap-3 pt-4 text-center">
+                <div>
+                  <Clock />
+                  <div>{tCollection.metrics.completionTime}</div>
+                  <div>{completionTime}</div>
                 </div>
-
-                <Button
-                  type="submit"
-                  disabled={submitting || !agreedToPrivacy}
-                  className="w-full h-12 text-base font-semibold"
-                  size="lg"
-                >
-                  {submitting ? (
-                    <>
-                      <span className="animate-spin mr-2">⏳</span>
-                      {language === 'zh' ? '提交中...' : 'Submitting...'}
-                    </>
-                  ) : (
-                    tCollection.step2.submit
-                  )}
-                </Button>
-              </form>
-
-              {/* 底部三个小图标指标 */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="rounded-xl bg-card p-4 text-center">
-                  <div className="mx-auto mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                    <Clock className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-[11px] font-extrabold tracking-wide text-muted-foreground">
-                    COMPLETION TIME
-                  </div>
-                  <div className="mt-1 text-sm font-semibold">{completionTime}</div>
+                <div>
+                  <Zap />
+                  <div>{tCollection.metrics.fasterThan}</div>
+                  <div>{tCollection.metrics.fasterThanValue}</div>
                 </div>
-
-                <div className="rounded-xl bg-card p-4 text-center">
-                  <div className="mx-auto mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                    <Zap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-[11px] font-extrabold tracking-wide text-muted-foreground">
-                    FASTER THAN
-                  </div>
-                  <div className="mt-1 text-sm font-semibold">92% of test takers</div>
-                </div>
-
-                <div className="rounded-xl bg-card p-4 text-center">
-                  <div className="mx-auto mb-2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                    <Brain className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="text-[11px] font-extrabold tracking-wide text-muted-foreground">
-                    STRONGEST SKILL:
-                  </div>
-                  <div className="mt-1 text-sm font-semibold">{strongestSkill}</div>
+                <div>
+                  <Brain />
+                  <div>{tCollection.metrics.strongestSkill}</div>
+                  <div>{strongestSkill}</div>
                 </div>
               </div>
-            </div>
+            </form>
           )}
         </CardContent>
       </Card>

@@ -321,7 +321,7 @@ export default function TestPage() {
 
         toast({
           title: t.common.success,
-          description: language === 'zh' ? '测试结果已保存' : 'Test results saved',
+          description: t.test.completion.resultSaved,
         });
       } catch (error) {
         console.error('保存测试结果失败:', error);

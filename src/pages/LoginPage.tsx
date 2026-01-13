@@ -1,3 +1,4 @@
+// 翻译改造后的完整前端代码
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -69,7 +70,7 @@ export default function LoginPage() {
         description: t.login.success.loginSuccess,
       });
       navigate('/dashboard');
-    } catch (error: any) {
+    } catch {
       toast({
         title: t.common.error,
         description: t.login.validation.invalidCodeError,
@@ -83,7 +84,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md">
-        {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {t.login.title}
@@ -93,7 +93,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* 表单 */}
         <div className="bg-white rounded-lg shadow-sm p-8">
           {step === 'email' ? (
             <form onSubmit={handleSendCode} className="space-y-6">
@@ -111,6 +110,7 @@ export default function LoginPage() {
                   required
                 />
               </div>
+
               <Button
                 type="submit"
                 className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
@@ -120,24 +120,15 @@ export default function LoginPage() {
                 {t.login.sendCodeButton}
               </Button>
 
-              {/* 提示信息 - 移到Send Code按钮下方 */}
               <div className="text-center text-sm text-gray-600 mt-4">
-                {language === 'zh' ? (
-                  <>
-                    没有账号？请先
-                    <Link to="/test" className="text-primary font-semibold hover:underline ml-1">
-                      开始测试
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    No account yet? Please{' '}
-                    <Link to="/test" className="text-primary font-semibold hover:underline">
-                      start a quiz
-                    </Link>
-                    {' '}first
-                  </>
-                )}
+                {t.login.noAccountPrefix}{' '}
+                <Link
+                  to="/test"
+                  className="text-primary font-semibold hover:underline"
+                >
+                  {t.login.noAccountLink}
+                </Link>{' '}
+                {t.login.noAccountSuffix}
               </div>
             </form>
           ) : (
@@ -151,15 +142,19 @@ export default function LoginPage() {
                   type="text"
                   placeholder={t.login.codePlaceholder}
                   value={code}
-                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(e) =>
+                    setCode(e.target.value.replace(/\D/g, '').slice(0, 6))
+                  }
                   maxLength={6}
                   className="h-12 text-center text-2xl tracking-widest"
                   required
                 />
                 <p className="text-sm text-gray-500">
-                  {t.login.codeSentTo}{email}
+                  {t.login.codeSentTo}
+                  {email}
                 </p>
               </div>
+
               <Button
                 type="submit"
                 className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
@@ -168,6 +163,7 @@ export default function LoginPage() {
                 {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                 {t.login.verifyButton}
               </Button>
+
               <Button
                 type="button"
                 variant="outline"

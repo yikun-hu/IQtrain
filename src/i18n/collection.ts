@@ -28,6 +28,16 @@ export default {
       invalidEmail: '邮箱格式不正确',
       invalidEmailDesc: '请输入有效的邮箱地址',
     },
+    testAnswerMissing: '未找到测试答案，请先完成测试',
+    saveInfoFailed: '保存信息失败，请重试',
+    submitting: '提交中...',
+    metrics: {
+      completionTime: '完成时间',
+      fasterThan: '快于',
+      fasterThanValue: '92% 的测试者',
+      strongestSkill: '最强能力',
+    },
+
   },
   en: {
     description: 'Please fill in your basic information to get a personalized IQ report',
@@ -58,5 +68,15 @@ export default {
       invalidEmail: 'Invalid email format',
       invalidEmailDesc: 'Please enter a valid email address',
     },
+    testAnswerMissing: 'No test answers found, please complete the test first',
+    saveInfoFailed: 'Failed to save information, please try again',
+    submitting: 'Submitting...',
+    metrics: {
+      completionTime: 'COMPLETION TIME',
+      fasterThan: 'FASTER THAN',
+      fasterThanValue: '92% of test takers',
+      strongestSkill: 'STRONGEST SKILL',
+    },
+
   },
 }

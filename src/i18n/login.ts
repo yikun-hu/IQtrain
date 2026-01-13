@@ -11,6 +11,10 @@ export default {
       zh: '没有账号？请先<Link>开始测试</Link>',
       en: 'No account yet? Please <Link>start a quiz</Link> first'
     },
+    noAccountPrefix: 'No account yet? Please',
+    noAccountLink: 'start a quiz',
+    noAccountSuffix: 'first',
+
     codeSentTo: 'Code sent to: ',
     emailPlaceholder: 'your@email.com',
     codePlaceholder: '000000',
@@ -40,6 +44,10 @@ export default {
     codeSentTo: '验证码已发送至：',
     emailPlaceholder: 'your@email.com',
     codePlaceholder: '000000',
+
+    noAccountPrefix: '没有账号？请先',
+    noAccountLink: '开始测试',
+    noAccountSuffix: '',
     validation: {
       invalidEmail: '请输入有效的邮箱地址',
       invalidCode: '请输入有效的6位验证码',

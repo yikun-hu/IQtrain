@@ -42,6 +42,7 @@ export default {
       unanswered: 'questions unanswered',
       continue: 'Continue',
       submitAnswer: 'Submit',
+      resultSaved: 'Test results saved',
     },
     insufficient: {
       title: 'Insufficient Information',
@@ -98,6 +99,7 @@ export default {
       unanswered: '道题未作答',
       continue: '继续答题',
       submitAnswer: '提交答案',
+      resultSaved: '测试结果已保存',
     },
     insufficient: {
       title: '信息不足',

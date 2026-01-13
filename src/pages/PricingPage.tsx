@@ -79,7 +79,7 @@ export default function PricingPage() {
     navigate(`/payment?plan_id=${planId}`);
   };
 
-  const handlePlanSelect = (planType: 'one_time' | 'monthly') => {
+  const handlePlanSelect = (planType: 'biweekly' | 'monthly') => {
     // Navigate to payment page, passing plan type
     navigate('/payment', { state: { planType } });
   };
@@ -105,8 +105,8 @@ export default function PricingPage() {
                 </span>
                 <span className="font-semibold">
                   {profile?.subscription_type === 'monthly'
-                    ? (language === 'zh' ? '月付' : 'Monthly')
-                    : (language === 'zh' ? '双周付' : 'Bi-weekly')}
+                    ? (t.pricing.plans.monthly.abbr)
+                    : (t.pricing.plans.biweekly.abbr)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -147,7 +147,7 @@ export default function PricingPage() {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
               {hasActiveSubscription ? null : plans.map((plan, index) => {
                 // Determine plan type based on recurring duration and unit
-                const planType = plan.recurring_unit === 'MONTH' ? 'monthly' : 'one_time';
+                const planType = plan.recurring_unit === 'MONTH' ? 'monthly' : 'biweekly';
                 const planTranslation = t.pricing.plans[planType as keyof typeof t.pricing.plans];
 
                 return (

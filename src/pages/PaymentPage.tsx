@@ -41,24 +41,9 @@ import {
 } from '@/components/ui/dialog';
 
 // 随机生成购买横幅数据
-const generatePurchaseBanners = () => {
-  const names = [
-    'Michael Johnson', 'Sarah Williams', 'David Brown', 'Emma Davis',
-    'James Wilson', 'Olivia Martinez', 'Robert Anderson', 'Sophia Taylor',
-    'William Thomas', 'Isabella Moore', 'John Jackson', 'Mia White',
-    'Daniel Harris', 'Charlotte Martin', 'Matthew Thompson', 'Amelia Garcia',
-    'Joseph Rodriguez', 'Harper Lewis', 'Christopher Lee', 'Evelyn Walker',
-  ];
-
-  const chineseNames = [
-    '张伟', '李娜', '王芳', '刘洋', '陈静', '杨帆', '赵敏', '黄磊',
-    '周杰', '吴倩', '徐强', '孙丽', '马超', '朱婷', '胡军', '郭敏',
-    '林峰', '何洁', '高阳', '罗文',
-  ];
-
-  return names.map((name, index) => ({
+const generatePurchaseBanners = (t: any) => {
+  return t?.payment?.purchaseBanner?.names?.map((name: string) => ({
     name,
-    chineseName: chineseNames[index],
     iq: Math.floor(Math.random() * (145 - 95) + 95),
   }));
 };
@@ -74,7 +59,7 @@ export default function PaymentPage() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(6 * 60 + 26); // 6:26
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  const [purchaseBanners] = useState(generatePurchaseBanners());
+  const [purchaseBanners] = useState(() => generatePurchaseBanners(t));
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [gatewayConfig, setGatewayConfig] = useState<PaymentGatewayConfig | null>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
@@ -91,8 +76,8 @@ export default function PaymentPage() {
 
   // 从URL获取plan_id，如果没有则使用旧的type参数
   const planId = searchParams.get('plan_id');
-  const type = (searchParams.get('type') as SubscriptionType) || 'one_time';
-  const amount = type === 'one_time' ? 1.98 : 28.8;
+  const type = (searchParams.get('type') as SubscriptionType) || 'biweekly';
+  const amount = type === 'biweekly' ? 1.98 : 28.8;
   const monthlyPrice = 28.8;
 
   // 加载订阅包和支付网关配置
@@ -568,13 +553,14 @@ export default function PaymentPage() {
         <div className="container mx-auto px-4">
           <div className="text-center text-sm animate-fade-in">
             <span className="font-semibold text-orange-800">
-              {language === 'zh' ? currentBanner.chineseName : currentBanner.name}
+              {currentBanner.name}
             </span>{' '}
             <span className="text-orange-700">
               {t.payment.purchaseBanner.justPurchased}
             </span>{' '}
             <span className="font-bold text-orange-600">
-              {t.payment.purchaseBanner.iqScore}{currentBanner.iq}
+              {t.payment.purchaseBanner.iqScore}
+              {currentBanner.iq}
             </span>
           </div>
         </div>
@@ -713,19 +699,16 @@ export default function PaymentPage() {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">
-                          {language === 'zh'
-                            ? `开始${selectedPlan.trial_duration}${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)}试用仅需$${selectedPlan.trial_price.toFixed(
-                              2,
-                            )}，试用期后，续订费用为$${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration}${getTimeUnitLabel(
+                          {t.payment.paymentCard.planTrialDescription
+                            .replace('{trialDuration}', String(selectedPlan.trial_duration))
+                            .replace('{trialUnit}', getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration))
+                            .replace('${trialPrice}', selectedPlan.trial_price.toFixed(2))
+                            .replace('${recurringPrice}', selectedPlan.recurring_price.toFixed(2))
+                            .replace('{recurringDuration}', String(selectedPlan.recurring_duration))
+                            .replace('{recurringUnit}', getTimeUnitLabel(
                               selectedPlan.recurring_unit,
                               selectedPlan.recurring_duration,
-                            )}。随时取消。`
-                            : `Start ${selectedPlan.trial_duration}-${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)} trial for just $${selectedPlan.trial_price.toFixed(
-                              2,
-                            )}, then $${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration} ${getTimeUnitLabel(
-                              selectedPlan.recurring_unit,
-                              selectedPlan.recurring_duration,
-                            )}. Cancel anytime.`}
+                            ))}
                         </p>
                       </div>
                     )}
@@ -756,9 +739,11 @@ export default function PaymentPage() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-700">
-                        {language === 'zh'
-                          ? t.payment.paymentCard.startTrial.replace('{amount}', amount.toFixed(2)).replace('{monthlyPrice}', monthlyPrice.toFixed(2))
-                          : t.payment.paymentCard.startTrial.replace('{amount}', amount.toFixed(2)).replace('{monthlyPrice}', monthlyPrice.toFixed(2))}
+                        <p className="text-sm text-gray-700">
+                          {t.payment.paymentCard.startTrialWithPrice
+                            .replace('${amount}', amount.toFixed(2))
+                            .replace('${monthlyPrice}', monthlyPrice.toFixed(2))}
+                        </p>
                       </p>
                     </div>
                   </>

@@ -110,6 +110,8 @@ export default {
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
       contact: 'Contact Us',
+      rightsReserved: 'All rights reserved.',
+      language: 'Language',
     },
   },
   zh: {
@@ -223,6 +225,8 @@ export default {
       privacy: '隐私政策',
       terms: '服务条款',
       contact: '联系我们',
+      rightsReserved: '保留所有权利。',
+      language: '语言',
     },
   }
 }

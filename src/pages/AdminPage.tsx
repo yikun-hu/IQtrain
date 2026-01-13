@@ -291,7 +291,7 @@ export default function AdminPage() {
                                 </span>
                               </TableCell>
                               <TableCell>
-                                {user.subscription_type === 'one_time' && tAdmin.userList.oneTime}
+                                {user.subscription_type === 'biweekly' && tAdmin.userList.oneTime}
                                 {user.subscription_type === 'monthly' && tAdmin.userList.monthly}
                                 {!user.subscription_type && tAdmin.userList.none}
                               </TableCell>

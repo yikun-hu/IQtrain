@@ -50,10 +50,11 @@ export default {
       }
     ],
     plans: {
-      one_time: {
+      biweekly: {
+        abbr: 'Bi-weekly',
         title: 'Bi-Weekly Subscription',
         price: '€14.99',
-        period: '/2 weeks',
+        period: ' every 2 weeks',
         features: [
           '7-day trial, then auto-renews bi-weekly',
           'Personalized IQ Certificate',
@@ -63,6 +64,7 @@ export default {
         button: 'Start'
       },
       monthly: {
+        abbr: 'Monthly',
         title: 'Monthly Plan',
         price: '€29.99',
         period: '/month',
@@ -150,7 +152,8 @@ export default {
       }
     ],
     plans: {
-      one_time: {
+      biweekly: {
+        abbr: '双周付',
         title: '双周订阅计划',
         price: '€14.99',
         period: '/2周',
@@ -163,7 +166,8 @@ export default {
         button: '开始'
       },
       monthly: {
-        title: '每月年越',
+        abbr: '月付',
+        title: '月付订阅计划',
         price: '€29.99',
         period: '/月',
         features: [

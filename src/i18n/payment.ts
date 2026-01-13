@@ -41,6 +41,13 @@ export default {
     purchaseBanner: {
       justPurchased: 'just purchased IQ report',
       iqScore: 'IQ Score: ',
+      names: [
+        'Michael Johnson', 'Sarah Williams', 'David Brown', 'Emma Davis',
+        'James Wilson', 'Olivia Martinez', 'Robert Anderson', 'Sophia Taylor',
+        'William Thomas', 'Isabella Moore', 'John Jackson', 'Mia White',
+        'Daniel Harris', 'Charlotte Martin', 'Matthew Thompson', 'Amelia Garcia',
+        'Joseph Rodriguez', 'Harper Lewis', 'Christopher Lee', 'Evelyn Walker',
+      ],
     },
     // Hero Section
     hero: {
@@ -77,6 +84,11 @@ export default {
       securePayment: 'Secure payment, all major credit cards accepted',
       understandStrengths: 'Understand your strengths, personality and career tendencies',
       getIQScore: 'Get IQ score and compare with celebrities',
+      startTrialWithPrice:
+        'Start your trial for just ${amount}, then ${monthlyPrice}/month. Cancel anytime.',
+      planTrialDescription:
+        'Start {trialDuration} {trialUnit} trial for just ${trialPrice}, then ${recurringPrice}/{recurringDuration} {recurringUnit}. Cancel anytime.',
+
     },
     // Testimonials
     testimonials: {
@@ -157,6 +169,11 @@ export default {
     purchaseBanner: {
       justPurchased: '刚刚购买智商报告',
       iqScore: '智商分数：',
+      names: [
+        '张伟', '李娜', '王芳', '刘洋', '陈静', '杨帆', '赵敏', '黄磊',
+        '周杰', '吴倩', '徐强', '孙丽', '马超', '朱婷', '胡军', '郭敏',
+        '林峰', '何洁', '高阳', '罗文',
+      ],
     },
     // Hero Section
     hero: {
@@ -193,6 +210,11 @@ export default {
       securePayment: '安全支付，支持所有主流信用卡',
       understandStrengths: '了解你的强项，人格和职业倾向',
       getIQScore: '获得IQ分数并与名人比较',
+      startTrialWithPrice:
+        '立即开始试用，仅需 ${amount}，试用期后每月 ${monthlyPrice}，可随时取消。',
+      planTrialDescription:
+        '开始{trialDuration}{trialUnit}试用仅需${trialPrice}，试用期后，续订费用为${recurringPrice}/{recurringDuration}{recurringUnit}。随时取消。',
+
     },
     // Testimonials
     testimonials: {

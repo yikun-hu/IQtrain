@@ -667,7 +667,7 @@ export default function ResultPage() {
               level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
           }}
         >
-          {language === 'zh' ? '打印报告' : 'Print Report'}
+          {t.result.printReport}
         </button>
 
         <button

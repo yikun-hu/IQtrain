@@ -26,15 +26,15 @@ export function Footer() {
           {/* Language Selector */}
           <div>
             <h4 className="font-semibold mb-4">
-              {language === 'zh' ? '语言' : 'Language'}
+              {t.home.footer.language}
             </h4>
             <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'zh')}>
               <SelectTrigger className="w-full max-w-[200px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="zh">中文</SelectItem>
+                <SelectItem value='en'>English</SelectItem>
+                <SelectItem value='zh'>中文</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -43,17 +43,17 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 border-t border-border pt-8 flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
           <p className="text-sm text-muted-foreground">
-            © 2025 IQ Train. {language === 'zh' ? '保留所有权利。' : 'All rights reserved.'}
+            © 2025 IQ Train. {t.home.footer.rightsReserved}
           </p>
           <div className="flex space-x-4">
             <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              {language === 'zh' ? '隐私政策' : 'Privacy Policy'}
+              {t.home.footer.privacy}
             </Link>
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              {language === 'zh' ? '用户协议' : 'Terms of Service'}
+              {t.home.footer.terms}
             </Link>
             <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              {language === 'zh' ? 'Cookie政策' : 'Cookie Policy'}
+              {t.header.cookie_policy}
             </Link>
           </div>
         </div>

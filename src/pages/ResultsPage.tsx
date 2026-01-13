@@ -59,7 +59,7 @@ export default function ResultsPage() {
   };
 
   const handleUnlockReport = () => {
-    navigate('/payment?type=one_time');
+    navigate('/payment?type=biweekly');
   };
 
   const handleSubscribe = () => {
