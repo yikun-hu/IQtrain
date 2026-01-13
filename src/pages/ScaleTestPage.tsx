@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function ScaleTestPage() {
   const { testType } = useParams<{ testType: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -42,8 +42,8 @@ export default function ScaleTestPage() {
     } catch (error) {
       console.error('加载题目失败:', error);
       toast({
-        title: language === 'zh' ? '加载失败' : 'Loading Failed',
-        description: language === 'zh' ? '无法加载测试题目' : 'Failed to load test questions',
+        title: t.scaleTest.loadingFailed,
+        description: t.scaleTest.failedToLoadQuestions,
         variant: 'destructive',
       });
     } finally {
@@ -88,7 +88,7 @@ export default function ScaleTestPage() {
 
       // 获取对应的等级
       const scoringRule = await getScaleScoringRuleByScore(testType as ScaleTestType, totalScore, language);
-      
+
       if (!scoringRule) {
         throw new Error('无法找到对应的评分规则');
       }
@@ -110,8 +110,8 @@ export default function ScaleTestPage() {
     } catch (error) {
       console.error('提交测试失败:', error);
       toast({
-        title: language === 'zh' ? '提交失败' : 'Submission Failed',
-        description: language === 'zh' ? '无法提交测试结果' : 'Failed to submit test results',
+        title: t.scaleTest.submissionFailed,
+        description: t.scaleTest.failedToSubmitResults,
         variant: 'destructive',
       });
       setSubmitting(false);
@@ -120,9 +120,9 @@ export default function ScaleTestPage() {
 
   const getTestTitle = () => {
     if (testType === 'emotional_recognition') {
-      return language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test';
+      return t.scaleTest.emotionalRecognitionTest;
     } else if (testType === 'stress_index') {
-      return language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment';
+      return t.scaleTest.stressIndexSelfAssessment;
     }
     return '';
   };
@@ -141,7 +141,7 @@ export default function ScaleTestPage() {
         <Card className="w-full max-w-md">
           <CardContent className="py-8 text-center">
             <p className="text-muted-foreground">
-              {language === 'zh' ? '暂无测试题目' : 'No test questions available'}
+              {t.scaleTest.noQuestionsAvailable}
             </p>
           </CardContent>
         </Card>
@@ -159,7 +159,10 @@ export default function ScaleTestPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2">{getTestTitle()}</h1>
           <p className="text-muted-foreground mb-4">
-            {language === 'zh' ? `第 ${currentIndex + 1} 题，共 ${questions.length} 题` : `Question ${currentIndex + 1} of ${questions.length}`}
+            {language === 'zh'
+              ? t.scaleTest.questionCountZh.replace('{{current}}', (currentIndex + 1).toString()).replace('{{total}}', questions.length.toString())
+              : t.scaleTest.questionCount.replace('{{current}}', (currentIndex + 1).toString()).replace('{{total}}', questions.length.toString())
+            }
           </p>
           <Progress value={progress} className="h-2" />
         </div>
@@ -178,11 +181,11 @@ export default function ScaleTestPage() {
             >
               <div className="space-y-4">
                 {[
-                  { value: 1, label: language === 'zh' ? '非常不同意' : 'Strongly Disagree' },
-                  { value: 2, label: language === 'zh' ? '不同意' : 'Disagree' },
-                  { value: 3, label: language === 'zh' ? '中立' : 'Neutral' },
-                  { value: 4, label: language === 'zh' ? '同意' : 'Agree' },
-                  { value: 5, label: language === 'zh' ? '非常同意' : 'Strongly Agree' },
+                  { value: 1, label: t.scaleTest.stronglyDisagree },
+                  { value: 2, label: t.scaleTest.disagree },
+                  { value: 3, label: t.scaleTest.neutral },
+                  { value: 4, label: t.scaleTest.agree },
+                  { value: 5, label: t.scaleTest.stronglyAgree },
                 ].map((option) => (
                   <div
                     key={option.value}
@@ -206,7 +209,7 @@ export default function ScaleTestPage() {
                 {questions.map((q, index) => {
                   const isAnswered = answers[q.question_id] !== undefined;
                   const isCurrent = index === currentIndex;
-                  
+
                   return (
                     <div
                       key={q.question_id}
@@ -216,7 +219,7 @@ export default function ScaleTestPage() {
                         ${isAnswered ? 'bg-primary text-primary-foreground hover:bg-primary/80' : 'bg-muted text-muted-foreground hover:bg-muted/80'}
                         ${submitting ? 'cursor-not-allowed opacity-50' : ''}
                       `}
-                      title={`${language === 'zh' ? '题目' : 'Question'} ${index + 1}${isAnswered ? (language === 'zh' ? '（已完成）' : ' (Completed)') : ''}`}
+                      title={`${language === 'zh' ? t.scaleTest.questionZh : t.scaleTest.question} ${index + 1}${isAnswered ? (language === 'zh' ? t.scaleTest.questionCompletedZh : t.scaleTest.questionCompleted) : ''}`}
                       onClick={() => handleQuestionClick(index)}
                     >
                       {index + 1}
@@ -225,15 +228,19 @@ export default function ScaleTestPage() {
                 })}
               </div>
               <p className="text-center text-sm text-muted-foreground mt-3">
-                {language === 'zh' 
-                  ? `已完成 ${Object.keys(answers).length} / ${questions.length} 题`
-                  : `Completed ${Object.keys(answers).length} / ${questions.length} questions`
+                {language === 'zh'
+                  ? t.scaleTest.questionsCompletedZh
+                    .replace('{{completed}}', Object.keys(answers).length.toString())
+                    .replace('{{total}}', questions.length.toString())
+                  : t.scaleTest.questionsCompleted
+                    .replace('{{completed}}', Object.keys(answers).length.toString())
+                    .replace('{{total}}', questions.length.toString())
                 }
               </p>
               <p className="text-center text-xs text-muted-foreground mt-2">
-                {language === 'zh' 
-                  ? '点击圆圈可返回修改答案'
-                  : 'Click circles to review and modify answers'
+                {language === 'zh'
+                  ? t.scaleTest.clickToReviewZh
+                  : t.scaleTest.clickToReview
                 }
               </p>
             </div>
@@ -242,7 +249,7 @@ export default function ScaleTestPage() {
               <div className="mt-8 flex items-center justify-center">
                 <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
                 <span className="text-muted-foreground">
-                  {language === 'zh' ? '正在生成报告...' : 'Generating report...'}
+                  {t.scaleTest.generatingReport}
                 </span>
               </div>
             )}
@@ -252,9 +259,7 @@ export default function ScaleTestPage() {
         {/* 提示信息 */}
         <div className="mt-6 text-center text-sm text-muted-foreground">
           <p>
-            {language === 'zh'
-              ? '请根据您的真实感受选择最符合的选项'
-              : 'Please select the option that best matches your true feelings'}
+            {t.scaleTest.instruction}
           </p>
         </div>
       </div>

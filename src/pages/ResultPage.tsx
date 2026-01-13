@@ -181,7 +181,7 @@ const TABLE = iqTable as unknown as IqTableConfig;
 function pickLang(appLang: string): Lang {
   return appLang === 'zh' ? 'zh-CN' : 'en-US';
 }
-function t(map: I18nText | undefined, lang: Lang, fallback = ''): string {
+function iqtableT(map: I18nText | undefined, lang: Lang, fallback = ''): string {
   if (!map) return fallback;
   return (map[lang] ?? map['zh-CN'] ?? map['en-US'] ?? fallback) as string;
 }
@@ -231,7 +231,7 @@ function formatDateTime(d: Date) {
 
 // ---------- component ----------
 export default function ResultPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const lang = useMemo(() => pickLang(language), [language]);
 
   const { user, loading: authLoading } = useAuth();
@@ -265,8 +265,8 @@ export default function ResultPage() {
       const data = await getLatestTestResult(user.id);
       if (!data) {
         toast({
-          title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' ? '未找到测试结果' : 'No test results found',
+          title: t.common.error,
+          description: t.result.noResult,
           variant: 'destructive',
         });
         navigate('/test');
@@ -276,8 +276,8 @@ export default function ResultPage() {
     } catch (error) {
       console.error('加载测试结果失败:', error);
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '加载测试结果失败' : 'Failed to load test results',
+        title: t.common.error,
+        description: t.result.loadFail,
         variant: 'destructive',
       });
     } finally {
@@ -294,7 +294,7 @@ export default function ResultPage() {
         <style>{css}</style>
         <div className="iqr-loading">
           <div className="iqr-spinner" />
-          <div className="iqr-loading-text">{lang === 'zh-CN' ? '报告生成中…' : 'Generating report…'}</div>
+          <div className="iqr-loading-text">{t.result.generating}</div>
         </div>
       </div>
     );
@@ -325,8 +325,8 @@ export default function ResultPage() {
     0;
   const accuracyText = `${accuracyValue}%`;
 
-  const documentTitle = applyTemplate(t(TABLE.rendering.titleTemplate, lang, ''), {
-    levelName: t(level.name, lang, ''),
+  const documentTitle = applyTemplate(iqtableT(TABLE.rendering.titleTemplate, lang, ''), {
+    levelName: iqtableT(level.name, lang, ''),
   });
 
   const metaItems = TABLE.rendering.meta.items.map((it) => {
@@ -336,7 +336,7 @@ export default function ResultPage() {
         value = String(iq);
         break;
       case 'level.percentile':
-        value = t(level.percentile, lang, '');
+        value = iqtableT(level.percentile, lang, '');
         break;
       case 'computed.accuracyText':
         value = accuracyText;
@@ -347,18 +347,18 @@ export default function ResultPage() {
       default:
         value = '';
     }
-    return { key: it.key, label: t(it.label, lang, ''), value };
+    return { key: it.key, label: iqtableT(it.label, lang, ''), value };
   });
 
-  const overviewLeadHtml = applyTemplate(t(level.overview.leadTemplate, lang, ''), {
-    levelName: t(level.name, lang, ''),
+  const overviewLeadHtml = applyTemplate(iqtableT(level.overview.leadTemplate, lang, ''), {
+    levelName: iqtableT(level.name, lang, ''),
     iqMin: level.iqRange?.[0],
-    percentile: t(level.percentile, lang, ''),
+    percentile: iqtableT(level.percentile, lang, ''),
   });
 
   const badgeText =
-    `${t(level.name, lang, '')}${lang === 'zh-CN' ? '级别' : ' Level'}` +
-    (level.descriptionShort ? ` (${t(level.descriptionShort, lang, '')})` : '');
+    `${iqtableT(level.name, lang, '')}${t.result.levelSuffix}` +
+    (level.descriptionShort ? ` (${iqtableT(level.descriptionShort, lang, '')})` : '');
 
   const chartBars = level.chart?.bars ?? [];
   const accent = level.colors?.accent ?? '#8A2BE2';
@@ -372,14 +372,14 @@ export default function ResultPage() {
         <div
           className="report-header"
           style={{
-            background: level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+            background: level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
           }}
         >
           <div className="header-watermark">
-            {t(TABLE.rendering.header.watermarkText, lang, 'MENSA')}
+            {iqtableT(TABLE.rendering.header.watermarkText, lang, 'MENSA')}
           </div>
-          <h1 className="report-title">{t(TABLE.rendering.header.title, lang, '')}</h1>
-          <p className="report-subtitle">{t(TABLE.rendering.header.subtitle, lang, '')}</p>
+          <h1 className="report-title">{iqtableT(TABLE.rendering.header.title, lang, '')}</h1>
+          <p className="report-subtitle">{iqtableT(TABLE.rendering.header.subtitle, lang, '')}</p>
           <div
             className="level-badge"
             style={{
@@ -412,11 +412,11 @@ export default function ResultPage() {
                 borderBottomColor: TABLE.theme.section.titleUnderlineColor,
               }}
             >
-              {lang === 'zh-CN' ? '报告概览' : 'Report Overview'}
+              {t.result.reportOverview}
             </h2>
 
             <p dangerouslySetInnerHTML={safeHtml(overviewLeadHtml)} />
-            <p>{t(level.overview.body, lang, '')}</p>
+            <p>{iqtableT(level.overview.body, lang, '')}</p>
 
             {/* <div className="center-block">
               <button
@@ -425,10 +425,10 @@ export default function ResultPage() {
                 onClick={handlePrintReport}
                 style={{
                   background:
-                    level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+                    level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
                 }}
               >
-                {t(TABLE.commonSections.ui.printButtonText, lang, lang === 'zh-CN' ? '打印本报告' : 'Print This Report')}
+                {iqtableT(TABLE.commonSections.ui.printButtonText, lang, lang === 'zh-CN' ? '打印本报告' : 'Print This Report')}
               </button>
             </div> */}
           </div>
@@ -436,13 +436,11 @@ export default function ResultPage() {
           {/* Cognitive Profile + Comparison */}
           <div className="section">
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {lang === 'zh-CN' ? '认知能力剖面分析' : 'Cognitive Ability Profile Analysis'}
+              {t.result.cognitiveProfile}
             </h2>
 
             <p>
-              {lang === 'zh-CN'
-                ? '以下是根据您的测试表现分析出的各项认知能力指标：'
-                : 'The following indicators are analyzed based on your performance:'}
+              {t.result.cognitiveIntro}
             </p>
 
             <div className="cognitive-grid">
@@ -453,15 +451,15 @@ export default function ResultPage() {
                     <div className="cognitive-value" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
                       {v}%
                     </div>
-                    <div className="cognitive-label">{t(item.label, lang, '')}</div>
+                    <div className="cognitive-label">{iqtableT(item.label, lang, '')}</div>
                   </div>
                 );
               })}
             </div>
 
             <div className="comparison-container">
-              <h3 className="text-center font-bold">{lang === 'zh-CN' ? '与人群对比分析' : 'Comparison with Population'}</h3>
-              <p>{t(level.comparativeAnalysis, lang, '')}</p>
+              <h3 className="text-center font-bold">{t.result.comparisonTitle}</h3>
+              <p>{iqtableT(level.comparativeAnalysis, lang, '')}</p>
 
               <div className="chart-container" aria-label="comparison chart">
                 {chartBars.map((bar, idx) => {
@@ -476,10 +474,10 @@ export default function ResultPage() {
 
                   const label =
                     'label' in bar
-                      ? t(bar.label, lang, '')
-                      : applyTemplate(t(bar.labelTemplate, lang, ''), {
-                          percentile: t(level.percentile, lang, ''),
-                        });
+                      ? iqtableT(bar.label, lang, '')
+                      : applyTemplate(iqtableT(bar.labelTemplate, lang, ''), {
+                        percentile: iqtableT(level.percentile, lang, ''),
+                      });
 
                   const isYou = idx === chartBars.length - 1;
 
@@ -509,8 +507,8 @@ export default function ResultPage() {
               </div>
 
               <p>
-                <strong>{lang === 'zh-CN' ? '解读：' : 'Interpretation: '}</strong>
-                {t(level.chart.note, lang, '')}
+                <strong>{t.result.interpretation}</strong>
+                {iqtableT(level.chart.note, lang, '')}
               </p>
             </div>
           </div>
@@ -518,15 +516,15 @@ export default function ResultPage() {
           {/* Strengths */}
           <div className="section">
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {lang === 'zh-CN' ? '认知优势分析' : 'Cognitive Strength Analysis'}
+              {t.result.strengthTitle}
             </h2>
 
-            <p>{lang === 'zh-CN' ? '基于测试结果，我们识别出您的以下认知优势：' : 'Based on the results, your strengths include:'}</p>
+            <p>{t.result.strengthIntro}</p>
 
             <ul className="strength-list">
               {level.strengths.map((s, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  <strong>{t(s.title, lang, '')}：</strong> {t(s.detail, lang, '')}
+                  <strong>{iqtableT(s.title, lang, '')}：</strong> {iqtableT(s.detail, lang, '')}
                 </li>
               ))}
             </ul>
@@ -535,30 +533,30 @@ export default function ResultPage() {
           {/* Recommendations + Training Plan */}
           <div className="section">
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {lang === 'zh-CN' ? '发展建议与规划' : 'Development Suggestions and Planning'}
+              {t.result.developmentTitle}
             </h2>
 
-            <p>{lang === 'zh-CN' ? '基于您的认知特点，我们为您制定以下发展计划：' : 'Based on your profile, we suggest:'}</p>
+            <p>{t.result.developmentIntro}</p>
 
             <ul className="recommendation-list">
               {level.recommendations.map((r, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  <strong>{t(r.title, lang, '')}：</strong> {t(r.detail, lang, '')}
+                  <strong>{iqtableT(r.title, lang, '')}：</strong> {iqtableT(r.detail, lang, '')}
                 </li>
               ))}
             </ul>
 
-            
+
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {t(level.trainingPlan.title, lang, '')}
+              {iqtableT(level.trainingPlan.title, lang, '')}
             </h2>
 
-            <p>{t(level.trainingPlan.intro, lang, '')}</p>
+            <p>{iqtableT(level.trainingPlan.intro, lang, '')}</p>
 
             <ul className="recommendation-list">
               {level.trainingPlan.items.map((it, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  {t(it, lang, '')}
+                  {iqtableT(it, lang, '')}
                 </li>
               ))}
             </ul>
@@ -572,7 +570,7 @@ export default function ResultPage() {
             >
               <ol>
                 {level.trainingPlan.items.map((it, idx) => (
-                  <li key={idx}>{t(it, lang, '')}</li>
+                  <li key={idx}>{iqtableT(it, lang, '')}</li>
                 ))}
               </ol>
             </div> */}
@@ -582,22 +580,22 @@ export default function ResultPage() {
           <div className="certificate" style={{ borderColor: accent }}>
             <div className="certificate-bg" />
             <h3 className="certificate-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {applyTemplate(t(level.certificate.titleTemplate, lang, ''), {
-                levelReportTitle: t(level.reportTitle, lang, t(level.name, lang, '')),
+              {applyTemplate(iqtableT(level.certificate.titleTemplate, lang, ''), {
+                levelReportTitle: iqtableT(level.reportTitle, lang, iqtableT(level.name, lang, '')),
               })}
             </h3>
 
             {level.certificate.paragraphs.map((p, idx) => {
-              const html = applyTemplate(t(p, lang, ''), {
-                levelName: t(level.name, lang, ''),
-                percentile: t(level.percentile, lang, ''),
+              const html = applyTemplate(iqtableT(p, lang, ''), {
+                levelName: iqtableT(level.name, lang, ''),
+                percentile: iqtableT(level.percentile, lang, ''),
                 iq,
               });
               return <p key={idx} dangerouslySetInnerHTML={safeHtml(html)} />;
             })}
 
             <div className="certificate-id">
-              {lang === 'zh-CN' ? '证书编号: ' : 'Certificate Number: '}
+              {t.result.certNo}
               {applyTemplate(level.certificate.idTemplate ?? reportId, {
                 YYYY: completedAt.getFullYear(),
                 iq,
@@ -606,24 +604,24 @@ export default function ResultPage() {
             </div>
 
             <p>
-              {applyTemplate(t(level.certificate.dateLineTemplate, lang, ''), {
+              {applyTemplate(iqtableT(level.certificate.dateLineTemplate, lang, ''), {
                 testDateCN,
               })}
             </p>
 
-            <p className="certificate-footnote">{t(level.certificate.footnote, lang, '')}</p>
+            <p className="certificate-footnote">{iqtableT(level.certificate.footnote, lang, '')}</p>
           </div>
 
           {/* Science */}
           <div className="section">
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {t(TABLE.commonSections.science.title, lang, '')}
+              {iqtableT(TABLE.commonSections.science.title, lang, '')}
             </h2>
-            <p>{t(TABLE.commonSections.science.intro, lang, '')}</p>
+            <p>{iqtableT(TABLE.commonSections.science.intro, lang, '')}</p>
             <ul>
               {TABLE.commonSections.science.items.map((it, i) => (
                 <li key={i}>
-                  <strong>{t(it.title, lang, '')}：</strong> {t(it.detail, lang, '')}
+                  <strong>{iqtableT(it.title, lang, '')}：</strong> {iqtableT(it.detail, lang, '')}
                 </li>
               ))}
             </ul>
@@ -631,10 +629,10 @@ export default function ResultPage() {
 
           {/* Disclaimer */}
           <div className="disclaimer">
-            <h3>{t(TABLE.commonSections.disclaimer.title, lang, '')}</h3>
+            <h3>{iqtableT(TABLE.commonSections.disclaimer.title, lang, '')}</h3>
             {TABLE.commonSections.disclaimer.items.map((it, i) => (
               <p key={i}>
-                {i + 1}. {t(it, lang, '')}
+                {i + 1}. {iqtableT(it, lang, '')}
               </p>
             ))}
           </div>
@@ -642,23 +640,23 @@ export default function ResultPage() {
 
         <div className="footer">
           <p>
-            {t(TABLE.commonSections.footer.copyright, lang, '')} |{' '}
-            {applyTemplate(t(TABLE.commonSections.footer.generatedAtTemplate, lang, ''), { generatedAt })}
+            {iqtableT(TABLE.commonSections.footer.copyright, lang, '')} |{' '}
+            {applyTemplate(iqtableT(TABLE.commonSections.footer.generatedAtTemplate, lang, ''), { generatedAt })}
           </p>
           <p>
-            {applyTemplate(t(TABLE.commonSections.footer.reportIdTemplate, lang, ''), {
+            {applyTemplate(iqtableT(TABLE.commonSections.footer.reportIdTemplate, lang, ''), {
               reportId,
               reportVersion,
             })}
           </p>
-          <p className="footer-mini">{t(TABLE.commonSections.footer.miniDisclaimer, lang, '')}</p>
+          <p className="footer-mini">{iqtableT(TABLE.commonSections.footer.miniDisclaimer, lang, '')}</p>
         </div>
       </div>
 
       {/* bottom actions (match HTML style; no shadcn ui) */}
       <div className="iqr-actions">
         <button className="iqr-action secondary" onClick={() => navigate('/dashboard')}>
-          {language === 'zh' ? '返回仪表盘' : 'Back to Dashboard'}
+          {t.result.backDashboard}
         </button>
 
         <button
@@ -666,7 +664,7 @@ export default function ResultPage() {
           onClick={handlePrintReport}
           style={{
             background:
-              level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+              level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
           }}
         >
           {language === 'zh' ? '打印报告' : 'Print Report'}
@@ -676,12 +674,12 @@ export default function ResultPage() {
           className="iqr-action dark"
           onClick={() =>
             toast({
-              title: language === 'zh' ? '提示' : 'Tip',
-              description: language === 'zh' ? '下载功能开发中' : 'Download function in development',
+              title: t.result.tip,
+              description: t.result.downloadDev,
             })
           }
         >
-          {language === 'zh' ? '下载报告' : 'Download Report'}
+          {t.result.downloadReport}
         </button>
       </div>
     </div>
@@ -784,7 +782,7 @@ const css = `
   position:absolute;
   width:60px;
   height:3px;
-  background:linear-gradient(90deg,#8A2BE2 0%, #5D0C9D 100%);
+  background:linear-gradieniqtableT(90deg,#8A2BE2 0%, #5D0C9D 100%);
   bottom:-2px;
   left:0;
 }
@@ -808,7 +806,7 @@ const css = `
 
 .cognitive-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeaiqtableT(4,1fr);
   gap:20px;
   margin:30px 0;
 }
@@ -848,7 +846,7 @@ const css = `
 }
 .chart-container{
   height:200px;
-  background:linear-gradient(to top,#f0f0ff, #fff);
+  background:linear-gradieniqtableT(to top,#f0f0ff, #fff);
   border-radius:8px;
   margin:25px 0 35px;
   position:relative;
@@ -875,7 +873,7 @@ const css = `
   border-radius:15px;
   padding:40px;
   text-align:center;
-  background:linear-gradient(to bottom,#f8f5ff, #fff);
+  background:linear-gradieniqtableT(to bottom,#f8f5ff, #fff);
   margin:40px 0;
   position:relative;
   overflow:hidden;
@@ -988,7 +986,7 @@ const css = `
     padding:30px 20px;
   }
   .report-title{ font-size:2rem; }
-  .cognitive-grid{ grid-template-columns:repeat(2,1fr); }
+  .cognitive-grid{ grid-template-columns:repeaiqtableT(2,1fr); }
   .report-meta{ flex-direction:column; gap:20px; }
 }
 `;

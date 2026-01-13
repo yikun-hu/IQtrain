@@ -19,7 +19,7 @@ import { ChevronRight, Shield } from 'lucide-react';
 import { Clock, Zap, Brain, PartyPopper, FileText, BarChart3, PieChart } from 'lucide-react';
 
 export default function CollectionPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user, profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function CollectionPage() {
     const testAnswers = localStorage.getItem('testAnswers');
     if (!testAnswers) {
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
+        title: t.common.error,
         description: language === 'zh' ? '未找到测试答案，请先完成测试' : 'No test answers found, please complete the test first',
         variant: 'destructive',
       });
@@ -113,70 +113,7 @@ export default function CollectionPage() {
     }
   }, [language, navigate, toast, hasCompleteProfile, isSubscribed, profile, setFullName, setAge, setGender, setEmail, getAgeGroupFromAge]);
 
-  const content = {
-    zh: {
-      description: '请填写您的基本信息以获取个性化的IQ报告',
-      step1: {
-        fullName: '姓名',
-        fullNamePlaceholder: '请输入您的姓名',
-        age: '年龄',
-        agePlaceholder: '请输入您的年龄',
-        gender: '性别',
-        genderPlaceholder: '请选择性别',
-        male: '男',
-        female: '女',
-        other: '其他',
-        continue: '继续',
-        fillAll: '请填写完整信息',
-        fillAllDesc: '姓名、年龄和性别都是必填的',
-      },
-      step2: {
-        email: '邮箱地址',
-        emailPlaceholder: '请输入您的邮箱',
-        privacy: '我已阅读并同意',
-        privacyLink: '隐私政策',
-        submit: '获取报告',
-        fillEmail: '请填写邮箱',
-        fillEmailDesc: '邮箱地址是必填的',
-        agreePrivacy: '请同意隐私政策',
-        agreePrivacyDesc: '您需要同意隐私政策才能继续',
-        invalidEmail: '邮箱格式不正确',
-        invalidEmailDesc: '请输入有效的邮箱地址',
-      },
-    },
-    en: {
-      description: 'Please fill in your basic information to get a personalized IQ report',
-      step1: {
-        fullName: 'Full Name',
-        fullNamePlaceholder: 'Enter your full name',
-        age: 'Age',
-        agePlaceholder: 'Enter your age',
-        gender: 'Gender',
-        genderPlaceholder: 'Select your gender',
-        male: 'Male',
-        female: 'Female',
-        other: 'Other',
-        continue: 'Continue',
-        fillAll: 'Please fill in all fields',
-        fillAllDesc: 'Name, age and gender are required',
-      },
-      step2: {
-        email: 'Email Address',
-        emailPlaceholder: 'Enter your email',
-        privacy: 'I have read and agree to the',
-        privacyLink: 'Privacy Policy',
-        submit: 'Get Report',
-        fillEmail: 'Please fill in email',
-        fillEmailDesc: 'Email address is required',
-        agreePrivacy: 'Please agree to privacy policy',
-        agreePrivacyDesc: 'You need to agree to the privacy policy to continue',
-        invalidEmail: 'Invalid email format',
-        invalidEmailDesc: 'Please enter a valid email address',
-      },
-    },
-  };
-
-  const t = content[language];
+  const tCollection = t.collection;
 
   const formatEvaluatedDate = () => {
     try {
@@ -201,7 +138,7 @@ export default function CollectionPage() {
   // 获取或生成最强技能，并持久化到localStorage
   const strongestSkills = ['Pattern Recognition', 'Logical Reasoning', 'Spatial Thinking', 'Numerical Reasoning', 'Working Memory'];
   let strongestSkill = localStorage.getItem('iqTestStrongestSkill');
-  
+
   // 如果没有保存的技能，则生成一个并保存
   if (!strongestSkill) {
     // 使用一个更稳定的随机种子
@@ -222,8 +159,8 @@ export default function CollectionPage() {
 
     if (!fullName || !age || !gender) {
       toast({
-        title: t.step1.fillAll,
-        description: t.step1.fillAllDesc,
+        title: tCollection.step1.fillAll,
+        description: tCollection.step1.fillAllDesc,
         variant: 'destructive',
       });
       return;
@@ -239,8 +176,8 @@ export default function CollectionPage() {
 
     if (!email) {
       toast({
-        title: t.step2.fillEmail,
-        description: t.step2.fillEmailDesc,
+        title: tCollection.step2.fillEmail,
+        description: tCollection.step2.fillEmailDesc,
         variant: 'destructive',
       });
       return;
@@ -248,8 +185,8 @@ export default function CollectionPage() {
 
     if (!validateEmail(email)) {
       toast({
-        title: t.step2.invalidEmail,
-        description: t.step2.invalidEmailDesc,
+        title: tCollection.step2.invalidEmail,
+        description: tCollection.step2.invalidEmailDesc,
         variant: 'destructive',
       });
       return;
@@ -257,8 +194,8 @@ export default function CollectionPage() {
 
     if (!agreedToPrivacy) {
       toast({
-        title: t.step2.agreePrivacy,
-        description: t.step2.agreePrivacyDesc,
+        title: tCollection.step2.agreePrivacy,
+        description: tCollection.step2.agreePrivacyDesc,
         variant: 'destructive',
       });
       return;
@@ -286,7 +223,7 @@ export default function CollectionPage() {
     } catch (error) {
       console.error('保存用户信息失败:', error);
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
+        title: t.common.error,
         description: language === 'zh' ? '保存信息失败，请重试' : 'Failed to save information, please try again',
         variant: 'destructive',
       });
@@ -306,7 +243,7 @@ export default function CollectionPage() {
       <Card className="w-full max-w-2xl shadow-2xl relative z-10 border-2">
         <CardHeader className="text-center">
           <CardDescription className="text-base">
-            {t.description}
+            {tCollection.description}
           </CardDescription>
         </CardHeader>
 
@@ -317,12 +254,12 @@ export default function CollectionPage() {
               {/* 姓名 */}
               <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-base font-semibold">
-                  {t.step1.fullName}
+                  {tCollection.step1.fullName}
                 </Label>
                 <Input
                   id="fullName"
                   type="text"
-                  placeholder={t.step1.fullNamePlaceholder}
+                  placeholder={tCollection.step1.fullNamePlaceholder}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="h-12 text-base"
@@ -333,7 +270,7 @@ export default function CollectionPage() {
               {/* 年龄 */}
               <div className="space-y-2">
                 <Label className="text-base font-semibold">
-                  {t.step1.age}
+                  {tCollection.step1.age}
                 </Label>
                 <div className="grid grid-cols-3 gap-3">
                   {ageGroups.map((group) => (
@@ -353,7 +290,7 @@ export default function CollectionPage() {
               {/* 性别 */}
               <div className="space-y-2">
                 <Label className="text-base font-semibold">
-                  {t.step1.gender}
+                  {tCollection.step1.gender}
                 </Label>
                 <div className="grid grid-cols-3 gap-3">
                   <Button
@@ -362,7 +299,7 @@ export default function CollectionPage() {
                     onClick={() => setGender("male")}
                     className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "male" ? 'border-primary border-2 scale-105' : ''}`}
                   >
-                    {t.step1.male}
+                    {tCollection.step1.male}
                   </Button>
                   <Button
                     type="button"
@@ -370,7 +307,7 @@ export default function CollectionPage() {
                     onClick={() => setGender("female")}
                     className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "female" ? 'border-primary border-2 scale-105' : ''}`}
                   >
-                    {t.step1.female}
+                    {tCollection.step1.female}
                   </Button>
                   <Button
                     type="button"
@@ -378,7 +315,7 @@ export default function CollectionPage() {
                     onClick={() => setGender("other")}
                     className={`h-12 text-base bg-muted text-foreground transition-all duration-300 ${gender === "other" ? 'border-primary border-2 scale-105' : ''}`}
                   >
-                    {t.step1.other}
+                    {tCollection.step1.other}
                   </Button>
                 </div>
               </div>
@@ -389,7 +326,7 @@ export default function CollectionPage() {
                 className="w-full h-12 text-base font-semibold"
                 size="lg"
               >
-                {t.step1.continue}
+                {tCollection.step1.continue}
                 <ChevronRight className="ml-2 h-5 w-5" />
               </Button>
             </form>
@@ -402,12 +339,12 @@ export default function CollectionPage() {
               <form onSubmit={handleStep2Submit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-base font-semibold">
-                    {t.step2.email}
+                    {tCollection.step2.email}
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder={t.step2.emailPlaceholder}
+                    placeholder={tCollection.step2.emailPlaceholder}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="h-12 text-base"
@@ -427,13 +364,13 @@ export default function CollectionPage() {
                       className="text-sm font-medium leading-relaxed cursor-pointer flex items-center gap-1 flex-wrap"
                     >
                       <Shield className="h-4 w-4 text-primary inline" />
-                      {t.step2.privacy}{' '}
+                      {tCollection.step2.privacy}{' '}
                       <Link
                         to="/privacy-policy"
                         target="_blank"
                         className="text-primary hover:underline font-semibold"
                       >
-                        {t.step2.privacyLink}
+                        {tCollection.step2.privacyLink}
                       </Link>
                     </Label>
                   </div>
@@ -451,7 +388,7 @@ export default function CollectionPage() {
                       {language === 'zh' ? '提交中...' : 'Submitting...'}
                     </>
                   ) : (
-                    t.step2.submit
+                    tCollection.step2.submit
                   )}
                 </Button>
               </form>

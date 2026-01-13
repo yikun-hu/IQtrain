@@ -11,7 +11,7 @@ import type { Game, Test } from '@/types/types';
 import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -141,13 +141,7 @@ export default function DashboardPage() {
   };
 
   const getCategoryName = (category: string) => {
-    const names: Record<string, { en: string; zh: string }> = {
-      puzzles: { en: 'Puzzles', zh: '益智游戏' },
-      number_games: { en: 'Number Games', zh: '数字游戏' },
-      memory_games: { en: 'Memory Games', zh: '记忆游戏' },
-      logic_games: { en: 'Logic Games', zh: '逻辑游戏' },
-    };
-    return language === 'zh' ? names[category]?.zh : names[category]?.en;
+    return t.dashboard.gameCategories[category as keyof typeof t.dashboard.gameCategories] || category;
   };
 
 
@@ -173,7 +167,7 @@ export default function DashboardPage() {
             {/* Today's Train Recommend */}
             <section>
               <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '今日训练推荐' : 'Today\'s Train Recommend'}
+                {t.dashboard.todayTrainRecommend}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {recommendedGames.map((game) => (
@@ -197,7 +191,7 @@ export default function DashboardPage() {
                         onClick={() => window.open(game.url, '_blank')}
                       >
                         <Play className="mr-2 h-4 w-4" />
-                        {language === 'zh' ? '开始游戏' : 'Play Now'}
+                        {t.dashboard.playNow}
                       </Button>
                     </CardContent>
                   </Card>
@@ -208,7 +202,7 @@ export default function DashboardPage() {
             {/* 所有游戏按类别分类 */}
             <section>
               <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '所有游戏' : 'All Games'}
+                {t.dashboard.allGames}
               </h2>
               {Object.entries(gamesByCategory).map(([category, games]) => (
                 <div key={category} className="mb-8">
@@ -236,7 +230,7 @@ export default function DashboardPage() {
                             onClick={() => window.open(game.url, '_blank')}
                           >
                             <ExternalLink className="mr-2 h-3 w-3" />
-                            {language === 'zh' ? '玩' : 'Play'}
+                            {t.dashboard.play}
                           </Button>
                         </CardContent>
                       </Card>
@@ -252,32 +246,30 @@ export default function DashboardPage() {
             {/* 量表测试 */}
             <section>
               <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '可用测试' : 'Available Tests'}
+                {t.dashboard.availableTests}
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {/* 情绪识别能力测试 */}
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test'}
+                      {t.dashboard.emotionalRecognitionTest}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您识别和理解他人情绪的能力，包括面部表情、语调和肢体语言的解读能力。'
-                        : 'Assess your ability to recognize and understand others\' emotions, including facial expressions, tone, and body language.'}
+                      {t.dashboard.emotionalRecognitionDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/emotional_recognition')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/emotional_recognition')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -285,25 +277,23 @@ export default function DashboardPage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment'}
+                      {t.dashboard.stressIndexSelfAssessment}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您当前的压力水平，了解压力来源和应对能力，获得个性化的压力管理建议。'
-                        : 'Assess your current stress level, understand stress sources and coping abilities, and receive personalized stress management advice.'}
+                      {t.dashboard.stressIndexDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/stress_index')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/stress_index')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -311,25 +301,23 @@ export default function DashboardPage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '心理韧性测试' : 'Psychological Resilience Test'}
+                      {t.dashboard.psychologicalResilienceTest}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您在面对压力和挑战时的恢复能力，包括情绪管理、心理调节和恢复能力。'
-                        : 'Assess your ability to recover from stress and challenges, including emotional management, psychological regulation, and recovery abilities.'}
+                      {t.dashboard.psychologicalResilienceDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/psychological_resilience')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/psychological_resilience')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -338,25 +326,23 @@ export default function DashboardPage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '生活满意度量表' : 'Life Satisfaction Scale'}
+                      {t.dashboard.lifeSatisfactionScale}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您的生活满意度，包括工作、生活、情感和社会关系等方面。'
-                        : 'Assess your life satisfaction, including work, life, emotions, and social relationships.'}
+                      {t.dashboard.lifeSatisfactionDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/life_satisfaction')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/life_satisfaction')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -365,25 +351,23 @@ export default function DashboardPage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '领导力潜力测评' : 'Leadership Potential Test'}
+                      {t.dashboard.leadershipPotentialTest}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您的领导力潜力，包括团队合作、决策能力和解决问题的能力。'
-                        : 'Assess your leadership potential, including team collaboration, decision-making abilities, and problem-solving skills.'}
+                      {t.dashboard.leadershipPotentialDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/leadership_potential')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/leadership_potential')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -391,75 +375,38 @@ export default function DashboardPage() {
                 <Card className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle>
-                      {language === 'zh' ? '多元智能测试' : 'Multiple Intelligences Test'}
+                      {t.dashboard.multipleIntelligencesTest}
                     </CardTitle>
                     <CardDescription>
-                      {language === 'zh'
-                        ? '评估您的多个智能能力，包括视觉、听觉、运动和语言能力。'
-                        : 'Assess your multiple intelligences, including visual, auditory, motor, and language abilities.'}
+                      {t.dashboard.multipleIntelligencesDesc}
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                      <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>⏱️ 5-10 {t.dashboard.minutes}</span>
+                      <span>📝 20 {t.dashboard.questions}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button
-                        className="w-full"
-                        onClick={() => handleStartTest('/scale-test/multiple_intelligences')}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
+                      className="w-full"
+                      onClick={() => handleStartTest('/scale-test/multiple_intelligences')}
+                    >
+                      {t.dashboard.startTest}
+                    </Button>
                   </CardContent>
                 </Card>
 
               </div>
             </section>
 
-            {/* 可用测试 */}
-            {/* <section>
-              <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '更多测试' : 'Available Tests'}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {availableTests.map((test) => (
-                  <Card key={test.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <CardTitle>{language === 'zh' ? test.title_zh : test.title}</CardTitle>
-                      <CardDescription>
-                        {language === 'zh' ? test.description_zh : test.description}
-                      </CardDescription>
-                      <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                        {test.duration && (
-                          <span>⏱️ {test.duration} {language === 'zh' ? '分钟' : 'min'}</span>
-                        )}
-                        {test.question_count && (
-                          <span>📝 {test.question_count} {language === 'zh' ? '题' : 'questions'}</span>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <Button
-                        className="w-full"
-                        onClick={() => navigate(`/test/${test.id}`)}
-                      >
-                        {language === 'zh' ? '开始测试' : 'Start Test'}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section> */}
-
             {/* 已完成测试 */}
             <section>
               <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '已完成测试' : 'Completed Tests'}
+                {t.dashboard.completedTests}
               </h2>
               {completedTests.length === 0 ? (
                 <Card>
                   <CardContent className="py-8 text-center text-muted-foreground">
-                    {language === 'zh' ? '暂无已完成的测试' : 'No completed tests yet'}
+                    {t.dashboard.noCompletedTests}
                   </CardContent>
                 </Card>
               ) : (
@@ -471,30 +418,28 @@ export default function DashboardPage() {
                     // 获取测试名称
                     const getTestName = () => {
                       if (result.test_type === 'emotional_recognition') {
-                        return language === 'zh' ? '情绪识别能力测试' : 'Emotional Recognition Test';
+                        return t.dashboard.emotionalRecognitionTest;
                       } else if (result.test_type === 'stress_index') {
-                        return language === 'zh' ? '压力指数自检' : 'Stress Index Self-Assessment';
+                        return t.dashboard.stressIndexSelfAssessment;
                       } else if (result.test_type === 'psychological_resilience') {
-                        return language === 'zh' ? '心理韧性测试' : 'Psychological Resilience Test';
+                        return t.dashboard.psychologicalResilienceTest;
                       } else if (result.test_type === 'multiple_intelligences') {
-                        return language === 'zh' ? '多元智能测试' : 'Multiple Intelligences Test';
+                        return t.dashboard.multipleIntelligencesTest;
                       } else if (result.test_type === 'leadership_potential') {
-                        return language === 'zh' ? '领导力潜力测评' : 'Leadership Potential Assessment';
+                        return t.dashboard.leadershipPotentialTest;
                       } else if (result.test_type === 'life_satisfaction') {
-                        return language === 'zh' ? '生活满意度量表' : 'Life Satisfaction Scale';
+                        return t.dashboard.lifeSatisfactionScale;
                       } else {
-                        return language === 'zh' ? 'IQ测试' : 'IQ Test';
+                        return t.dashboard.iqTest;
                       }
                     };
 
                     // 获取测试类型标签
                     const getTestTypeLabel = () => {
-                      if (result.test_type === 'emotional_recognition') {
-                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
-                      } else if (result.test_type === 'stress_index') {
-                        return language === 'zh' ? '心理量表' : 'Psychological Scale';
+                      if (result.test_type === 'emotional_recognition' || result.test_type === 'stress_index' || result.test_type === 'psychological_resilience' || result.test_type === 'life_satisfaction' || result.test_type === 'leadership_potential') {
+                        return t.dashboard.psychologicalScale;
                       } else {
-                        return language === 'zh' ? '智力测试' : 'Intelligence Test';
+                        return t.dashboard.intelligenceTest;
                       }
                     };
 
@@ -528,7 +473,7 @@ export default function DashboardPage() {
                             </span>
                           </div>
                           <CardDescription>
-                            {language === 'zh' ? '完成时间：' : 'Completed: '}
+                            {t.dashboard.completed}
                             {new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')}
                           </CardDescription>
                         </CardHeader>
@@ -537,7 +482,7 @@ export default function DashboardPage() {
                             <div>
                               <p className="text-2xl font-bold text-primary">{getScoreDisplay()}</p>
                               <p className="text-sm text-muted-foreground">
-                                {language === 'zh' ? '分数' : 'Score'}
+                                {t.dashboard.score}
                               </p>
                             </div>
                             <Button
@@ -545,7 +490,7 @@ export default function DashboardPage() {
                               onClick={() => handleViewReport(getResultPath())}
                             >
                               <FileText className="mr-2 h-4 w-4" />
-                              {language === 'zh' ? '查看结果' : 'View Results'}
+                              {t.dashboard.viewResults}
                             </Button>
                           </div>
                         </CardContent>
@@ -564,21 +509,18 @@ export default function DashboardPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {language === 'zh' ? '需要订阅才能继续' : 'Subscription Required'}
+              {t.dashboard.subscriptionRequired}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {language === 'zh'
-                ? '您需要先订阅才能开始游戏或测试。订阅后您将获得完整的功能访问权限。'
-                : 'You need to subscribe first to start games or tests. With a subscription, you will get full access to all features.'
-              }
+              {t.dashboard.subscriptionPrompt}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={closeSubscriptionModal}>
-              {language === 'zh' ? '取消' : 'Cancel'}
+              {t.dashboard.cancel}
             </AlertDialogCancel>
             <AlertDialogAction onClick={goToPricingPage} className="bg-primary">
-              {language === 'zh' ? '前往订阅' : 'Go to Subscription'}
+              {t.dashboard.goToSubscription}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

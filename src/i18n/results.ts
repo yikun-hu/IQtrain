@@ -1,0 +1,26 @@
+export default {
+  en: {
+    title: 'Your IQ Test Results',
+    iqScore: 'IQ Score',
+    accuracy: 'Accuracy',
+    timeTaken: 'Time Taken',
+    minutes: 'minutes',
+    dimensionScores: 'Dimension Scores',
+    unlockReport: 'Unlock Full Report',
+    unlockDescription: 'Get detailed analysis and official certificate',
+    viewReport: 'View Full Report',
+    certificate: 'Download Certificate',
+  },
+  zh: {
+    title: '您的IQ测试结果',
+    iqScore: 'IQ分数',
+    accuracy: '准确率',
+    timeTaken: '用时',
+    minutes: '分钟',
+    dimensionScores: '维度得分',
+    unlockReport: '解锁完整报告',
+    unlockDescription: '获取详细分析和官方证书',
+    viewReport: '查看完整报告',
+    certificate: '下载证书',
+  },
+};
