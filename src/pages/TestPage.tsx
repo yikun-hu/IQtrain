@@ -433,6 +433,9 @@ export default function TestPage() {
                 >
                   {t.test.start.startButton}
                 </Button>
+                <p className="text-xs text-muted-foreground mt-3 max-w-md mx-auto">
+                  {t.test.start.disclaimer}
+                </p>
               </div>
             </CardContent>
           </Card>

@@ -24,6 +24,7 @@ export default {
       flexible: 'Flexible',
       flexibleDesc: 'Skip questions, return anytime',
       startButton: 'Start Test',
+      disclaimer: 'Project design is based on widely recognized principles of cognitive activity, intended to supplement daily brain health, not to replace clinical treatment. We make no claims for clinically proven specific therapeutic effects.',
     },
     loading: 'Loading questions...',
     testInterface: {
@@ -81,6 +82,7 @@ export default {
       flexible: '灵活作答',
       flexibleDesc: '可跳过题目，随时返回修改',
       startButton: '开始测试',
+      disclaimer: '本项目设计基于广泛认知的脑力活动原则，旨在补充日常脑健康，而非替代临床治疗。我们不对特定临床疗效做出保证。',
     },
     loading: '加载题目中...',
     testInterface: {
@@ -138,6 +140,7 @@ export default {
       flexible: 'Flexibel',
       flexibleDesc: 'Fragen überspringen, jederzeit zurückkehren',
       startButton: 'Test starten',
+      disclaimer: 'Das Projekt basiert auf weit verbreiteten Prinzipien kognitiver Aktivitäten und dient der Ergänzung zur täglichen Gehirngesundheit, nicht als Ersatz für klinische Behandlung. Wir machen keine Behauptungen über klinisch nachgewiesene therapeutische Wirkungen.',
     },
     loading: 'Fragen werden geladen...',
     testInterface: {
@@ -195,6 +198,7 @@ export default {
       flexible: 'Flexible',
       flexibleDesc: 'Sauter des questions, revenir à tout moment',
       startButton: 'Commencer le test',
+      disclaimer: 'La conception du projet est basée sur des principes largement reconnus d\'activité cognitive, destinée à compléter la santé cérébrale quotidienne, et non à remplacer un traitement clinique. Nous ne faisons aucune déclaration concernant des effets thérapeutiques prouvés cliniquement.',
     },
     loading: 'Chargement des questions...',
     testInterface: {
@@ -252,6 +256,7 @@ export default {
       flexible: '靈活作答',
       flexibleDesc: '可跳過題目，隨時返回修改',
       startButton: '開始測試',
+      disclaimer: '本項目設計基於廣泛認知的腦力活動原則，旨在補充日常腦部健康，而非替代臨床治療。我們不對特定臨床療效做出保證。',
     },
     loading: '加載題目中...',
     testInterface: {
