@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Brain, Zap, Target, Award, TrendingUp, Clock, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function HomePage() {
-    const { t, language } = useLanguage();
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const [currentTestimonial, setCurrentTestimonial] = useState(0);
     const [currentCountryPage, setCurrentCountryPage] = useState(0);

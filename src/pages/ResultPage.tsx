@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLatestTestResult } from '@/db/api';
 import type { Language, TestResult } from '@/types/types';
@@ -6,7 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-import iqTable from '@/components/result/iqtable';
+import iqTable from '@/i18n/iqtable';
 
 type I18nText = Record<string, string | undefined>;
 

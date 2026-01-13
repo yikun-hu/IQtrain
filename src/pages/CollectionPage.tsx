@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronRight, Shield, Clock, Zap, Brain } from 'lucide-react';
+import { Shield, Clock, Zap, Brain } from 'lucide-react';
 
 export default function CollectionPage() {
   const { language, t } = useLanguage();

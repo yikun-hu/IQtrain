@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Check, Brain, CheckCircle2 } from 'lucide-react';
 
 export default function LoadingAnalysisPage() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [progress, setProgress] = useState(0);
