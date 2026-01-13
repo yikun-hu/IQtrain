@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAllGames, getRandomGames, getAllTests, getTestResults } from '@/db/api';
 import type { Game, Test } from '@/types/types';
-import { Loader2, ExternalLink, Play, FileText } from 'lucide-react';
+import { Loader2, FileText } from 'lucide-react';
 
 export default function DashboardPage() {
   const { language } = useLanguage();
@@ -87,7 +87,8 @@ export default function DashboardPage() {
     if (authLoading) return;
 
     loadData();
-  }, [user, authLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, authLoading]);
 
   // 监听来自Header的tab切换事件
   useEffect(() => {
@@ -118,11 +119,78 @@ export default function DashboardPage() {
         getTestResults(user.id),
       ]);
 
-      setRecommendedGames(recommended);
-      setAllGames(games);
+      // 确保游戏数据的 title 和 description 是字符串
+      const normalizeGame = (game: Game): Game => {
+        const getStringValue = (value: any, isZh: boolean = false): string => {
+          // 如果已经是字符串，直接返回
+          if (typeof value === 'string') {
+            return value;
+          }
+          
+          // 如果是 null 或 undefined，返回空字符串
+          if (value == null) {
+            return '';
+          }
+          
+          // 如果是对象，尝试提取语言属性
+          if (typeof value === 'object') {
+            // 尝试各种可能的属性名格式
+            const obj = value as any;
+            if (isZh) {
+              return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj['zh_CN'] || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
+            } else {
+              return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj['en_US'] || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
+            }
+          }
+          
+          // 其他情况转换为字符串
+          try {
+            return String(value);
+          } catch {
+            return '';
+          }
+        };
+
+        const normalized: Game = {
+          ...game,
+          title: getStringValue(game.title, false),
+          title_zh: getStringValue(game.title_zh, true),
+          description: getStringValue(game.description, false),
+          description_zh: getStringValue(game.description_zh, true),
+        };
+
+        // 调试：如果还是对象，打印出来并强制转换
+        if (typeof normalized.title === 'object' || typeof normalized.title_zh === 'object') {
+          console.warn('Game data normalization failed, forcing conversion:', {
+            original: game,
+            normalized: normalized
+          });
+          // 强制转换为字符串
+          if (typeof normalized.title === 'object') {
+            normalized.title = getStringValue(normalized.title, false);
+          }
+          if (typeof normalized.title_zh === 'object') {
+            normalized.title_zh = getStringValue(normalized.title_zh, true);
+          }
+          if (normalized.description && typeof normalized.description === 'object') {
+            normalized.description = getStringValue(normalized.description, false);
+          }
+          if (normalized.description_zh && typeof normalized.description_zh === 'object') {
+            normalized.description_zh = getStringValue(normalized.description_zh, true);
+          }
+        }
+
+        return normalized;
+      };
+
+      const normalizedRecommended = recommended.map(normalizeGame);
+      const normalizedGames = games.map(normalizeGame);
+
+      setRecommendedGames(normalizedRecommended);
+      setAllGames(normalizedGames);
 
       // 按类别分组游戏
-      const grouped = games.reduce((acc, game) => {
+      const grouped = normalizedGames.reduce((acc, game) => {
         if (!acc[game.category]) {
           acc[game.category] = [];
         }
@@ -147,7 +215,34 @@ export default function DashboardPage() {
       memory_games: { en: 'Memory Games', zh: '记忆游戏' },
       logic_games: { en: 'Logic Games', zh: '逻辑游戏' },
     };
-    return language === 'zh' ? names[category]?.zh : names[category]?.en;
+    const categoryName = names[category];
+    if (!categoryName) {
+      return category; // 如果类别不存在，返回原始类别名
+    }
+    return language === 'zh' ? categoryName.zh : categoryName.en;
+  };
+
+  // 安全地获取字符串值（用于渲染）
+  const safeString = (value: any, isZh: boolean = false): string => {
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (value == null) {
+      return '';
+    }
+    if (typeof value === 'object') {
+      const obj = value as any;
+      if (isZh) {
+        return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
+      } else {
+        return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
+      }
+    }
+    try {
+      return String(value);
+    } catch {
+      return '';
+    }
   };
 
 
@@ -161,44 +256,49 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-gray-50/50 to-background">
       {/* 主要内容 */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* 隐藏TabsList，使用header中的导航 */}
           <TabsList className="hidden"></TabsList>
 
           {/* Training标签页 */}
-          <TabsContent value="training" className="space-y-8">
+          <TabsContent value="training" className="space-y-10">
             {/* Today's Train Recommend */}
             <section>
-              <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '今日训练推荐' : 'Today\'s Train Recommend'}
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  {language === 'zh' ? '今日训练推荐' : 'Today\'s Train Recommend'}
+                </h2>
+                <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {recommendedGames.map((game) => (
-                  <Card key={game.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
+                  <Card 
+                    key={game.id} 
+                    className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
+                    onClick={() => window.open(game.url, '_blank')}
+                  >
+                    <CardHeader className="p-0">
                       {game.thumbnail_url && (
-                        <img
-                          src={game.thumbnail_url}
-                          alt={language === 'zh' ? game.title_zh : game.title}
-                          className="w-full h-40 object-cover rounded-md mb-4"
-                        />
+                        <div className="relative w-full aspect-square overflow-hidden bg-muted">
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                          <img
+                            src={game.thumbnail_url}
+                            alt={safeString(language === 'zh' ? game.title_zh : game.title, language === 'zh')}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
                       )}
-                      <CardTitle>{language === 'zh' ? game.title_zh : game.title}</CardTitle>
-                      <CardDescription>
-                        {language === 'zh' ? game.description_zh : game.description}
-                      </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <Button
-                        className="w-full"
-                        onClick={() => window.open(game.url, '_blank')}
-                      >
-                        <Play className="mr-2 h-4 w-4" />
-                        {language === 'zh' ? '开始游戏' : 'Play Now'}
-                      </Button>
+                    <CardContent className="px-3 pt-0 pb-2 flex flex-col">
+                      <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1 text-center -mt-3.5 font-semibold">
+                        {safeString(language === 'zh' ? game.title_zh : game.title, language === 'zh')}
+                      </CardTitle>
+                      <CardDescription className="text-sm line-clamp-2 text-center text-muted-foreground leading-relaxed">
+                        {safeString(language === 'zh' ? game.description_zh : game.description, language === 'zh')}
+                      </CardDescription>
                     </CardContent>
                   </Card>
                 ))}
@@ -207,37 +307,41 @@ export default function DashboardPage() {
 
             {/* 所有游戏按类别分类 */}
             <section>
-              <h2 className="text-2xl font-bold mb-4">
-                {language === 'zh' ? '所有游戏' : 'All Games'}
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  {language === 'zh' ? '所有游戏' : 'All Games'}
+                </h2>
+                <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
+              </div>
               {Object.entries(gamesByCategory).map(([category, games]) => (
-                <div key={category} className="mb-8">
-                  <h3 className="text-xl font-semibold mb-4">{getCategoryName(category)}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div key={category} className="mb-10">
+                  <h3 className="text-xl font-semibold mb-5 text-foreground/90 flex items-center gap-2">
+                    <span className="h-0.5 w-8 bg-primary rounded-full"></span>
+                    {String(getCategoryName(category) || category)}
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {games.map((game) => (
-                      <Card key={game.id} className="hover:shadow-md transition-shadow">
-                        <CardHeader className="p-4">
+                      <Card 
+                        key={game.id} 
+                        className="group hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/20 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
+                        onClick={() => window.open(game.url, '_blank')}
+                      >
+                        <CardHeader className="p-0">
                           {game.thumbnail_url && (
-                            <img
-                              src={game.thumbnail_url}
-                              alt={language === 'zh' ? game.title_zh : game.title}
-                              className="w-full h-32 object-cover rounded-md mb-2"
-                            />
+                            <div className="relative w-full aspect-square overflow-hidden bg-muted">
+                              <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                              <img
+                                src={game.thumbnail_url}
+                                alt={safeString(language === 'zh' ? game.title_zh : game.title, language === 'zh')}
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                              />
+                            </div>
                           )}
-                          <CardTitle className="text-base">
-                            {language === 'zh' ? game.title_zh : game.title}
-                          </CardTitle>
                         </CardHeader>
-                        <CardContent className="p-4 pt-0">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => window.open(game.url, '_blank')}
-                          >
-                            <ExternalLink className="mr-2 h-3 w-3" />
-                            {language === 'zh' ? '玩' : 'Play'}
-                          </Button>
+                        <CardContent className="px-2 pt-0 pb-2 flex flex-col">
+                          <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 text-center -mt-4 font-medium">
+                            {safeString(language === 'zh' ? game.title_zh : game.title, language === 'zh')}
+                          </CardTitle>
                         </CardContent>
                       </Card>
                     ))}
@@ -529,7 +633,7 @@ export default function DashboardPage() {
                           </div>
                           <CardDescription>
                             {language === 'zh' ? '完成时间：' : 'Completed: '}
-                            {new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')}
+                            {result.completed_at ? String(new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')) : '-'}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>

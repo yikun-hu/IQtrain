@@ -249,7 +249,28 @@ export async function getAllGames() {
     .order('created_at', { ascending: false });
   
   if (error) throw error;
-  return Array.isArray(data) ? data as Game[] : [];
+  
+  // 确保 title 和 description 是字符串
+  const normalizeGame = (game: any): Game => {
+    const getString = (val: any): string => {
+      if (typeof val === 'string') return val;
+      if (val == null) return '';
+      if (typeof val === 'object') {
+        return val.en || val['en-US'] || val.zh || val['zh-CN'] || '';
+      }
+      return String(val || '');
+    };
+    
+    return {
+      ...game,
+      title: getString(game.title),
+      title_zh: getString(game.title_zh),
+      description: game.description ? getString(game.description) : '',
+      description_zh: game.description_zh ? getString(game.description_zh) : '',
+    };
+  };
+  
+  return Array.isArray(data) ? data.map(normalizeGame) as Game[] : [];
 }
 
 // 按类别获取游戏
@@ -271,13 +292,32 @@ export async function getRandomGames(count: number = 3) {
     .select('*')
     .limit(100); // 先获取所有游戏
   
+  // 确保 title 和 description 是字符串
+  const normalizeGame = (game: any): Game => {
+    const getString = (val: any): string => {
+      if (typeof val === 'string') return val;
+      if (val == null) return '';
+      if (typeof val === 'object') {
+        return val.en || val['en-US'] || val.zh || val['zh-CN'] || '';
+      }
+      return String(val || '');
+    };
+    
+    return {
+      ...game,
+      title: getString(game.title),
+      title_zh: getString(game.title_zh),
+      description: game.description ? getString(game.description) : '',
+      description_zh: game.description_zh ? getString(game.description_zh) : '',
+    };
+  };
+  
   if (error) throw error;
   
-  const games = Array.isArray(data) ? data as Game[] : [];
-  
-  // 随机打乱并返回指定数量
-  const shuffled = games.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
+  // 规范化并随机打乱
+  const normalized = Array.isArray(data) ? data.map(normalizeGame) : [];
+  const shuffled = [...normalized].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count) as Game[];
 }
 
 // ==================== 测试相关 ====================
