@@ -79,9 +79,9 @@ def main():
     for ts_file in I18N_DIR.glob("*.ts"):
         if ts_file.name in EXCLUDE_FILES:
             continue
-        if "iqtable.ts" in ts_file.name:
-            continue
-        process_file(ts_file)
+        if "iqreport.ts" in ts_file.name:
+            # continue
+            process_file(ts_file)
 
 
 if __name__ == "__main__":

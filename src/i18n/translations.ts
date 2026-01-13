@@ -19,6 +19,7 @@ import loadingAnalysis from './loading-analysis'
 import scaleTestReport from './scale-test-report'
 import cookiePolicy from './cookie-policy'
 import header from './header'
+import iqreport from './iqreport'
 
 export const translations = {
   "en-US": {
@@ -42,6 +43,7 @@ export const translations = {
     scaleTestReport: scaleTestReport['en-US'],
     cookiePolicy: cookiePolicy['en-US'],
     header: header['en-US'],
+    iqreport: iqreport['en-US'],
   },
   "zh-CN": {
     common: common['zh-CN'],
@@ -64,6 +66,7 @@ export const translations = {
     scaleTestReport: scaleTestReport['zh-CN'],
     cookiePolicy: cookiePolicy['zh-CN'],
     header: header['zh-CN'],
+    iqreport: iqreport['zh-CN'],
   },
   "de-DE": {
     common: common['de-DE'],
@@ -86,6 +89,7 @@ export const translations = {
     scaleTestReport: scaleTestReport['de-DE'],
     cookiePolicy: cookiePolicy['de-DE'],
     header: header['de-DE'],
+    iqreport: iqreport['de-DE'],
   },
   "fr-FR": {
     common: common['fr-FR'],
@@ -108,6 +112,7 @@ export const translations = {
     scaleTestReport: scaleTestReport['fr-FR'],
     cookiePolicy: cookiePolicy['fr-FR'],
     header: header['fr-FR'],
+    iqreport: iqreport['fr-FR'],
   },
   "zh-TW": {
     common: common['zh-TW'],
@@ -130,6 +135,7 @@ export const translations = {
     scaleTestReport: scaleTestReport['zh-TW'],
     cookiePolicy: cookiePolicy['zh-TW'],
     header: header['zh-TW'],
+    iqreport: iqreport['zh-TW'],
   },
 };
 
