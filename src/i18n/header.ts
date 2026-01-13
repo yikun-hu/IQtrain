@@ -8,7 +8,7 @@ export default {
     tab_training: '训练',
     tab_tests: '测评',
 
-    lang_en: 'EN',
+    lang_en: 'en-US',
     lang_zh: '中文',
 
     admin: '管理后台',

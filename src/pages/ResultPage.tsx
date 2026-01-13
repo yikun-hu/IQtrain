@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLatestTestResult } from '@/db/api';
-import type { TestResult } from '@/types/types';
+import type { Language, TestResult } from '@/types/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 import iqTable from '@/components/result/iqtable';
 
-type Lang = 'zh-CN' | 'en-US';
 type I18nText = Record<string, string | undefined>;
 
 type IqLevelConfig = {
@@ -178,10 +177,7 @@ type IqTableConfig = {
 const TABLE = iqTable as unknown as IqTableConfig;
 
 // ---------- helpers ----------
-function pickLang(appLang: string): Lang {
-  return appLang === 'zh' ? 'zh-CN' : 'en-US';
-}
-function iqtableT(map: I18nText | undefined, lang: Lang, fallback = ''): string {
+function iqtableT(map: I18nText | undefined, lang: Language, fallback = ''): string {
   if (!map) return fallback;
   return (map[lang] ?? map['zh-CN'] ?? map['en-US'] ?? fallback) as string;
 }
@@ -232,7 +228,7 @@ function formatDateTime(d: Date) {
 // ---------- component ----------
 export default function ResultPage() {
   const { language, t } = useLanguage();
-  const lang = useMemo(() => pickLang(language), [language]);
+  const lang = language;
 
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();

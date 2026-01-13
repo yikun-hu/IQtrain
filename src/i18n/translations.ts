@@ -21,7 +21,7 @@ import cookiePolicy from './cookie-policy'
 import header from './header'
 
 export const translations = {
-  en: {
+  "en-US": {
     // 通用
     common: common.en,
     // 导航
@@ -56,7 +56,7 @@ export const translations = {
     cookiePolicy: cookiePolicy.en,
     header: header.en,
   },
-  zh: {
+  "zh-CN": {
     // 通用
     common: common.zh,
     // 导航
@@ -93,4 +93,5 @@ export const translations = {
   },
 };
 
-export type TranslationKey = keyof typeof translations.en;
+export type TranslationKey = keyof typeof translations['en-US'];
+export type Translation = typeof translations['en-US'];

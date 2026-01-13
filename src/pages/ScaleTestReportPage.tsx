@@ -124,7 +124,7 @@ export default function ScaleTestReportPage() {
   const maxScore = 50; // 10题 × 5分
   const scorePercentage = (totalScore / maxScore) * 100;
 
-  const dateLocale = language === 'zh' ? 'zh-CN' : 'en-US';
+  const dateLocale = language;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-12 px-4">

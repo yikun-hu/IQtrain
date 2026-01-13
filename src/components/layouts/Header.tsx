@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { SupportedLanguages, useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { signOut, cancelSubscription } from '@/db/api';
 import {
@@ -38,6 +38,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { Language } from '@/types/types';
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage() as any;
@@ -82,7 +83,7 @@ export default function Header() {
   };
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value as 'en' | 'zh');
+    setLanguage(value as Language);
   };
 
   const handleTabChange = (tab: string) => {
@@ -172,8 +173,9 @@ export default function Header() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='en'>{t.header.lang_en}</SelectItem>
-                  <SelectItem value='zh'>{t.header.lang_zh}</SelectItem>
+                  {SupportedLanguages.map((lang) => (
+                    <SelectItem key={lang.value} value={lang.value}>{lang.labelAbbr}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 

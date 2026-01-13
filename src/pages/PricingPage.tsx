@@ -35,7 +35,7 @@ export default function PricingPage() {
   const formatExpirationDate = (dateString?: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat(language === 'zh' ? 'zh-CN' : 'en-US', {
+    return new Intl.DateTimeFormat(language, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

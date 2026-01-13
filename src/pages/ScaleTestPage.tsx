@@ -159,10 +159,7 @@ export default function ScaleTestPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold mb-2">{getTestTitle()}</h1>
           <p className="text-muted-foreground mb-4">
-            {language === 'zh'
-              ? t.scaleTest.questionCountZh.replace('{{current}}', (currentIndex + 1).toString()).replace('{{total}}', questions.length.toString())
-              : t.scaleTest.questionCount.replace('{{current}}', (currentIndex + 1).toString()).replace('{{total}}', questions.length.toString())
-            }
+            {t.scaleTest.questionCount.replace('{{current}}', (currentIndex + 1).toString()).replace('{{total}}', questions.length.toString())}
           </p>
           <Progress value={progress} className="h-2" />
         </div>
@@ -171,7 +168,7 @@ export default function ScaleTestPage() {
         <Card className="shadow-lg">
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-8">
-              {language === 'zh' ? currentQuestion.question_text_zh : currentQuestion.question_text}
+              {currentQuestion.question_text[language]}
             </h2>
 
             <RadioGroup
@@ -219,7 +216,7 @@ export default function ScaleTestPage() {
                         ${isAnswered ? 'bg-primary text-primary-foreground hover:bg-primary/80' : 'bg-muted text-muted-foreground hover:bg-muted/80'}
                         ${submitting ? 'cursor-not-allowed opacity-50' : ''}
                       `}
-                      title={`${language === 'zh' ? t.scaleTest.questionZh : t.scaleTest.question} ${index + 1}${isAnswered ? (language === 'zh' ? t.scaleTest.questionCompletedZh : t.scaleTest.questionCompleted) : ''}`}
+                      title={`${t.scaleTest.question} ${index + 1}${isAnswered ? t.scaleTest.questionCompleted : ''}`}
                       onClick={() => handleQuestionClick(index)}
                     >
                       {index + 1}
@@ -228,20 +225,12 @@ export default function ScaleTestPage() {
                 })}
               </div>
               <p className="text-center text-sm text-muted-foreground mt-3">
-                {language === 'zh'
-                  ? t.scaleTest.questionsCompletedZh
-                    .replace('{{completed}}', Object.keys(answers).length.toString())
-                    .replace('{{total}}', questions.length.toString())
-                  : t.scaleTest.questionsCompleted
-                    .replace('{{completed}}', Object.keys(answers).length.toString())
-                    .replace('{{total}}', questions.length.toString())
-                }
+                {t.scaleTest.questionsCompleted
+                  .replace('{{completed}}', Object.keys(answers).length.toString())
+                  .replace('{{total}}', questions.length.toString())}
               </p>
               <p className="text-center text-xs text-muted-foreground mt-2">
-                {language === 'zh'
-                  ? t.scaleTest.clickToReviewZh
-                  : t.scaleTest.clickToReview
-                }
+                {t.scaleTest.clickToReview}
               </p>
             </div>
 

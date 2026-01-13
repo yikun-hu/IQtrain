@@ -1,5 +1,7 @@
 // 数据库类型定义
 
+import { ITranslatedField } from "@/contexts/LanguageContext";
+
 export type UserRole = 'user' | 'admin';
 export type OrderStatus = 'pending' | 'paid' | 'cancelled' | 'refunded';
 export type SubscriptionType = 'one_time' | 'monthly' | 'biweekly';
@@ -76,11 +78,11 @@ export interface TrainingRecord {
 // 游戏类型
 export interface Game {
   id: string;
-  title: string;
+  title: ITranslatedField;
   title_zh: string;
   category: GameCategory;
   url: string;
-  description?: string;
+  description?: ITranslatedField;
   description_zh?: string;
   thumbnail_url?: string;
   created_at: string;
@@ -160,7 +162,7 @@ export interface PaymentGatewayConfig {
 }
 
 // 语言类型
-export type Language = 'en' | 'zh';
+export type Language = 'en-US' | 'zh-CN';
 
 // 测试答案类型
 export interface TestAnswer {
@@ -209,7 +211,7 @@ export interface ScaleTestQuestion {
   id: string;
   test_type: ScaleTestType;
   question_id: string;
-  question_text: string;
+  question_text: ITranslatedField;
   question_text_zh: string;
   reverse_scored: boolean;
   display_order: number;

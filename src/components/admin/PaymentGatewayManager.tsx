@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { getPaymentGatewayConfig, updatePaymentGatewayConfig } from '@/db/api';
 import type { PaymentGatewayConfig } from '@/types/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +9,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Save, Eye, EyeOff, Key, CreditCard } from 'lucide-react';
 
 export default function PaymentGatewayManager() {
-  const { language } = useLanguage();
   const { toast } = useToast();
 
   const [config, setConfig] = useState<PaymentGatewayConfig | null>(null);
@@ -18,7 +16,6 @@ export default function PaymentGatewayManager() {
   const [saving, setSaving] = useState(false);
   const [showSecretKey, setShowSecretKey] = useState(false);
 
-  // 表单状态
   const [formData, setFormData] = useState({
     client_id: '',
     secret_key: '',
@@ -42,8 +39,8 @@ export default function PaymentGatewayManager() {
     } catch (error) {
       console.error('加载支付网关配置失败:', error);
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '加载支付网关配置失败' : 'Failed to load payment gateway config',
+        title: '错误',
+        description: '加载支付网关配置失败',
         variant: 'destructive',
       });
     } finally {
@@ -55,11 +52,10 @@ export default function PaymentGatewayManager() {
     if (!config) return;
 
     try {
-      // 验证表单
       if (!formData.client_id || !formData.secret_key) {
         toast({
-          title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' ? '请填写所有必填字段' : 'Please fill in all required fields',
+          title: '错误',
+          description: '请填写所有必填字段',
           variant: 'destructive',
         });
         return;
@@ -72,16 +68,16 @@ export default function PaymentGatewayManager() {
       });
 
       toast({
-        title: language === 'zh' ? '成功' : 'Success',
-        description: language === 'zh' ? '支付网关配置已更新' : 'Payment gateway config updated',
+        title: '成功',
+        description: '支付网关配置已更新',
       });
 
       loadConfig();
     } catch (error) {
       console.error('保存支付网关配置失败:', error);
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '保存支付网关配置失败' : 'Failed to save payment gateway config',
+        title: '错误',
+        description: '保存支付网关配置失败',
         variant: 'destructive',
       });
     } finally {
@@ -99,31 +95,24 @@ export default function PaymentGatewayManager() {
 
   return (
     <div className="space-y-6">
-      {/* 页头 */}
       <div>
-        <h2 className="text-2xl font-bold">
-          {language === 'zh' ? '支付网关配置' : 'Payment Gateway Configuration'}
-        </h2>
+        <h2 className="text-2xl font-bold">支付网关配置</h2>
         <p className="text-muted-foreground mt-1">
-          {language === 'zh' ? '配置PayPal支付网关的API凭证' : 'Configure PayPal payment gateway API credentials'}
+          配置 PayPal 支付网关的 API 凭证
         </p>
       </div>
 
-      {/* 配置卡片 */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5 text-primary" />
-            <CardTitle>PayPal {language === 'zh' ? '配置' : 'Configuration'}</CardTitle>
+            <CardTitle>PayPal 配置</CardTitle>
           </div>
           <CardDescription>
-            {language === 'zh' 
-              ? '从PayPal开发者后台获取API凭证' 
-              : 'Get API credentials from PayPal Developer Dashboard'}
+            从 PayPal 开发者后台获取 API 凭证
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Client ID */}
           <div className="space-y-2">
             <Label htmlFor="client_id" className="flex items-center gap-2">
               <Key className="h-4 w-4" />
@@ -137,13 +126,10 @@ export default function PaymentGatewayManager() {
               className="font-mono text-sm"
             />
             <p className="text-xs text-muted-foreground">
-              {language === 'zh' 
-                ? 'PayPal应用的Client ID，用于身份验证' 
-                : 'PayPal application Client ID for authentication'}
+              PayPal 应用的 Client ID，用于身份验证
             </p>
           </div>
 
-          {/* Secret Key */}
           <div className="space-y-2">
             <Label htmlFor="secret_key" className="flex items-center gap-2">
               <Key className="h-4 w-4" />
@@ -173,38 +159,17 @@ export default function PaymentGatewayManager() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              {language === 'zh' 
-                ? 'PayPal应用的Secret Key，请妥善保管' 
-                : 'PayPal application Secret Key, keep it secure'}
+              PayPal 应用的 Secret Key，请妥善保管
             </p>
           </div>
 
-          {/* 帮助信息 */}
           <div className="p-4 bg-muted rounded-lg space-y-2">
-            <h4 className="font-semibold text-sm">
-              {language === 'zh' ? '如何获取API凭证？' : 'How to get API credentials?'}
-            </h4>
+            <h4 className="font-semibold text-sm">如何获取 API 凭证？</h4>
             <ol className="text-sm space-y-1 list-decimal list-inside text-muted-foreground">
-              <li>
-                {language === 'zh' 
-                  ? '访问 PayPal Developer Dashboard' 
-                  : 'Visit PayPal Developer Dashboard'}
-              </li>
-              <li>
-                {language === 'zh' 
-                  ? '创建或选择一个应用' 
-                  : 'Create or select an application'}
-              </li>
-              <li>
-                {language === 'zh' 
-                  ? '在应用详情页面找到Client ID和Secret' 
-                  : 'Find Client ID and Secret in app details'}
-              </li>
-              <li>
-                {language === 'zh' 
-                  ? '复制并粘贴到上方输入框' 
-                  : 'Copy and paste into the fields above'}
-              </li>
+              <li>访问 PayPal Developer Dashboard</li>
+              <li>创建或选择一个应用</li>
+              <li>在应用详情页面找到 Client ID 和 Secret</li>
+              <li>复制并粘贴到上方输入框</li>
             </ol>
             <a
               href="https://developer.paypal.com/dashboard/"
@@ -212,22 +177,21 @@ export default function PaymentGatewayManager() {
               rel="noopener noreferrer"
               className="text-sm text-primary hover:underline inline-flex items-center gap-1 mt-2"
             >
-              {language === 'zh' ? '打开PayPal开发者后台' : 'Open PayPal Developer Dashboard'} →
+              打开 PayPal 开发者后台 →
             </a>
           </div>
 
-          {/* 保存按钮 */}
           <div className="flex justify-end">
             <Button onClick={handleSave} disabled={saving}>
               {saving ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {language === 'zh' ? '保存中...' : 'Saving...'}
+                  保存中...
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  {language === 'zh' ? '保存配置' : 'Save Configuration'}
+                  保存配置
                 </>
               )}
             </Button>
@@ -235,31 +199,26 @@ export default function PaymentGatewayManager() {
         </CardContent>
       </Card>
 
-      {/* 当前配置信息 */}
       {config && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">
-              {language === 'zh' ? '配置信息' : 'Configuration Info'}
-            </CardTitle>
+            <CardTitle className="text-base">配置信息</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{language === 'zh' ? '网关名称' : 'Gateway Name'}:</span>
+              <span className="text-muted-foreground">网关名称:</span>
               <span className="font-medium">{config.gateway_name}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{language === 'zh' ? '状态' : 'Status'}:</span>
+              <span className="text-muted-foreground">状态:</span>
               <span className={`font-medium ${config.is_active ? 'text-green-600' : 'text-red-600'}`}>
-                {config.is_active 
-                  ? (language === 'zh' ? '已启用' : 'Active')
-                  : (language === 'zh' ? '已停用' : 'Inactive')}
+                {config.is_active ? '已启用' : '已停用'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{language === 'zh' ? '最后更新' : 'Last Updated'}:</span>
+              <span className="text-muted-foreground">最后更新:</span>
               <span className="font-medium">
-                {new Date(config.updated_at).toLocaleString(language === 'zh' ? 'zh-CN' : 'en-US')}
+                {new Date(config.updated_at).toLocaleString('zh-CN')}
               </span>
             </div>
           </CardContent>

@@ -110,11 +110,11 @@ export default function PaymentPage() {
 
   // 获取时间单位标签
   const getTimeUnitLabel = (unit: string, duration: number) => {
-    const labels: Record<string, { zh: string; en: string }> = {
-      DAY: { zh: '天', en: duration > 1 ? 'days' : 'day' },
-      WEEK: { zh: '周', en: duration > 1 ? 'weeks' : 'week' },
-      MONTH: { zh: '月', en: duration > 1 ? 'months' : 'month' },
-      YEAR: { zh: '年', en: duration > 1 ? 'years' : 'year' },
+    const labels: Record<string, { 'zh-CN': string; 'en-US': string }> = {
+      DAY: { 'zh-CN': '天', 'en-US': duration > 1 ? 'days' : 'day' },
+      WEEK: { 'zh-CN': '周', 'en-US': duration > 1 ? 'weeks' : 'week' },
+      MONTH: { 'zh-CN': '月', 'en-US': duration > 1 ? 'months' : 'month' },
+      YEAR: { 'zh-CN': '年', 'en-US': duration > 1 ? 'years' : 'year' },
     };
     return labels[unit]?.[language] || unit;
   };

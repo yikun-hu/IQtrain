@@ -391,9 +391,7 @@ export default function TestPage() {
                     {t.test.start.questions}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh'
-                      ? t.test.start.questionsDesc.replace('{count}', questions.length.toString())
-                      : `${questions.length} ${t.test.start.questionsDesc}`}
+                    {t.test.start.questionsDesc(questions.length)}
                   </p>
                 </div>
 
@@ -635,9 +633,7 @@ export default function TestPage() {
               </div>
               {answeredCount < questions.length && (
                 <p className="text-sm text-muted-foreground">
-                  {language === 'zh'
-                    ? `还有 ${questions.length - answeredCount} ${t.test.completion.unanswered}`
-                    : `${questions.length - answeredCount} ${t.test.completion.unanswered}`}
+                  {`${questions.length - answeredCount} ${t.test.completion.unanswered}`}
                 </p>
               )}
             </DialogDescription>

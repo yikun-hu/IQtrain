@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { SupportedLanguages, useLanguage } from '@/contexts/LanguageContext';
 import {
   Select,
   SelectContent,
@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Language } from '@/types/types';
 
 export function Footer() {
   const { language, setLanguage, t } = useLanguage();
@@ -28,13 +29,14 @@ export function Footer() {
             <h4 className="font-semibold mb-4">
               {t.home.footer.language}
             </h4>
-            <Select value={language} onValueChange={(value) => setLanguage(value as 'en' | 'zh')}>
+            <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
               <SelectTrigger className="w-full max-w-[200px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='en'>English</SelectItem>
-                <SelectItem value='zh'>中文</SelectItem>
+                {SupportedLanguages.map((lang) => (
+                  <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

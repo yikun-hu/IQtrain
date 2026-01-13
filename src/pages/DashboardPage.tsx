@@ -176,13 +176,13 @@ export default function DashboardPage() {
                       {game.thumbnail_url && (
                         <img
                           src={game.thumbnail_url}
-                          alt={language === 'zh' ? game.title_zh : game.title}
+                          alt={game.title[language]}
                           className="w-full h-40 object-cover rounded-md mb-4"
                         />
                       )}
-                      <CardTitle>{language === 'zh' ? game.title_zh : game.title}</CardTitle>
+                      <CardTitle>{game.title[language]}</CardTitle>
                       <CardDescription>
-                        {language === 'zh' ? game.description_zh : game.description}
+                        {game.description?.[language]}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -214,12 +214,12 @@ export default function DashboardPage() {
                           {game.thumbnail_url && (
                             <img
                               src={game.thumbnail_url}
-                              alt={language === 'zh' ? game.title_zh : game.title}
+                              alt={game.title[language]}
                               className="w-full h-32 object-cover rounded-md mb-2"
                             />
                           )}
                           <CardTitle className="text-base">
-                            {language === 'zh' ? game.title_zh : game.title}
+                            {game.title[language]}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0">
@@ -474,7 +474,7 @@ export default function DashboardPage() {
                           </div>
                           <CardDescription>
                             {t.dashboard.completed}
-                            {new Date(result.completed_at).toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US')}
+                            {new Date(result.completed_at).toLocaleDateString(language)}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>

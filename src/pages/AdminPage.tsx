@@ -69,13 +69,13 @@ export default function AdminPage() {
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US');
+    return date.toLocaleDateString(language);
   };
 
   // 格式化日期时间
   const formatDateTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString(language === 'zh' ? 'zh-CN' : 'en-US');
+    return date.toLocaleString(language);
   };
 
   if (!profile || profile.role !== 'admin') {
