@@ -109,14 +109,8 @@ export default function PaymentPage() {
   }, [planId, language, toast]);
 
   // 获取时间单位标签
-  const getTimeUnitLabel = (unit: string, duration: number) => {
-    const labels: Record<string, { 'zh-CN': string; 'en-US': string }> = {
-      DAY: { 'zh-CN': '天', 'en-US': duration > 1 ? 'days' : 'day' },
-      WEEK: { 'zh-CN': '周', 'en-US': duration > 1 ? 'weeks' : 'week' },
-      MONTH: { 'zh-CN': '月', 'en-US': duration > 1 ? 'months' : 'month' },
-      YEAR: { 'zh-CN': '年', 'en-US': duration > 1 ? 'years' : 'year' },
-    };
-    return labels[unit]?.[language] || unit;
+  const getTimeUnitLabel = (unit: keyof typeof t.pricing.timeUnits, duration: number) => {
+    return duration > 1 ? t.pricing.timeUnits[unit].plural : t.pricing.timeUnits[unit].singular;
   };
 
   // 倒计时
@@ -689,7 +683,7 @@ export default function PaymentPage() {
                   </div>
                 ) : selectedPlan ? (
                   <>
-                    {selectedPlan.description.map((feature, index) => (
+                    {selectedPlan.description[language].map((feature, index) => (
                       <div key={index} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">{feature}</p>

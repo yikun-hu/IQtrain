@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Privacy Policy',
     lastUpdated: 'Last Updated: December 13, 2025',
     sections: [
@@ -81,7 +81,7 @@ Email: privacy@iqtrain.com`
       }
     ]
   },
-  zh: {
+  "zh-CN": {
     title: '隐私政策',
     lastUpdated: '最后更新：2025年12月13日',
     sections: [

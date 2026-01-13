@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     home: 'Home',
     test: 'IQ Test',
     dashboard: 'Dashboard',
@@ -8,7 +8,7 @@ export default {
     profile: 'Profile',
     admin: 'Admin',
   },
-  zh: {
+  "zh-CN": {
     home: '首页',
     test: 'IQ测试',
     dashboard: '仪表盘',

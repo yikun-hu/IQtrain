@@ -1,5 +1,5 @@
 export default {
-  zh: {
+  "zh-CN": {
     error: '错误',
     noResult: '未找到测试结果',
     loadFail: '加载测试结果失败',
@@ -21,7 +21,7 @@ export default {
     downloadDev: '下载功能开发中',
     levelSuffix: '级别',
   },
-  en: {
+  "en-US": {
     error: 'Error',
     noResult: 'No test results found',
     loadFail: 'Failed to load test results',

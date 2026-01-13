@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     loadingFailed: 'Loading Failed',
     failedToLoadQuestions: 'Failed to load test questions',
     submissionFailed: 'Submission Failed',
@@ -25,7 +25,7 @@ export default {
     question: 'Question',
     questionZh: '题目', // Chinese-specific
   },
-  zh: {
+  "zh-CN": {
     loadingFailed: '加载失败',
     failedToLoadQuestions: '无法加载测试题目',
     submissionFailed: '提交失败',

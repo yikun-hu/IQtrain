@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Terms of Service',
     lastUpdated: 'Last Updated: December 13, 2025',
     sections: [
@@ -111,7 +111,7 @@ Email: support@iqtrain.com`
       }
     ]
   },
-  zh: {
+  "zh-CN": {
     title: '用户协议',
     lastUpdated: '最后更新：2025年12月13日',
     sections: [

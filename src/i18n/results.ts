@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Your IQ Test Results',
     iqScore: 'IQ Score',
     accuracy: 'Accuracy',
@@ -11,7 +11,7 @@ export default {
     viewReport: 'View Full Report',
     certificate: 'Download Certificate',
   },
-  zh: {
+  "zh-CN": {
     title: '您的IQ测试结果',
     iqScore: 'IQ分数',
     accuracy: '准确率',

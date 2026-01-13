@@ -1,5 +1,5 @@
 export default {
-  zh: {
+  "zh-CN": {
     loadingFailed: '加载失败',
     failedLoadReport: '无法加载测试报告',
     reportNotFound: '报告不存在',
@@ -41,7 +41,7 @@ export default {
     errNoResult: '测试结果不存在',
     errNoPermission: '无权访问此报告',
   },
-  en: {
+  "en-US": {
     loadingFailed: 'Loading Failed',
     failedLoadReport: 'Failed to load test report',
     reportNotFound: 'Report not found',

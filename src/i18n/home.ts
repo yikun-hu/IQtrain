@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'IQ Train',
     hero: {
       title: 'Discover Your Accurate',
@@ -114,7 +114,7 @@ export default {
       language: 'Language',
     },
   },
-  zh: {
+  "zh-CN": {
     title: 'IQ Train',
     hero: {
       title: '发现你的准确',

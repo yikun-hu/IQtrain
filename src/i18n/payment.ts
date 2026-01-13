@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Complete Your Purchase',
     orderSummary: 'Order Summary',
     item: 'Item',
@@ -127,7 +127,7 @@ export default {
       ],
     },
   },
-  zh: {
+  "zh-CN": {
     title: '完成购买',
     orderSummary: '订单摘要',
     item: '项目',

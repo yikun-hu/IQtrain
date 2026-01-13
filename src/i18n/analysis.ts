@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Analyzing Your Results',
     subtitle: 'Please wait while we process your test...',
     analyzing: 'Analyzing',
@@ -22,7 +22,7 @@ export default {
     pleaseSelect: 'Please select at least one dimension',
     pleaseFillInfo: 'Please fill in all required information',
   },
-  zh: {
+  "zh-CN": {
     title: '正在分析您的结果',
     subtitle: '请稍候，我们正在处理您的测试...',
     analyzing: '分析中',

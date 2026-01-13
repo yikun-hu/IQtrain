@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     loading: 'Loading...',
     error: 'Error',
     success: 'Success',
@@ -18,7 +18,7 @@ export default {
     analyzing: 'Analyzing...',
 
   },
-  zh: {
+  "zh-CN": {
     loading: '加载中...',
     error: '错误',
     success: '成功',

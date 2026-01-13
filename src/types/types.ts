@@ -144,7 +144,7 @@ export interface SubscriptionPlan {
   recurring_duration: number;
   recurring_unit: TimeUnit;
   paypal_plan_id: string | null;
-  description: string[]; // bullet points数组
+  description: ITranslatedField<string[]>; // bullet points数组
   is_active: boolean;
   created_at: string;
   updated_at: string;

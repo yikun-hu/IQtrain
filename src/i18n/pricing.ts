@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Explore our subscription options and choose the plan that best suits your needs.',
     currentSubscription: 'Your Current Subscription',
     subscriptionType: 'Subscription Type:',
@@ -101,7 +101,7 @@ export default {
     trialPeriod: 'Trial Period',
     then: 'Then'
   },
-  zh: {
+  "zh-CN": {
     title: '探索我们的订阅选项，并选择最适合您需求的计划。',
     currentSubscription: '您的当前订阅',
     subscriptionType: '订阅类型：',

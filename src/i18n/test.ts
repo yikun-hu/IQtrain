@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'IQ Test',
     timeRemaining: 'Time Remaining',
     question: 'Question',
@@ -56,7 +56,7 @@ export default {
       notLoaded: 'Questions not loaded yet',
     },
   },
-  zh: {
+  "zh-CN": {
     title: 'IQ测试',
     timeRemaining: '剩余时间',
     question: '题目',

@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     todayTrainRecommend: "Today's Train Recommend",
     allGames: "All Games",
     availableTests: "Available Tests",
@@ -41,7 +41,7 @@ export default {
       logic_games: "Logic Games",
     }
   },
-  zh: {
+  "zh-CN": {
     todayTrainRecommend: "今日训练推荐",
     allGames: "所有游戏",
     availableTests: "可用测试",

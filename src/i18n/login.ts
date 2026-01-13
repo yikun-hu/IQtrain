@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Login to IQ Train',
     subtitle: 'Enter your email to receive a verification code',
     emailLabel: 'Email Address',
@@ -7,10 +7,6 @@ export default {
     verificationCodeLabel: 'Verification Code',
     verifyButton: 'Verify',
     backButton: 'Back',
-    noAccountMessage: {
-      zh: '没有账号？请先<Link>开始测试</Link>',
-      en: 'No account yet? Please <Link>start a quiz</Link> first'
-    },
     noAccountPrefix: 'No account yet? Please',
     noAccountLink: 'start a quiz',
     noAccountSuffix: 'first',
@@ -29,7 +25,7 @@ export default {
     },
     errorMessage: 'An error occurred during login'
   },
-  zh: {
+  "zh-CN": {
     title: '登录 IQ Train',
     subtitle: '输入您的邮箱以接收验证码',
     emailLabel: '邮箱地址',
@@ -37,10 +33,6 @@ export default {
     verificationCodeLabel: '验证码',
     verifyButton: '验证',
     backButton: '返回',
-    noAccountMessage: {
-      zh: '没有账号？请先<Link>开始测试</Link>',
-      en: 'No account yet? Please <Link>start a quiz</Link> first'
-    },
     codeSentTo: '验证码已发送至：',
     emailPlaceholder: 'your@email.com',
     codePlaceholder: '000000',

@@ -1,5 +1,5 @@
 export default {
-  zh: {
+  "zh-CN": {
     description: '请填写您的基本信息以获取个性化的IQ报告',
     step1: {
       fullName: '姓名',
@@ -39,7 +39,7 @@ export default {
     },
 
   },
-  en: {
+  "en-US": {
     description: 'Please fill in your basic information to get a personalized IQ report',
     step1: {
       fullName: 'Full Name',

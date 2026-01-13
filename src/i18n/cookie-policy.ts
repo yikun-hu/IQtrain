@@ -1,5 +1,5 @@
 export default {
-  en: {
+  "en-US": {
     title: 'Cookie Policy',
     lastUpdated: 'Last Updated: December 13, 2025',
     sections: [
@@ -103,7 +103,7 @@ Email: privacy@iqtrain.com`
       }
     ]
   },
-  zh: {
+  "zh-CN": {
     title: 'Cookie政策',
     lastUpdated: '最后更新：2025年12月13日',
     sections: [

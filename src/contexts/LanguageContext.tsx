@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import type { Language } from '@/types/types';
 import { Translation, translations } from '@/i18n/translations';
 
-export interface ITranslatedField {
-  [key: string]: any;
+export interface ITranslatedField<T = any> {
+  [key: string]: T;
 }
 
 export const SupportedLanguages: {

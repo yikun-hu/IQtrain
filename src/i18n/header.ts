@@ -1,5 +1,5 @@
 export default {
-  zh: {
+  "zh-CN": {
     logout_failed: '登出失败:',
     unsubscribe_failed: '取消订阅失败:',
     unsubscribe_failed_retry: '取消订阅失败，请稍后重试',
@@ -39,7 +39,7 @@ export default {
     unsubscribe_success: '已成功取消订阅',
     unsubscribe_success_en: 'Subscription cancelled successfully', // 可选：如果你希望中英文都走 key，这里也给了
   },
-  en: {
+  "en-US": {
     logout_failed: 'Logout failed:',
     unsubscribe_failed: 'Failed to cancel subscription:',
     unsubscribe_failed_retry: 'Failed to cancel subscription. Please try again later.',

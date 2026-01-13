@@ -179,7 +179,7 @@ const TABLE = iqTable as unknown as IqTableConfig;
 // ---------- helpers ----------
 function iqtableT(map: I18nText | undefined, lang: Language, fallback = ''): string {
   if (!map) return fallback;
-  return (map[lang] ?? map['zh-CN'] ?? map['en-US'] ?? fallback) as string;
+  return (map[lang] ?? map['en-US'] ?? fallback) as string;
 }
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

@@ -1,5 +1,5 @@
 export default {
-  zh: {
+  "zh-CN": {
     title: '管理员面板',
     overview: {
       title: '数据总览',
@@ -53,7 +53,7 @@ export default {
       noUsersFound: '暂无用户数据',
     },
   },
-  en: {
+  "en-US": {
     title: 'Admin Dashboard',
     overview: {
       title: 'Overview',

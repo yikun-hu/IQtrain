@@ -1,7 +1,7 @@
 import { Brain, Zap, Target, Eye, Lightbulb } from 'lucide-react';
 
 export default {
-  zh: {
+  "zh-CN": {
     title: '计算你的智商分数',
     subtitle: '等一下，我们的人工智能会根据5个关键的智力指标分析你的答案',
     dimensions: [
@@ -29,7 +29,7 @@ export default {
       },
     ],
   },
-  en: {
+  "en-US": {
     title: 'Calculating Your IQ Score',
     subtitle: 'Hold on, our AI is analyzing your answers based on 5 key intelligence indicators',
     dimensions: [
