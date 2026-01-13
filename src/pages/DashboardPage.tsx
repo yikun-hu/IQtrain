@@ -212,6 +212,28 @@ export default function DashboardPage() {
     return t.dashboard.gameCategories[category as keyof typeof t.dashboard.gameCategories] || category;
   };
 
+  // 安全地获取字符串值（用于渲染）
+  const safeString = (value: any, isZh: boolean = false): string => {
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (value == null) {
+      return '';
+    }
+    if (typeof value === 'object') {
+      const obj = value as any;
+      if (isZh) {
+        return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj['zh_CN'] || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
+      } else {
+        return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj['en_US'] || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
+      }
+    }
+    try {
+      return String(value);
+    } catch {
+      return '';
+    }
+  };
 
   // 如果认证状态或数据正在加载，显示加载界面
   if (authLoading || loading) {
@@ -253,7 +275,7 @@ export default function DashboardPage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                           <img
                             src={game.thumbnail_url}
-                            alt={game.title[language]}
+                            alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </div>
@@ -261,10 +283,10 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent className="px-3 pt-0 pb-2 flex flex-col">
                       <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1 text-center -mt-3.5 font-semibold">
-                          {game.title[language]}
+                        {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
                       </CardTitle>
                       <CardDescription className="text-sm line-clamp-2 text-center text-muted-foreground leading-relaxed">
-                          {game.description?.[language]}
+                        {safeString(language === 'zh-CN' ? game.description_zh : game.description, language === 'zh-CN')}
                       </CardDescription>
                     </CardContent>
                   </Card>
@@ -299,7 +321,7 @@ export default function DashboardPage() {
                               <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                               <img
                                 src={game.thumbnail_url}
-                                alt={game.title[language]}
+                                alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
@@ -307,7 +329,7 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent className="px-2 pt-0 pb-2 flex flex-col">
                           <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 text-center -mt-4 font-medium">
-                              {game.title[language]}
+                            {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
                           </CardTitle>
                         </CardContent>
                       </Card>
