@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,11 +15,9 @@ import {
 import type { ScaleScoringRule, ScaleTestConfig } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 
-type Lang = 'zh' | 'en';
-
 export default function ScaleTestReportPage() {
   const { resultId } = useParams<{ resultId: string }>();
-  const { language } = useLanguage() as { language: Lang };
+  const { language, t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,104 +28,7 @@ export default function ScaleTestReportPage() {
   const [allLevels, setAllLevels] = useState<ScaleScoringRule[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const t = useMemo(() => {
-    const dict = {
-      zh: {
-        loadingFailed: '加载失败',
-        failedLoadReport: '无法加载测试报告',
-        reportNotFound: '报告不存在',
-        scientificSubtitle: '基于科学心理量表的个性化评估与分析',
-        level: '等级',
-        totalScore: '测试总分',
-        fullScore: (max: number) => `满分${max}`,
-        percentile: '人群百分位',
-        testDate: '测试日期',
-        yourScore: (score: number, pct: string) => `您的分数：${score}分（${pct}%）`,
-        overview: '报告概览',
-        overviewP1: (testName: string) => `尊敬的测试者，根据您在${testName}中的表现，我们评估您的能力处于`,
-        overviewP1_2: (pct: number) => `。此级别对应人群前${pct}%的位置。`,
-        overviewP2: '本报告基于您完成的10道题目，从多个维度分析您的能力特点，并提供个性化发展建议。',
-        interpretationTitle: '分数解读',
-        personalizedFeedback: '个性化反馈',
-        abilityDim: '能力维度分析',
-        adviceTitle: '建议与行动指南',
-        improvementAdvice: '提升建议',
-        plan30: '30天行动计划',
-        certificate: '测试证书',
-        certP1: (testName: string) => `兹证明测试者在本${testName}中表现出`,
-        certP1_2: (testName: string, score: number) => `，测试总分为${score}分。`,
-        certP2: (pct: number) => `此级别对应人群前${pct}%的水平。`,
-        certNote: '* 此证书证明测试者在测试中的表现，非正式诊断或评估证书。',
-        print: '打印报告',
-        share: '分享报告',
-        back: '返回仪表盘',
-        linkCopied: '链接已复制',
-        linkCopiedDesc: '报告链接已复制到剪贴板',
-        shareTitleFallback: '测试报告',
-        shareText: (score?: number, label?: string) => `我的测试分数：${score ?? '-'}分，等级：${label ?? '-'}`,
-        disclaimerTitle: '重要声明与使用说明',
-        d1: '1. 本测试为心理能力自评量表，非正式心理诊断工具。',
-        d2: '2. 测试结果受环境、状态、对题型熟悉度等多种因素影响，建议在放松状态下测试。',
-        d3: '3. 心理能力可通过训练提升，本报告结果反映当前测试表现。',
-        d4: '4. 正式的心理评估需由专业人员在标准化环境下进行，本报告结果仅供参考。',
-        d5: '5. 如测试结果显示极高压力或极低满意度，建议寻求专业心理咨询支持。',
-        errNoResult: '测试结果不存在',
-        errNoPermission: '无权访问此报告',
-      },
-      en: {
-        loadingFailed: 'Loading Failed',
-        failedLoadReport: 'Failed to load test report',
-        reportNotFound: 'Report not found',
-        scientificSubtitle: 'Personalized assessment and analysis based on scientific psychological scales',
-        level: 'Level',
-        totalScore: 'Total Score',
-        fullScore: (max: number) => `Out of ${max}`,
-        percentile: 'Percentile',
-        testDate: 'Test Date',
-        yourScore: (score: number, pct: string) => `Your score: ${score} (${pct}%)`,
-        overview: 'Report Overview',
-        overviewP1: (testName: string) =>
-          `Based on your performance in ${testName}, we evaluate your ability level as`,
-        overviewP1_2: (pct: number) => `. This corresponds to the top ${pct}% of the population.`,
-        overviewP2:
-          'This report analyzes your performance across multiple dimensions based on 10 questions and provides personalized development suggestions.',
-        interpretationTitle: 'Score Interpretation',
-        personalizedFeedback: 'Personalized Feedback',
-        abilityDim: 'Ability Dimension Analysis',
-        adviceTitle: 'Recommendations & Action Guide',
-        improvementAdvice: 'Suggestions to Improve',
-        plan30: '30-Day Action Plan',
-        certificate: 'Certificate',
-        certP1: (testName: string) => `This certifies that the test taker demonstrated`,
-        certP1_2: (testName: string, score: number) => `in ${testName}, with a total score of ${score}.`,
-        certP2: (pct: number) => `This level corresponds to the top ${pct}% of the population.`,
-        certNote:
-          '* This certificate reflects performance in the test and is not a formal diagnosis or official assessment certificate.',
-        print: 'Print Report',
-        share: 'Share Report',
-        back: 'Back to Dashboard',
-        linkCopied: 'Link Copied',
-        linkCopiedDesc: 'Report link copied to clipboard',
-        shareTitleFallback: 'Test Report',
-        shareText: (score?: number, label?: string) =>
-          `My test score: ${score ?? '-'}, level: ${label ?? '-'}`,
-        disclaimerTitle: 'Important Notes & Usage',
-        d1: '1. This test is a self-assessment scale and not a formal diagnostic tool.',
-        d2:
-          '2. Results may be affected by environment, current state, and familiarity with the question types. Take the test when relaxed.',
-        d3:
-          '3. Abilities can be improved through training. This report reflects your current performance.',
-        d4:
-          '4. Formal psychological assessment should be conducted by professionals in a standardized environment. This report is for reference only.',
-        d5:
-          '5. If results indicate very high stress or very low satisfaction, consider seeking professional support.',
-        errNoResult: 'Test result does not exist',
-        errNoPermission: 'You do not have permission to view this report',
-      },
-    } as const;
-
-    return dict[language] ?? dict.zh;
-  }, [language]);
+  const tScaleTestReport = t.scaleTestReport;
 
   useEffect(() => {
     if (!user) {
@@ -145,9 +46,9 @@ export default function ScaleTestReportPage() {
       setLoading(true);
 
       const testResult = await getScaleTestResultById(resultId);
-      if (!testResult) throw new Error(t.errNoResult);
+      if (!testResult) throw new Error(tScaleTestReport.errNoResult);
 
-      if (testResult.user_id !== user?.id) throw new Error(t.errNoPermission);
+      if (testResult.user_id !== user?.id) throw new Error(tScaleTestReport.errNoPermission);
 
       setResult(testResult);
 
@@ -166,8 +67,8 @@ export default function ScaleTestReportPage() {
     } catch (error) {
       console.error('加载报告失败:', error);
       toast({
-        title: t.loadingFailed,
-        description: t.failedLoadReport,
+        title: tScaleTestReport.loadingFailed,
+        description: tScaleTestReport.failedLoadReport,
         variant: 'destructive',
       });
       navigate('/dashboard');
@@ -179,8 +80,8 @@ export default function ScaleTestReportPage() {
   const handlePrint = () => window.print();
 
   const handleShare = () => {
-    const title = testConfig?.name || t.shareTitleFallback;
-    const text = t.shareText(result?.iq_score, scoringRule?.label);
+    const title = testConfig?.name || tScaleTestReport.shareTitleFallback;
+    const text = tScaleTestReport.shareText(result?.iq_score, scoringRule?.label);
 
     if (navigator.share) {
       navigator.share({
@@ -191,8 +92,8 @@ export default function ScaleTestReportPage() {
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast({
-        title: t.linkCopied,
-        description: t.linkCopiedDesc,
+        title: tScaleTestReport.linkCopied,
+        description: tScaleTestReport.linkCopiedDesc,
       });
     }
   };
@@ -210,7 +111,7 @@ export default function ScaleTestReportPage() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">{t.reportNotFound}</p>
+            <p className="text-muted-foreground">{tScaleTestReport.reportNotFound}</p>
           </CardContent>
         </Card>
       </div>
@@ -223,7 +124,7 @@ export default function ScaleTestReportPage() {
   const maxScore = 50; // 10题 × 5分
   const scorePercentage = (totalScore / maxScore) * 100;
 
-  const dateLocale = language === 'zh' ? 'zh-CN' : 'en-US';
+  const dateLocale = language;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-12 px-4">
@@ -231,7 +132,7 @@ export default function ScaleTestReportPage() {
         {/* 标题 / Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">{testConfig.name}</h1>
-          <p className="text-muted-foreground">{t.scientificSubtitle}</p>
+          <p className="text-muted-foreground">{tScaleTestReport.scientificSubtitle}</p>
         </div>
 
         {/* 核心分数卡片 / Core score */}
@@ -239,27 +140,27 @@ export default function ScaleTestReportPage() {
           <CardContent className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
               <div>
-                <div className="text-sm text-muted-foreground mb-2">{t.level}</div>
+                <div className="text-sm text-muted-foreground mb-2">{tScaleTestReport.level}</div>
                 <div className="text-2xl font-bold" style={{ color: scoringRule.color }}>
                   {scoringRule.label}
                 </div>
               </div>
 
               <div>
-                <div className="text-sm text-muted-foreground mb-2">{t.totalScore}</div>
+                <div className="text-sm text-muted-foreground mb-2">{tScaleTestReport.totalScore}</div>
                 <div className="text-3xl font-bold">{totalScore}</div>
-                <div className="text-sm text-muted-foreground">{t.fullScore(maxScore)}</div>
+                <div className="text-sm text-muted-foreground">{tScaleTestReport.fullScore(maxScore)}</div>
               </div>
 
               <div>
-                <div className="text-sm text-muted-foreground mb-2">{t.percentile}</div>
+                <div className="text-sm text-muted-foreground mb-2">{tScaleTestReport.percentile}</div>
                 <div className="text-3xl font-bold" style={{ color: scoringRule.color }}>
                   {percentile}%
                 </div>
               </div>
 
               <div>
-                <div className="text-sm text-muted-foreground mb-2">{t.testDate}</div>
+                <div className="text-sm text-muted-foreground mb-2">{tScaleTestReport.testDate}</div>
                 <div className="text-lg font-semibold">
                   {new Date(result.completed_at).toLocaleDateString(dateLocale)}
                 </div>
@@ -296,7 +197,7 @@ export default function ScaleTestReportPage() {
               </div>
 
               <div className="text-center text-sm text-muted-foreground">
-                {t.yourScore(totalScore, scorePercentage.toFixed(1))}
+                {tScaleTestReport.yourScore(totalScore, scorePercentage.toFixed(1))}
               </div>
             </div>
           </CardContent>
@@ -305,24 +206,24 @@ export default function ScaleTestReportPage() {
         {/* 报告概览 / Overview */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>{t.overview}</CardTitle>
+            <CardTitle>{tScaleTestReport.overview}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              {t.overviewP1(testConfig.name)}
+              {tScaleTestReport.overviewP1(testConfig.name)}
               <span className="font-bold mx-1" style={{ color: scoringRule.color }}>
                 {scoringRule.label}
               </span>
-              {t.overviewP1_2(percentile)}
+              {tScaleTestReport.overviewP1_2(percentile)}
             </p>
-            <p className="text-muted-foreground leading-relaxed">{t.overviewP2}</p>
+            <p className="text-muted-foreground leading-relaxed">{tScaleTestReport.overviewP2}</p>
           </CardContent>
         </Card>
 
         {/* 分数解读 / Interpretation */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>{t.interpretationTitle}</CardTitle>
+            <CardTitle>{tScaleTestReport.interpretationTitle}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: `${scoringRule.color}15` }}>
@@ -332,7 +233,7 @@ export default function ScaleTestReportPage() {
               <p className="text-muted-foreground leading-relaxed">{scoringRule.interpretation}</p>
             </div>
             <div className="bg-muted/50 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2">{t.personalizedFeedback}</h4>
+              <h4 className="font-semibold mb-2">{tScaleTestReport.personalizedFeedback}</h4>
               <p className="text-sm text-muted-foreground leading-relaxed">{scoringRule.feedback}</p>
             </div>
           </CardContent>
@@ -342,7 +243,7 @@ export default function ScaleTestReportPage() {
         {scoringRule.ability_dimensions && (
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>{t.abilityDim}</CardTitle>
+              <CardTitle>{tScaleTestReport.abilityDim}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -374,12 +275,12 @@ export default function ScaleTestReportPage() {
         {/* 建议与行动指南 / Recommendations */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>{t.adviceTitle}</CardTitle>
+            <CardTitle>{tScaleTestReport.adviceTitle}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div>
-                <h4 className="font-semibold mb-3">{t.improvementAdvice}</h4>
+                <h4 className="font-semibold mb-3">{tScaleTestReport.improvementAdvice}</h4>
                 <ul className="space-y-2">
                   {testConfig.recommendations.map((rec, index) => (
                     <li key={index} className="flex items-start">
@@ -391,7 +292,7 @@ export default function ScaleTestReportPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-3">{t.plan30}</h4>
+                <h4 className="font-semibold mb-3">{tScaleTestReport.plan30}</h4>
                 <ul className="space-y-2">
                   {testConfig.action_plan.map((action, index) => (
                     <li key={index} className="flex items-start">
@@ -416,16 +317,16 @@ export default function ScaleTestReportPage() {
         >
           <CardContent className="p-8 text-center">
             <Award className="h-16 w-16 mx-auto mb-4" style={{ color: scoringRule.color }} />
-            <h3 className="text-2xl font-bold mb-2">{t.certificate}</h3>
+            <h3 className="text-2xl font-bold mb-2">{tScaleTestReport.certificate}</h3>
             <p className="text-muted-foreground mb-4">
-              {t.certP1(testConfig.name)}
+              {tScaleTestReport.certP1(testConfig.name)}
               <span className="font-bold mx-1" style={{ color: scoringRule.color }}>
                 {scoringRule.label}
               </span>
-              {t.certP1_2(testConfig.name, totalScore)}
+              {tScaleTestReport.certP1_2(testConfig.name, totalScore)}
             </p>
-            <p className="text-sm text-muted-foreground">{t.certP2(percentile)}</p>
-            <p className="text-xs text-muted-foreground mt-4">{t.certNote}</p>
+            <p className="text-sm text-muted-foreground">{tScaleTestReport.certP2(percentile)}</p>
+            <p className="text-xs text-muted-foreground mt-4">{tScaleTestReport.certNote}</p>
           </CardContent>
         </Card>
 
@@ -433,28 +334,28 @@ export default function ScaleTestReportPage() {
         <div className="flex flex-wrap gap-4 justify-center mb-8">
           <Button onClick={handlePrint} variant="outline" size="lg">
             <Download className="mr-2 h-4 w-4" />
-            {t.print}
+            {tScaleTestReport.print}
           </Button>
           <Button onClick={handleShare} variant="outline" size="lg">
             <Share2 className="mr-2 h-4 w-4" />
-            {t.share}
+            {tScaleTestReport.share}
           </Button>
           <Button onClick={() => navigate('/dashboard')} size="lg">
-            {t.back}
+            {tScaleTestReport.back}
           </Button>
         </div>
 
         {/* 免责声明 / Disclaimer */}
         <Card className="bg-muted/30">
           <CardHeader>
-            <CardTitle className="text-base">{t.disclaimerTitle}</CardTitle>
+            <CardTitle className="text-base">{tScaleTestReport.disclaimerTitle}</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground space-y-2">
-            <p>{t.d1}</p>
-            <p>{t.d2}</p>
-            <p>{t.d3}</p>
-            <p>{t.d4}</p>
-            <p>{t.d5}</p>
+            <p>{tScaleTestReport.d1}</p>
+            <p>{tScaleTestReport.d2}</p>
+            <p>{tScaleTestReport.d3}</p>
+            <p>{tScaleTestReport.d4}</p>
+            <p>{tScaleTestReport.d5}</p>
           </CardContent>
         </Card>
       </div>

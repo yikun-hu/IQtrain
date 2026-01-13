@@ -25,15 +25,3 @@ export function createQueryString(
 
   return newSearchParams.toString();
 }
-
-export function formatDate(
-  date: Date | string | number,
-  opts: Intl.DateTimeFormatOptions = {}
-) {
-  return new Intl.DateTimeFormat("zh-CN", {
-    month: opts.month ?? "long",
-    day: opts.day ?? "numeric",
-    year: opts.year ?? "numeric",
-    ...opts,
-  }).format(new Date(date));
-}

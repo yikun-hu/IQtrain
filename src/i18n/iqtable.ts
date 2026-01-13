@@ -876,7 +876,6 @@ export default {
         }
       }
     }
-    // ... Repeat similar structure for other levels, making sure each field supports both zh-CN and en-US
   ],
   "commonSections": {
     "science": {

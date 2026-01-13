@@ -22,7 +22,7 @@ export default function ResultsPage() {
   useEffect(() => {
     // 等待认证状态加载完成
     if (authLoading) return;
-    
+
     if (!user) {
       navigate('/login');
       return;
@@ -59,7 +59,7 @@ export default function ResultsPage() {
   };
 
   const handleUnlockReport = () => {
-    navigate('/payment?type=one_time');
+    navigate('/payment?type=biweekly');
   };
 
   const handleSubscribe = () => {

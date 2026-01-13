@@ -1,8 +1,10 @@
 // 数据库类型定义
 
+import { ITranslatedField } from "@/contexts/LanguageContext";
+
 export type UserRole = 'user' | 'admin';
 export type OrderStatus = 'pending' | 'paid' | 'cancelled' | 'refunded';
-export type SubscriptionType = 'one_time' | 'monthly';
+export type SubscriptionType = 'one_time' | 'monthly' | 'biweekly';
 export type TestDimension = 'memory' | 'speed' | 'reaction' | 'concentration' | 'logic';
 export type GameCategory = 'puzzles' | 'number_games' | 'memory_games' | 'logic_games';
 export type TestType = 'iq' | 'career' | 'eq' | 'anxiety' | 'personality';
@@ -76,11 +78,11 @@ export interface TrainingRecord {
 // 游戏类型
 export interface Game {
   id: string;
-  title: string;
+  title: ITranslatedField;
   title_zh: string;
   category: GameCategory;
   url: string;
-  description?: string;
+  description?: ITranslatedField;
   description_zh?: string;
   thumbnail_url?: string;
   created_at: string;
@@ -142,7 +144,7 @@ export interface SubscriptionPlan {
   recurring_duration: number;
   recurring_unit: TimeUnit;
   paypal_plan_id: string | null;
-  description: string[]; // bullet points数组
+  description: ITranslatedField<string[]>; // bullet points数组
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -160,7 +162,7 @@ export interface PaymentGatewayConfig {
 }
 
 // 语言类型
-export type Language = 'en' | 'zh';
+export type Language = 'en-US' | 'zh-CN';
 
 // 测试答案类型
 export interface TestAnswer {
@@ -209,7 +211,7 @@ export interface ScaleTestQuestion {
   id: string;
   test_type: ScaleTestType;
   question_id: string;
-  question_text: string;
+  question_text: ITranslatedField;
   question_text_zh: string;
   reverse_scored: boolean;
   display_order: number;

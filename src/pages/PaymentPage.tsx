@@ -41,30 +41,15 @@ import {
 } from '@/components/ui/dialog';
 
 // 随机生成购买横幅数据
-const generatePurchaseBanners = () => {
-  const names = [
-    'Michael Johnson', 'Sarah Williams', 'David Brown', 'Emma Davis',
-    'James Wilson', 'Olivia Martinez', 'Robert Anderson', 'Sophia Taylor',
-    'William Thomas', 'Isabella Moore', 'John Jackson', 'Mia White',
-    'Daniel Harris', 'Charlotte Martin', 'Matthew Thompson', 'Amelia Garcia',
-    'Joseph Rodriguez', 'Harper Lewis', 'Christopher Lee', 'Evelyn Walker',
-  ];
-
-  const chineseNames = [
-    '张伟', '李娜', '王芳', '刘洋', '陈静', '杨帆', '赵敏', '黄磊',
-    '周杰', '吴倩', '徐强', '孙丽', '马超', '朱婷', '胡军', '郭敏',
-    '林峰', '何洁', '高阳', '罗文',
-  ];
-
-  return names.map((name, index) => ({
+const generatePurchaseBanners = (t: any) => {
+  return t?.payment?.purchaseBanner?.names?.map((name: string) => ({
     name,
-    chineseName: chineseNames[index],
     iq: Math.floor(Math.random() * (145 - 95) + 95),
   }));
 };
 
 export default function PaymentPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user, refreshProfile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -74,7 +59,7 @@ export default function PaymentPage() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(6 * 60 + 26); // 6:26
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  const [purchaseBanners] = useState(generatePurchaseBanners());
+  const [purchaseBanners] = useState(() => generatePurchaseBanners(t));
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [gatewayConfig, setGatewayConfig] = useState<PaymentGatewayConfig | null>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
@@ -91,8 +76,8 @@ export default function PaymentPage() {
 
   // 从URL获取plan_id，如果没有则使用旧的type参数
   const planId = searchParams.get('plan_id');
-  const type = (searchParams.get('type') as SubscriptionType) || 'one_time';
-  const amount = type === 'one_time' ? 1.98 : 28.8;
+  const type = (searchParams.get('type') as SubscriptionType) || 'biweekly';
+  const amount = type === 'biweekly' ? 1.98 : 28.8;
   const monthlyPrice = 28.8;
 
   // 加载订阅包和支付网关配置
@@ -111,8 +96,8 @@ export default function PaymentPage() {
       } catch (error) {
         console.error('加载订阅包或支付网关配置失败:', error);
         toast({
-          title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' ? '加载订阅信息失败' : 'Failed to load subscription info',
+          title: t.common.error,
+          description: t.payment.errors.loadSubscription,
           variant: 'destructive',
         });
       } finally {
@@ -124,14 +109,8 @@ export default function PaymentPage() {
   }, [planId, language, toast]);
 
   // 获取时间单位标签
-  const getTimeUnitLabel = (unit: string, duration: number) => {
-    const labels: Record<string, { zh: string; en: string }> = {
-      DAY: { zh: '天', en: duration > 1 ? 'days' : 'day' },
-      WEEK: { zh: '周', en: duration > 1 ? 'weeks' : 'week' },
-      MONTH: { zh: '月', en: duration > 1 ? 'months' : 'month' },
-      YEAR: { zh: '年', en: duration > 1 ? 'years' : 'year' },
-    };
-    return labels[unit]?.[language] || unit;
+  const getTimeUnitLabel = (unit: keyof typeof t.pricing.timeUnits, duration: number) => {
+    return duration > 1 ? t.pricing.timeUnits[unit].plural : t.pricing.timeUnits[unit].singular;
   };
 
   // 倒计时
@@ -149,14 +128,14 @@ export default function PaymentPage() {
     const isLoggedIn = !!user;
     // 检查是否有用户答题信息
     const hasUserInfo = localStorage.getItem('userInfo');
-    
+
     // 如果用户未登录且未答题，直接跳转到首页
     if (!isLoggedIn && !hasUserInfo) {
       navigate('/');
       return;
     }
   }, [user, navigate]);
-  
+
   // 购买横幅轮播
   useEffect(() => {
     const bannerTimer = setInterval(() => {
@@ -178,8 +157,8 @@ export default function PaymentPage() {
 
     if (!otpEmail || !otpEmail.includes('@')) {
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '请输入有效的邮箱地址' : 'Please enter a valid email address',
+        title: t.common.error,
+        description: t.payment.errors.noValidEmail,
         variant: 'destructive',
       });
       return;
@@ -190,13 +169,13 @@ export default function PaymentPage() {
       await signInWithOTP(otpEmail);
       setOtpStep('code');
       toast({
-        title: language === 'zh' ? '成功' : 'Success',
-        description: language === 'zh' ? '验证码已发送' : 'Verification code sent',
+        title: t.common.success,
+        description: t.common.verificationCodeSent,
       });
     } catch (error: any) {
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: error.message || (language === 'zh' ? '发送验证码失败' : 'Failed to send verification code'),
+        title: t.common.error,
+        description: error.message || t.payment.errors.sendOTP,
         variant: 'destructive',
       });
     } finally {
@@ -215,8 +194,8 @@ export default function PaymentPage() {
 
     if (!otpCode || otpCode.length !== 6) {
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '请输入有效的6位验证码' : 'Please enter a valid 6-digit code',
+        title: t.common.error,
+        description: t.payment.errors.invalidOTP,
         variant: 'destructive',
       });
       return;
@@ -239,8 +218,8 @@ export default function PaymentPage() {
       setToProcessPaymentSuccess(true);
     } catch (error: any) {
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '验证码错误' : 'Invalid verification code',
+        title: t.common.error,
+        description: t.payment.errors.otpError,
         variant: 'destructive',
       });
     } finally {
@@ -293,8 +272,8 @@ export default function PaymentPage() {
 
       if (!user) {
         toast({
-          title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' ? '请先验证您的邮箱' : 'Please verify your email first',
+          title: t.common.error,
+          description: t.payment.errors.emailVerify,
           variant: 'destructive',
         });
         return;
@@ -410,8 +389,8 @@ export default function PaymentPage() {
       // 关闭处理模态框
       setShowPaymentProcessingModal(false);
       toast({
-        title: language === 'zh' ? '错误' : 'Error',
-        description: language === 'zh' ? '支付失败，请重试' : 'Payment failed, please try again',
+        title: t.common.error,
+        description: t.payment.errors.paymentProcess,
         variant: 'destructive',
       });
     }
@@ -437,10 +416,10 @@ export default function PaymentPage() {
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-primary mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">
-                {language === 'zh' ? '支付成功！' : 'Payment Successful!'}
+                {t.payment.paymentSuccess.title}
               </h2>
               <p className="text-muted-foreground mb-4">
-                {language === 'zh' ? '正在跳转到仪表盘...' : 'Redirecting to dashboard...'}
+                {t.payment.paymentSuccess.redirecting}
               </p>
               <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
             </div>
@@ -459,12 +438,10 @@ export default function PaymentPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {language === 'zh' ? '验证您的邮箱' : 'Verify Your Email'}
+              {t.payment.otp.verifyEmail}
             </DialogTitle>
             <DialogDescription>
-              {language === 'zh'
-                ? '输入验证码以继续完成支付'
-                : 'Enter the verification code to complete your payment'}
+              {t.payment.otp.enterCode}
             </DialogDescription>
           </DialogHeader>
 
@@ -472,7 +449,7 @@ export default function PaymentPage() {
             <form onSubmit={handleSendOTPCode} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp-email" className="text-gray-700 font-medium">
-                  {language === 'zh' ? '邮箱地址' : 'Email Address'}
+                  {t.payment.otp.emailAddress}
                 </Label>
                 <Input
                   id="otp-email"
@@ -488,7 +465,7 @@ export default function PaymentPage() {
               <div className="flex gap-3">
                 <Button type="submit" className="flex-1 h-11" disabled={otpLoading}>
                   {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {language === 'zh' ? '发送验证码' : 'Send Code'}
+                  {t.payment.otp.sendCode}
                 </Button>
                 <Button
                   type="button"
@@ -496,7 +473,7 @@ export default function PaymentPage() {
                   className="h-11"
                   onClick={() => handleOtpOpenChange(false)}
                 >
-                  {language === 'zh' ? '取消' : 'Cancel'}
+                  {t.payment.otp.cancel}
                 </Button>
               </div>
             </form>
@@ -504,7 +481,7 @@ export default function PaymentPage() {
             <form onSubmit={handleVerifyOTPCode} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp-code" className="text-gray-700 font-medium">
-                  {language === 'zh' ? '验证码' : 'Verification Code'}
+                  {t.payment.otp.verificationCode}
                 </Label>
                 <Input
                   id="otp-code"
@@ -517,19 +494,19 @@ export default function PaymentPage() {
                   required
                 />
                 <p className="text-sm text-gray-500">
-                  {language === 'zh' ? '验证码已发送至：' : 'Code sent to: '}
+                  {t.payment.otp.codeSent}
                   {otpEmail}
                 </p>
               </div>
 
               <Button type="submit" className="w-full h-11" disabled={otpLoading}>
                 {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {language === 'zh' ? '验证' : 'Verify'}
+                {t.payment.otp.verify}
               </Button>
 
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="flex-1 h-11" onClick={() => setOtpStep('email')}>
-                  {language === 'zh' ? '修改邮箱' : 'Change Email'}
+                  {t.payment.otp.changeEmail}
                 </Button>
                 <Button
                   type="button"
@@ -537,7 +514,7 @@ export default function PaymentPage() {
                   className="flex-1 h-11"
                   onClick={() => handleOtpOpenChange(false)}
                 >
-                  {language === 'zh' ? '取消' : 'Cancel'}
+                  {t.payment.otp.cancel}
                 </Button>
               </div>
             </form>
@@ -546,20 +523,20 @@ export default function PaymentPage() {
       </Dialog>
 
       {/* 支付处理模态框 */}
-      <Dialog open={showPaymentProcessingModal} onOpenChange={() => {}} aria-describedby="payment-processing-description">
+      <Dialog open={showPaymentProcessingModal} onOpenChange={() => { }} aria-describedby="payment-processing-description">
         <DialogContent className="sm:max-w-md z-[500]">
           <DialogHeader>
             <DialogTitle>
-              {language === 'zh' ? '支付成功' : 'Payment Successful'}
+              {t.payment.success}
             </DialogTitle>
             <DialogDescription id="payment-processing-description">
-              {language === 'zh' ? '正在处理您的订单...' : 'Processing your order...'}
+              {t.payment.paymentSuccess.orderProcessing}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center justify-center py-8">
             <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
             <p className="text-sm text-muted-foreground">
-              {language === 'zh' ? '请稍候，我们正在为您准备结果...' : 'Please wait while we prepare your results...'}
+              {t.payment.paymentSuccess.preparingResults}
             </p>
           </div>
         </DialogContent>
@@ -570,13 +547,14 @@ export default function PaymentPage() {
         <div className="container mx-auto px-4">
           <div className="text-center text-sm animate-fade-in">
             <span className="font-semibold text-orange-800">
-              {language === 'zh' ? currentBanner.chineseName : currentBanner.name}
+              {currentBanner.name}
             </span>{' '}
             <span className="text-orange-700">
-              {language === 'zh' ? '刚刚购买智商报告' : 'just purchased IQ report'}
+              {t.payment.purchaseBanner.justPurchased}
             </span>{' '}
             <span className="font-bold text-orange-600">
-              {language === 'zh' ? `智商分数：${currentBanner.iq}` : `IQ Score: ${currentBanner.iq}`}
+              {t.payment.purchaseBanner.iqScore}
+              {currentBanner.iq}
             </span>
           </div>
         </div>
@@ -587,36 +565,26 @@ export default function PaymentPage() {
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center mb-8">
             <div className="inline-block bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              {language === 'zh' ? '🎉 限时优惠：立省85%' : '🎉 Limited Offer: Save 85%'}
+              {t.payment.hero.limitedOffer}
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
-              {language === 'zh' ? (
-                <>
-                  解锁您的<span className="text-orange-500">完整IQ档案</span>
-                </>
-              ) : (
-                <>
-                  Unlock Your <span className="text-orange-500">Complete IQ Profile</span>
-                </>
-              )}
+              {t.payment.hero.unlockProfile}
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              {language === 'zh'
-                ? '立即获取详细的认知评估报告、个性化训练计划和官方证书。加入全球超过100万用户的行列！'
-                : 'Get instant access to your detailed cognitive assessment, personalized training plan, and official certificate. Join over 1 million users worldwide!'}
+              {t.payment.hero.description}
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{language === 'zh' ? '即时访问' : 'Instant Access'}</span>
+                <span className="font-semibold text-gray-700">{t.payment.hero.instantAccess}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{language === 'zh' ? '科学验证' : 'Scientifically Validated'}</span>
+                <span className="font-semibold text-gray-700">{t.payment.hero.scientificallyValidated}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{language === 'zh' ? '100%安全支付' : '100% Secure Payment'}</span>
+                <span className="font-semibold text-gray-700">{t.payment.hero.securePayment}</span>
               </div>
             </div>
           </div>
@@ -628,7 +596,7 @@ export default function PaymentPage() {
         <div className="bg-gray-50 border border-orange-200 rounded-lg py-3 mb-8">
           <div className="text-center">
             <p className="text-sm font-semibold text-orange-600">
-              {language === 'zh' ? '⏰ 特惠倒计时：' : '⏰ Special Offer Ends In: '}
+              {t.payment.countdown.specialOfferEnds}
               <span className="font-bold ml-2 text-orange-700">{formatTime(timeLeft)}</span>
             </p>
           </div>
@@ -639,7 +607,7 @@ export default function PaymentPage() {
           <Card className="shadow-lg h-full">
             <CardContent className="pt-6 h-full flex flex-col">
               <h2 className="text-2xl font-bold mb-6">
-                {language === 'zh' ? '您将解锁的内容' : "What You'll Unlock"}
+                {t.payment.unlock.title}
               </h2>
               <div className="space-y-6 flex-1">
                 <div className="flex items-start gap-4">
@@ -648,12 +616,10 @@ export default function PaymentPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
-                      {language === 'zh' ? '完整IQ分数和详细分析' : 'Full IQ Score & Breakdown'}
+                      {t.payment.unlock.fullIQScore}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh'
-                        ? '详细分析您在记忆、速度、逻辑等方面的认知优势'
-                        : 'Detailed analysis of your cognitive strengths across memory, speed, logic, and more'}
+                      {t.payment.unlock.fullIQDescription}
                     </p>
                   </div>
                 </div>
@@ -664,10 +630,10 @@ export default function PaymentPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
-                      {language === 'zh' ? '可打印证书' : 'Printable Certificate'}
+                      {t.payment.unlock.printableCertificate}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh' ? '官方IQ证书，您可以下载、打印和分享' : 'Official IQ certificate you can download, print, and share'}
+                      {t.payment.unlock.certificateDescription}
                     </p>
                   </div>
                 </div>
@@ -678,12 +644,10 @@ export default function PaymentPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
-                      {language === 'zh' ? '个性化训练仪表盘' : 'Personalized Training Dashboard'}
+                      {t.payment.unlock.trainingDashboard}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh'
-                        ? '访问根据您的档案定制的认知游戏和练习'
-                        : 'Access to cognitive games and exercises tailored to your profile'}
+                      {t.payment.unlock.dashboardDescription}
                     </p>
                   </div>
                 </div>
@@ -694,12 +658,10 @@ export default function PaymentPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">
-                      {language === 'zh' ? '未来测试访问权限' : 'Future Test Access'}
+                      {t.payment.unlock.futureTestAccess}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {language === 'zh'
-                        ? '进行包括职业、情商和焦虑测试在内的额外评估'
-                        : 'Take additional assessments including Career, EQ, and Anxiety tests'}
+                      {t.payment.unlock.testAccessDescription}
                     </p>
                   </div>
                 </div>
@@ -711,7 +673,7 @@ export default function PaymentPage() {
           <Card className="shadow-xl border-2 border-orange-200 h-full">
             <CardContent className="pt-6 h-full flex flex-col">
               <h2 className="text-2xl font-bold mb-6 text-center">
-                {language === 'zh' ? '获取7天试用' : 'Get 7-Day Trial'}
+                {t.payment.paymentCard.getTrial}
               </h2>
 
               <div className="space-y-4 mb-6 flex-1">
@@ -721,7 +683,7 @@ export default function PaymentPage() {
                   </div>
                 ) : selectedPlan ? (
                   <>
-                    {selectedPlan.description.map((feature, index) => (
+                    {selectedPlan.description[language].map((feature, index) => (
                       <div key={index} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">{feature}</p>
@@ -731,19 +693,16 @@ export default function PaymentPage() {
                       <div className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <p className="text-sm text-gray-700">
-                          {language === 'zh'
-                            ? `开始${selectedPlan.trial_duration}${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)}试用仅需$${selectedPlan.trial_price.toFixed(
-                                2,
-                              )}，试用期后，续订费用为$${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration}${getTimeUnitLabel(
-                                selectedPlan.recurring_unit,
-                                selectedPlan.recurring_duration,
-                              )}。随时取消。`
-                            : `Start ${selectedPlan.trial_duration}-${getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration)} trial for just $${selectedPlan.trial_price.toFixed(
-                                2,
-                              )}, then $${selectedPlan.recurring_price.toFixed(2)}/${selectedPlan.recurring_duration} ${getTimeUnitLabel(
-                                selectedPlan.recurring_unit,
-                                selectedPlan.recurring_duration,
-                              )}. Cancel anytime.`}
+                          {t.payment.paymentCard.planTrialDescription
+                            .replace('{trialDuration}', String(selectedPlan.trial_duration))
+                            .replace('{trialUnit}', getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration))
+                            .replace('${trialPrice}', selectedPlan.trial_price.toFixed(2))
+                            .replace('${recurringPrice}', selectedPlan.recurring_price.toFixed(2))
+                            .replace('{recurringDuration}', String(selectedPlan.recurring_duration))
+                            .replace('{recurringUnit}', getTimeUnitLabel(
+                              selectedPlan.recurring_unit,
+                              selectedPlan.recurring_duration,
+                            ))}
                         </p>
                       </div>
                     )}
@@ -753,30 +712,32 @@ export default function PaymentPage() {
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-700">
-                        {language === 'zh' ? '获得IQ分数并与名人比较' : 'Get IQ score and compare with celebrities'}
+                        {t.payment.paymentCard.getIQScore}
                       </p>
                     </div>
 
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-700">
-                        {language === 'zh' ? '了解你的强项，人格和职业倾向' : 'Understand your strengths, personality and career tendencies'}
+                        {t.payment.paymentCard.understandStrengths}
                       </p>
                     </div>
 
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-700">
-                        {language === 'zh' ? '每周训练以提高你的认知能力' : 'Weekly training to improve cognitive abilities'}
+                        {t.payment.paymentCard.weeklyTraining}
                       </p>
                     </div>
 
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-gray-700">
-                        {language === 'zh'
-                          ? `开始7天试用仅需€${amount.toFixed(2)}，试用期后，续订费用为€${monthlyPrice.toFixed(2)}/月起。随时取消。`
-                          : `Start 7-day trial for just €${amount.toFixed(2)}, then €${monthlyPrice.toFixed(2)}/month. Cancel anytime.`}
+                        <p className="text-sm text-gray-700">
+                          {t.payment.paymentCard.startTrialWithPrice
+                            .replace('${amount}', amount.toFixed(2))
+                            .replace('${monthlyPrice}', monthlyPrice.toFixed(2))}
+                        </p>
                       </p>
                     </div>
                   </>
@@ -787,7 +748,7 @@ export default function PaymentPage() {
                 <div className="bg-gray-100 rounded-lg p-4 mb-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">
-                      {language === 'zh' ? '今日特惠：' : "Today's Special:"}
+                      {t.payment.paymentCard.todaySpecial}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-lg line-through text-gray-400">
@@ -800,7 +761,7 @@ export default function PaymentPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Clock className="h-4 w-4" />
-                    <span>{language === 'zh' ? '限时优惠' : 'Limited time offer'}</span>
+                    <span>{t.payment.countdown.limitedTimeOffer}</span>
                   </div>
                 </div>
 
@@ -846,8 +807,8 @@ export default function PaymentPage() {
                       } catch (error) {
                         console.error('Payment processing failed:', error);
                         toast({
-                          title: language === 'zh' ? '错误' : 'Error',
-                          description: language === 'zh' ? '支付处理失败，请重试' : 'Payment processing failed, please try again',
+                          title: t.common.error,
+                          description: t.payment.errors.paymentProcess,
                           variant: 'destructive',
                         });
                       } finally {
@@ -858,7 +819,7 @@ export default function PaymentPage() {
                 </div>
 
                 <p className="text-xs text-center text-gray-500">
-                  {language === 'zh' ? '安全支付，支持所有主流信用卡' : 'Secure payment, all major credit cards accepted'}
+                  {t.payment.paymentCard.securePayment}
                 </p>
               </div>
             </CardContent>
@@ -868,32 +829,10 @@ export default function PaymentPage() {
         {/* 用户真实反馈 */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-center mb-12">
-            {language === 'zh' ? '用户的真实反馈' : 'Real User Feedback'}
+            {t.payment.testimonials.title}
           </h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[
-              {
-                name: language === 'zh' ? '张明，32岁' : 'Anna Müller, 32',
-                feedback:
-                  language === 'zh'
-                    ? '参加测试让我对自己有了全新的认识！报告非常详细，让我了解到自己的优势和需要改进的地方。强烈推荐！'
-                    : 'Taking the test gave me a whole new understanding of myself! The report was very detailed and helped me understand my strengths and areas for improvement. Highly recommended!',
-              },
-              {
-                name: language === 'zh' ? '李华，54岁' : 'Lukas Schmidt, 54',
-                feedback:
-                  language === 'zh'
-                    ? '令人惊讶的准确！这个IQ测试帮助我在职业发展上做出了更明智的决策，这些自我认知对我的职业生涯产生了积极影响。'
-                    : 'Surprisingly accurate! This IQ test helped me make smarter career decisions, and this self-awareness has had a positive impact on my career.',
-              },
-              {
-                name: language === 'zh' ? '王芳，24岁' : 'Leon Fischer, 24',
-                feedback:
-                  language === 'zh'
-                    ? '我对自己的智商一直很好奇，但从未找到一个可信的测试。这个平台提供了专业的评估，而且价格合理。物超所值！'
-                    : "I've always been curious about my IQ but never found a reliable test. This platform provided a professional assessment at a reasonable price. Great value!",
-              },
-            ].map((testimonial, index) => (
+            {t.payment.testimonials.users.map((testimonial, index) => (
               <Card key={index}>
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -919,29 +858,10 @@ export default function PaymentPage() {
         {/* 常见问题 */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold mb-8">
-            {language === 'zh' ? '常见问题' : 'Frequently Asked Questions'}
+            {t.payment.faq.title}
           </h2>
           <div className="space-y-4">
-            {[
-              {
-                q: language === 'zh' ? '我的IQ测试结果什么时候可以看到？' : 'When can I see my IQ test results?',
-                a: language === 'zh'
-                  ? '完成支付后，您将立即获得完整的IQ测试报告，包括详细的分析和建议。'
-                  : 'After completing payment, you will immediately receive your complete IQ test report with detailed analysis and recommendations.',
-              },
-              {
-                q: language === 'zh' ? '我可以在多个设备上访问我的测试结果吗？' : 'Can I access my test results on multiple devices?',
-                a: language === 'zh'
-                  ? '是的，您可以使用同一账号在任何设备上登录并查看您的测试结果。'
-                  : 'Yes, you can log in with the same account on any device to view your test results.',
-              },
-              {
-                q: language === 'zh' ? '如果我对测试结果不满意怎么办？' : "What if I'm not satisfied with my test results?",
-                a: language === 'zh'
-                  ? '我们提供7天无理由退款保证。如果您对结果不满意，可以随时申请退款。'
-                  : "We offer a 7-day money-back guarantee. If you're not satisfied with the results, you can request a refund at any time.",
-              },
-            ].map((faq, index) => (
+            {t.payment.faq.questions.map((faq, index) => (
               <Card key={index}>
                 <CardContent className="pt-6">
                   <h3 className="font-semibold mb-2">{faq.q}</h3>

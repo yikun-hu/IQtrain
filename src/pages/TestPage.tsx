@@ -169,7 +169,7 @@ export default function TestPage() {
       if (data.length === 0) {
         toast({
           title: t.common.error,
-          description: language === 'zh' ? '没有可用的题目，请联系管理员。' : 'No questions available.',
+          description: t.test.errors.noQuestions,
           variant: 'destructive',
         });
         navigate('/');
@@ -180,7 +180,7 @@ export default function TestPage() {
       console.error('加载题目失败:', error);
       toast({
         title: t.common.error,
-        description: language === 'zh' ? '加载题目失败' : 'Failed to load questions',
+        description: t.test.errors.loadFailed,
         variant: 'destructive',
       });
     } finally {
@@ -193,7 +193,7 @@ export default function TestPage() {
     if (questions.length === 0) {
       toast({
         title: t.common.error,
-        description: language === 'zh' ? '题目尚未加载完成，请稍候' : 'Questions not loaded yet',
+        description: t.test.errors.notLoaded,
         variant: 'destructive',
       });
       return;
@@ -320,8 +320,8 @@ export default function TestPage() {
         });
 
         toast({
-          title: language === 'zh' ? '成功' : 'Success',
-          description: language === 'zh' ? '测试结果已保存' : 'Test results saved',
+          title: t.common.success,
+          description: t.test.completion.resultSaved,
         });
       } catch (error) {
         console.error('保存测试结果失败:', error);
@@ -372,12 +372,10 @@ export default function TestPage() {
                   </div>
                 </div>
                 <h1 className="text-4xl font-bold mb-4">
-                  {language === 'zh' ? 'IQ 测试即将开始' : 'IQ Test About to Begin'}
+                  {t.test.start.title}
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  {language === 'zh'
-                    ? '请仔细阅读以下说明，确保您在最佳状态下完成测试'
-                    : 'Please read the instructions carefully to ensure optimal test conditions'}
+                  {t.test.start.instructions}
                 </p>
               </div>
 
@@ -390,12 +388,10 @@ export default function TestPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-lg mb-2">
-                    {language === 'zh' ? '题目数量' : 'Questions'}
+                    {t.test.start.questions}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh'
-                      ? `共${questions.length}道题，难度递增`
-                      : `${questions.length} questions, increasing difficulty`}
+                    {t.test.start.questionsDesc(questions.length)}
                   </p>
                 </div>
 
@@ -406,12 +402,10 @@ export default function TestPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-lg mb-2">
-                    {language === 'zh' ? '答题方式' : 'Answer Method'}
+                    {t.test.start.answerMethod}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh'
-                      ? '6个选项选1个，支持键盘快捷键'
-                      : '6 options, keyboard shortcuts supported'}
+                    {t.test.start.answerMethodDesc}
                   </p>
                 </div>
 
@@ -422,12 +416,10 @@ export default function TestPage() {
                     </div>
                   </div>
                   <h3 className="font-semibold text-lg mb-2">
-                    {language === 'zh' ? '灵活作答' : 'Flexible'}
+                    {t.test.start.flexible}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh'
-                      ? '可跳过题目，随时返回修改'
-                      : 'Skip questions, return anytime'}
+                    {t.test.start.flexibleDesc}
                   </p>
                 </div>
               </div>
@@ -439,7 +431,7 @@ export default function TestPage() {
                   onClick={handleStartTest}
                   className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-6"
                 >
-                  {language === 'zh' ? '开始测试' : 'Start Test'}
+                  {t.test.start.startButton}
                 </Button>
               </div>
             </CardContent>
@@ -460,7 +452,7 @@ export default function TestPage() {
             <div className="text-center space-y-4">
               <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
               <p className="text-muted-foreground">
-                {language === 'zh' ? '加载题目中...' : 'Loading questions...'}
+                {t.test.loading}
               </p>
             </div>
           </CardContent>
@@ -504,7 +496,7 @@ export default function TestPage() {
                 {/* 左侧：问题图片 */}
                 <div className="flex items-center justify-center flex-col">
                   <h3 className="text-lg font-semibold mb-4">
-                    {language === 'zh' ? '根据图像从下方选项中选择最符合的一项' : 'Select the most appropriate option according to the picture'}
+                    {t.test.testInterface.questionPrompt}
                   </h3>
                   <div className="w-full max-w-md flex justify-center">
                     <div className="border-2 border-border rounded-lg overflow-hidden shadow-inner bg-muted/30 p-6">
@@ -521,7 +513,7 @@ export default function TestPage() {
                 {/* 右侧：答案选项 */}
                 <div className="flex flex-col justify-center">
                   <h3 className="text-lg font-semibold mb-4">
-                    {language === 'zh' ? '选择您的答案：' : 'Choose Your Answer:'}
+                    {t.test.testInterface.chooseAnswer}
                   </h3>
                   <div className="grid grid-cols-3 gap-3 mb-6 md:grid-cols-3">
                     {options.map((option) => {
@@ -566,7 +558,7 @@ export default function TestPage() {
                       className="gap-1"
                     >
                       <ChevronLeft className="h-4 w-4" />
-                      {language === 'zh' ? '上一页' : 'Prev'}
+                      {t.test.testInterface.prev}
                     </Button>
 
                     {currentQuestion === questions.length - 1 ? (
@@ -576,22 +568,22 @@ export default function TestPage() {
                           className="bg-secondary hover:bg-secondary/90 gap-1"
                           size="sm"
                         >
-                          {language === 'zh' ? '提交' : 'Submit'}
+                          {t.test.testInterface.submit}
                           <CheckCircle2 className="h-4 w-4" />
                         </Button>
                       ) : (
                         <div className="flex flex-col items-end">
                           <p className="text-sm text-muted-foreground mb-2">
-                            {language === 'zh' ? '请完成所有题目后提交' : 'Please complete all questions before submitting'}
+                            {t.test.testInterface.completeAll}
                           </p>
                           <Button variant="outline" size="sm" className="gap-1">
-                            {language === 'zh' ? '最后一题' : 'Final Question'}
+                            {t.test.testInterface.finalQuestion}
                           </Button>
                         </div>
                       )
                     ) : (
                       <Button onClick={handleNext} size="sm" className="gap-1">
-                        {language === 'zh' ? '下一页' : 'Next'}
+                        {t.test.testInterface.next}
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     )}
@@ -626,24 +618,22 @@ export default function TestPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl text-center">
-              🎉 {language === 'zh' ? '测试完成！' : 'Test Completed!'}
+              🎉 {t.test.completion.title}
             </DialogTitle>
             <DialogDescription className="text-center space-y-4 pt-4">
               <div className="space-y-2">
                 <p className="text-lg">
-                  <span className="font-semibold">{language === 'zh' ? '已回答：' : 'Answered: '}</span>
+                  <span className="font-semibold">{t.test.completion.answered}</span>
                   <span className="text-primary font-bold">{answeredCount} / {questions.length}</span>
                 </p>
                 <p className="text-lg">
-                  <span className="font-semibold">{language === 'zh' ? '用时：' : 'Time: '}</span>
+                  <span className="font-semibold">{t.test.completion.time}</span>
                   <span className="text-primary font-bold">{formatTime(elapsedTime)}</span>
                 </p>
               </div>
               {answeredCount < questions.length && (
                 <p className="text-sm text-muted-foreground">
-                  {language === 'zh'
-                    ? `还有 ${questions.length - answeredCount} 道题未作答`
-                    : `${questions.length - answeredCount} questions unanswered`}
+                  {`${questions.length - answeredCount} ${t.test.completion.unanswered}`}
                 </p>
               )}
             </DialogDescription>
@@ -654,13 +644,13 @@ export default function TestPage() {
               onClick={() => setShowCompletionModal(false)}
               className="flex-1"
             >
-              {language === 'zh' ? '继续答题' : 'Continue'}
+              {t.test.completion.continue}
             </Button>
             <Button
               onClick={handleSubmit}
               className="flex-1 bg-secondary hover:bg-secondary/90"
             >
-              {language === 'zh' ? '提交答案' : 'Submit'}
+              {t.test.completion.submitAnswer}
             </Button>
           </div>
         </DialogContent>
@@ -671,14 +661,14 @@ export default function TestPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl text-center">
-              ⚠️ {language === 'zh' ? '信息不足' : 'Insufficient Information'}
+              ⚠️ {t.test.insufficient.title}
             </DialogTitle>
             <DialogDescription className="text-center space-y-4 pt-4">
               <p className="text-lg">
-                {language === 'zh' ? '您的测试结果不在我们目前的测试范围内。您可以仔细尝试再次测试，我们会做出更准确的评估。' : 'Your IQ is not within the current range of our test. You can try again carefully, and we will make a more accurate assessment.'}
+                {t.test.insufficient.message1}
               </p>
               <p className="text-lg">
-                {language === 'zh' ? '请重新答题。' : 'Please retake the test.'}
+                {t.test.insufficient.message2}
               </p>
             </DialogDescription>
           </DialogHeader>
@@ -696,7 +686,7 @@ export default function TestPage() {
               }}
               className="flex-1 bg-primary hover:bg-primary/90"
             >
-              {language === 'zh' ? '重新开始' : 'Restart'}
+              {t.test.insufficient.restart}
             </Button>
           </div>
         </DialogContent>

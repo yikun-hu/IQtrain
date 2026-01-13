@@ -1,11 +1,24 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { Language } from '@/types/types';
-import { translations } from '@/i18n/translations';
+import { Translation, translations } from '@/i18n/translations';
+
+export interface ITranslatedField<T = any> {
+  [key: string]: T;
+}
+
+export const SupportedLanguages: {
+  value: Language,
+  label: string,
+  labelAbbr: string,
+}[] = [
+  { value: "en-US", label: "English", labelAbbr: "EN" },
+  { value: "zh-CN", label: "中文", labelAbbr: "中文" },
+]
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: typeof translations.en;
+  t: Translation;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -13,7 +26,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
-    return (saved === 'zh' || saved === 'en') ? saved : 'en';
+    return (SupportedLanguages.find((lang) => lang.value === saved)?.value || SupportedLanguages[0].value);
   });
 
   useEffect(() => {

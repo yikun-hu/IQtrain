@@ -5,10 +5,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Check, Brain, Zap, Target, Eye, Lightbulb, CheckCircle2 } from 'lucide-react';
+import { Check, Brain, CheckCircle2 } from 'lucide-react';
 
 export default function LoadingAnalysisPage() {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [progress, setProgress] = useState(0);
@@ -17,72 +17,14 @@ export default function LoadingAnalysisPage() {
   const [currentModal, setCurrentModal] = useState(0);
   const [modalAnswers, setModalAnswers] = useState<string[]>([]);
 
-  const content = {
-    zh: {
-      title: '计算你的智商分数',
-      subtitle: '等一下，我们的人工智能会根据5个关键的智力指标分析你的答案',
-      dimensions: [
-        { name: '记忆力', icon: Brain },
-        { name: '速度', icon: Zap },
-        { name: '反应力', icon: Target },
-        { name: '专注力', icon: Eye },
-        { name: '逻辑思维', icon: Lightbulb },
-      ],
-      modals: [
-        {
-          title: '数字还是单词？',
-          description: '你更擅长处理哪种类型的信息？',
-          options: ['数字', '单词'],
-        },
-        {
-          title: '你喜欢解谜吗？',
-          description: '解决复杂问题对你来说是一种乐趣吗？',
-          options: ['不', '是'],
-        },
-        {
-          title: '单独工作还是团队合作？',
-          description: '你更喜欢哪种工作方式？',
-          options: ['单独', '团队'],
-        },
-      ],
-    },
-    en: {
-      title: 'Calculating Your IQ Score',
-      subtitle: 'Hold on, our AI is analyzing your answers based on 5 key intelligence indicators',
-      dimensions: [
-        { name: 'Memory', icon: Brain },
-        { name: 'Speed', icon: Zap },
-        { name: 'Reaction', icon: Target },
-        { name: 'Concentration', icon: Eye },
-        { name: 'Logic', icon: Lightbulb },
-      ],
-      modals: [
-        {
-          title: 'Numbers or Words?',
-          description: 'Which type of information do you handle better?',
-          options: ['Numbers', 'Words'],
-        },
-        {
-          title: 'Do you like solving puzzles?',
-          description: 'Is solving complex problems enjoyable for you?',
-          options: ['No', 'Yes'],
-        },
-        {
-          title: 'Work alone or in a team?',
-          description: 'Which working style do you prefer?',
-          options: ['Alone', 'Team'],
-        },
-      ],
-    },
-  };
+  const tLoadingAnalysis = t.loadingAnalysis;
 
-  const t = content[language];
 
   // 进度控制
   useEffect(() => {
     // 只有当模态框未显示时才更新进度
     if (showModal) return;
-    
+
     const duration = 6000; // 6秒（缩短分析时长）
     const interval = 100; // 每100ms更新一次
     const increment = (interval / duration) * 100;
@@ -151,12 +93,12 @@ export default function LoadingAnalysisPage() {
             <div className="flex-1 space-y-8 w-full">
               {/* 标题 */}
               <h1 className="text-2xl mt-8 xl:text-3xl font-bold text-center bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                {t.title}
+                {tLoadingAnalysis.title}
               </h1>
 
               {/* 副标题 */}
               <p className="text-center text-muted-foreground text-sm xl:text-base my-2">
-                {t.subtitle}
+                {tLoadingAnalysis.subtitle}
               </p>
 
               {/* 进度条 */}
@@ -192,24 +134,22 @@ export default function LoadingAnalysisPage() {
 
             {/* 右侧维度检查列表 */}
             <div className="flex-1 space-y-4 w-full">
-              {t.dimensions.map((dimension, index) => {
+              {tLoadingAnalysis.dimensions.map((dimension, index) => {
                 const Icon = dimension.icon;
                 return (
                   <div
                     key={index}
-                    className={`flex items-center gap-4 p-5 rounded-xl border-2 transition-all duration-500 ${
-                      checkedItems[index]
+                    className={`flex items-center gap-4 p-5 rounded-xl border-2 transition-all duration-500 ${checkedItems[index]
                         ? 'bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30 shadow-md'
                         : 'bg-card border-border/50'
-                    }`}
+                      }`}
                   >
                     {/* 复选框 */}
                     <div
-                      className={`flex items-center justify-center w-7 h-7 rounded-md border-2 transition-all duration-300 ${
-                        checkedItems[index]
+                      className={`flex items-center justify-center w-7 h-7 rounded-md border-2 transition-all duration-300 ${checkedItems[index]
                           ? 'bg-primary border-primary scale-110'
                           : 'border-muted-foreground/30 bg-background'
-                      }`}
+                        }`}
                     >
                       {checkedItems[index] && (
                         <Check className="h-5 w-5 text-primary-foreground animate-in zoom-in duration-300" />
@@ -218,38 +158,36 @@ export default function LoadingAnalysisPage() {
 
                     {/* 图标 */}
                     <div
-                      className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${
-                        checkedItems[index]
+                      className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${checkedItems[index]
                           ? 'bg-primary/20 text-primary scale-110'
                           : 'bg-muted/50 text-muted-foreground'
-                      }`}
+                        }`}
                     >
                       <Icon className="h-6 w-6" />
                     </div>
 
                     {/* 维度名称 */}
-                  <span
-                    className={`font-semibold text-sm transition-all duration-300 ${
-                      checkedItems[index]
-                        ? 'text-foreground'
-                        : 'text-muted-foreground'
-                    }`}
-                  >
-                    {dimension.name}
-                  </span>
+                    <span
+                      className={`font-semibold text-sm transition-all duration-300 ${checkedItems[index]
+                          ? 'text-foreground'
+                          : 'text-muted-foreground'
+                        }`}
+                    >
+                      {dimension.name}
+                    </span>
 
-                  {/* 分析中/已完成 */}
-                  {checkedItems[index] && (
-                    <span className="ml-auto text-xs text-primary font-semibold animate-in fade-in duration-300 flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
-                      {language === 'zh' ? '已完成' : 'Completed'}
-                    </span>
-                  )}
-                  {!checkedItems[index] && progress > index * 20 && (
-                    <span className="ml-auto text-xs text-muted-foreground font-medium animate-pulse">
-                      {language === 'zh' ? '分析中...' : 'Analyzing...'}
-                    </span>
-                  )}
+                    {/* 分析中/已完成 */}
+                    {checkedItems[index] && (
+                      <span className="ml-auto text-xs text-primary font-semibold animate-in fade-in duration-300 flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        {t.common.completed}
+                      </span>
+                    )}
+                    {!checkedItems[index] && progress > index * 20 && (
+                      <span className="ml-auto text-xs text-muted-foreground font-medium animate-pulse">
+                        {t.common.analyzing}
+                      </span>
+                    )}
                   </div>
                 );
               })}
@@ -263,14 +201,14 @@ export default function LoadingAnalysisPage() {
         <DialogContent className="sm:max-w-md border-2">
           <DialogHeader className="space-y-3">
             <DialogTitle className="text-xl font-bold text-center">
-              {t.modals[currentModal]?.title}
+              {tLoadingAnalysis.modals[currentModal]?.title}
             </DialogTitle>
             <DialogDescription className="text-center text-sm">
-              {t.modals[currentModal]?.description}
+              {tLoadingAnalysis.modals[currentModal]?.description}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-3 mt-4">
-            {t.modals[currentModal]?.options.map((option, index) => (
+            {tLoadingAnalysis.modals[currentModal]?.options.map((option, index) => (
               <Button
                 key={index}
                 onClick={() => handleModalAnswer(option)}

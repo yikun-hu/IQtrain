@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-import Header from './components/common/Header';
+import Header from './components/layouts/Header';
 import { Footer } from './components/layouts/Footer';
 import { Toaster } from './components/ui/toaster';
 import routes from './routes';
