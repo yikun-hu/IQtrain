@@ -12,7 +12,10 @@ export const SupportedLanguages: {
   labelAbbr: string,
 }[] = [
   { value: "en-US", label: "English", labelAbbr: "EN" },
-  { value: "zh-CN", label: "中文", labelAbbr: "中文" },
+  { value: "fr-FR", label: "Français", labelAbbr: "FR" },
+  { value: "de-DE", label: "Deutsch", labelAbbr: "DE" },
+  { value: "zh-CN", label: "简体中文", labelAbbr: "简中" },
+  { value: "zh-TW", label: "繁体中文", labelAbbr: "繁中" },
 ]
 
 interface LanguageContextType {

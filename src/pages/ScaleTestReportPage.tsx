@@ -55,14 +55,13 @@ export default function ScaleTestReportPage() {
       const rule = await getScaleScoringRuleByScore(
         testResult.test_type,
         testResult.iq_score,
-        language
       );
       setScoringRule(rule);
 
-      const config = await getScaleTestConfig(testResult.test_type, language);
+      const config = await getScaleTestConfig(testResult.test_type);
       setTestConfig(config);
 
-      const levels = await getScaleScoringRules(testResult.test_type, language);
+      const levels = await getScaleScoringRules(testResult.test_type);
       setAllLevels(levels);
     } catch (error) {
       console.error('加载报告失败:', error);
@@ -80,8 +79,8 @@ export default function ScaleTestReportPage() {
   const handlePrint = () => window.print();
 
   const handleShare = () => {
-    const title = testConfig?.name || tScaleTestReport.shareTitleFallback;
-    const text = tScaleTestReport.shareText(result?.iq_score, scoringRule?.label);
+    const title = testConfig?.name[language] || tScaleTestReport.shareTitleFallback;
+    const text = tScaleTestReport.shareText(result?.iq_score, scoringRule?.label[language]);
 
     if (navigator.share) {
       navigator.share({
@@ -131,7 +130,7 @@ export default function ScaleTestReportPage() {
       <div className="container mx-auto max-w-4xl">
         {/* 标题 / Title */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">{testConfig.name}</h1>
+          <h1 className="text-4xl font-bold mb-2">{testConfig.name[language]}</h1>
           <p className="text-muted-foreground">{tScaleTestReport.scientificSubtitle}</p>
         </div>
 
@@ -142,7 +141,7 @@ export default function ScaleTestReportPage() {
               <div>
                 <div className="text-sm text-muted-foreground mb-2">{tScaleTestReport.level}</div>
                 <div className="text-2xl font-bold" style={{ color: scoringRule.color }}>
-                  {scoringRule.label}
+                  {scoringRule.label[language]}
                 </div>
               </div>
 
@@ -180,7 +179,7 @@ export default function ScaleTestReportPage() {
                     className={lvl.level === level ? 'font-bold' : ''}
                     style={{ color: lvl.level === level ? lvl.color : undefined }}
                   >
-                    {lvl.label}
+                    {lvl.label[language]}
                   </span>
                 ))}
               </div>
@@ -210,9 +209,9 @@ export default function ScaleTestReportPage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              {tScaleTestReport.overviewP1(testConfig.name)}
+              {tScaleTestReport.overviewP1(testConfig.name[language])}
               <span className="font-bold mx-1" style={{ color: scoringRule.color }}>
-                {scoringRule.label}
+                {scoringRule.label[language]}
               </span>
               {tScaleTestReport.overviewP1_2(percentile)}
             </p>
@@ -228,26 +227,26 @@ export default function ScaleTestReportPage() {
           <CardContent>
             <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: `${scoringRule.color}15` }}>
               <h3 className="font-semibold text-lg mb-2" style={{ color: scoringRule.color }}>
-                {scoringRule.label}
+                {scoringRule.label[language]}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">{scoringRule.interpretation}</p>
+              <p className="text-muted-foreground leading-relaxed">{scoringRule.interpretation[language]}</p>
             </div>
             <div className="bg-muted/50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">{tScaleTestReport.personalizedFeedback}</h4>
-              <p className="text-sm text-muted-foreground leading-relaxed">{scoringRule.feedback}</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{scoringRule.feedback[language]}</p>
             </div>
           </CardContent>
         </Card>
 
         {/* 能力维度分析 / Dimensions */}
-        {scoringRule.ability_dimensions && (
+        {scoringRule.ability_dimensions?.[language] && (
           <Card className="mb-8">
             <CardHeader>
               <CardTitle>{tScaleTestReport.abilityDim}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {Object.entries(scoringRule.ability_dimensions).map(([dimension, score]) => (
+                {Object.entries(scoringRule.ability_dimensions[language]).map(([dimension, score]) => (
                   <div key={dimension}>
                     <div className="flex justify-between mb-2">
                       <span className="font-medium">{dimension}</span>
@@ -282,7 +281,7 @@ export default function ScaleTestReportPage() {
               <div>
                 <h4 className="font-semibold mb-3">{tScaleTestReport.improvementAdvice}</h4>
                 <ul className="space-y-2">
-                  {testConfig.recommendations.map((rec, index) => (
+                  {testConfig.recommendations[language].map((rec, index) => (
                     <li key={index} className="flex items-start">
                       <span className="mr-2 text-primary">•</span>
                       <span className="text-muted-foreground">{rec}</span>
@@ -294,7 +293,7 @@ export default function ScaleTestReportPage() {
               <div>
                 <h4 className="font-semibold mb-3">{tScaleTestReport.plan30}</h4>
                 <ul className="space-y-2">
-                  {testConfig.action_plan.map((action, index) => (
+                  {testConfig.action_plan[language].map((action, index) => (
                     <li key={index} className="flex items-start">
                       <span className="mr-2 font-semibold" style={{ color: scoringRule.color }}>
                         {index + 1}.
@@ -319,11 +318,11 @@ export default function ScaleTestReportPage() {
             <Award className="h-16 w-16 mx-auto mb-4" style={{ color: scoringRule.color }} />
             <h3 className="text-2xl font-bold mb-2">{tScaleTestReport.certificate}</h3>
             <p className="text-muted-foreground mb-4">
-              {tScaleTestReport.certP1(testConfig.name)}
+              {tScaleTestReport.certP1(testConfig.name[language])}
               <span className="font-bold mx-1" style={{ color: scoringRule.color }}>
-                {scoringRule.label}
+                {scoringRule.label[language]}
               </span>
-              {tScaleTestReport.certP1_2(testConfig.name, totalScore)}
+              {tScaleTestReport.certP1_2(testConfig.name[language], totalScore)}
             </p>
             <p className="text-sm text-muted-foreground">{tScaleTestReport.certP2(percentile)}</p>
             <p className="text-xs text-muted-foreground mt-4">{tScaleTestReport.certNote}</p>

@@ -79,11 +79,9 @@ export interface TrainingRecord {
 export interface Game {
   id: string;
   title: ITranslatedField;
-  title_zh: string;
   category: GameCategory;
   url: string;
   description?: ITranslatedField;
-  description_zh?: string;
   thumbnail_url?: string;
   created_at: string;
   updated_at: string;
@@ -162,7 +160,7 @@ export interface PaymentGatewayConfig {
 }
 
 // 语言类型
-export type Language = 'en-US' | 'zh-CN';
+export type Language = 'en-US' | 'de-DE' | 'fr-FR' | 'zh-CN' | 'zh-TW';
 
 // 测试答案类型
 export interface TestAnswer {
@@ -226,11 +224,11 @@ export interface ScaleScoringRule {
   level: number;
   score_min: number;
   score_max: number;
-  label: string;
+  label: ITranslatedField<string>;
   color: string;
-  interpretation: string;
-  feedback: string;
-  ability_dimensions?: Record<string, number>;
+  interpretation: ITranslatedField<string>;
+  feedback: ITranslatedField<string>;
+  ability_dimensions?: ITranslatedField<Record<string, number>>;
   created_at: string;
   updated_at: string;
 }
@@ -239,11 +237,11 @@ export interface ScaleScoringRule {
 export interface ScaleTestConfig {
   id: string;
   test_type: ScaleTestType;
-  name: string;
+  name: ITranslatedField<string>;
   short_name: string;
-  recommendations: string[];
-  action_plan: string[];
-  dimensions: Record<string, number>;
+  recommendations: ITranslatedField<string[]>;
+  action_plan: ITranslatedField<string[]>;
+  dimensions: ITranslatedField<Record<string, number>>;
   percentiles: number[];
   created_at: string;
   updated_at: string;

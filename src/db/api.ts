@@ -526,11 +526,11 @@ export async function getScaleTestQuestions(testType: ScaleTestType) {
 }
 
 // 获取量表评分规则
-export async function getScaleScoringRules(testType: ScaleTestType, language: string = 'en-US') {
+export async function getScaleScoringRules(testType: ScaleTestType) {
   const { data, error } = await supabase
     .from('scale_scoring_rules')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .order('level', { ascending: true });
   
@@ -539,11 +539,11 @@ export async function getScaleScoringRules(testType: ScaleTestType, language: st
 }
 
 // 根据分数获取对应的评分规则
-export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number, language: string = 'en-US') {
+export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number) {
   const { data, error } = await supabase
     .from('scale_scoring_rules')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .lte('score_min', score)
     .gte('score_max', score)
@@ -554,11 +554,11 @@ export async function getScaleScoringRuleByScore(testType: ScaleTestType, score:
 }
 
 // 获取测试配置
-export async function getScaleTestConfig(testType: ScaleTestType, language: string = 'en-US') {
+export async function getScaleTestConfig(testType: ScaleTestType) {
   const { data, error } = await supabase
     .from('scale_test_configs')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .maybeSingle();
   
