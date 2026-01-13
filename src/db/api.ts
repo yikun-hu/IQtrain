@@ -264,9 +264,7 @@ export async function getAllGames() {
     return {
       ...game,
       title: getString(game.title),
-      title_zh: getString(game.title_zh),
       description: game.description ? getString(game.description) : '',
-      description_zh: game.description_zh ? getString(game.description_zh) : '',
     };
   };
   
@@ -306,9 +304,7 @@ export async function getRandomGames(count: number = 3) {
     return {
       ...game,
       title: getString(game.title),
-      title_zh: getString(game.title_zh),
       description: game.description ? getString(game.description) : '',
-      description_zh: game.description_zh ? getString(game.description_zh) : '',
     };
   };
   

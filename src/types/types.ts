@@ -91,10 +91,8 @@ export interface Game {
 export interface Test {
   id: string;
   title: string;
-  title_zh: string;
   type: TestType;
   description?: string;
-  description_zh?: string;
   duration?: number; // 分钟
   question_count?: number;
   thumbnail_url?: string;
