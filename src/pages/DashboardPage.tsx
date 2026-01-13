@@ -29,11 +29,9 @@ export default function DashboardPage() {
 
   // Training相关状态
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
-  const [allGames, setAllGames] = useState<Game[]>([]);
   const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
 
   // Test相关状态
-  const [availableTests, setAvailableTests] = useState<Test[]>([]);
   const [completedTests, setCompletedTests] = useState<any[]>([]);
 
   // 订阅提示模态框状态
@@ -119,78 +117,10 @@ export default function DashboardPage() {
         getTestResults(user.id),
       ]);
 
-      // 确保游戏数据的 title 和 description 是字符串
-      const normalizeGame = (game: Game): Game => {
-        const getStringValue = (value: any, isZh: boolean = false): string => {
-          // 如果已经是字符串，直接返回
-          if (typeof value === 'string') {
-            return value;
-          }
-
-          // 如果是 null 或 undefined，返回空字符串
-          if (value == null) {
-            return '';
-          }
-
-          // 如果是对象，尝试提取语言属性
-          if (typeof value === 'object') {
-            // 尝试各种可能的属性名格式
-            const obj = value as any;
-            if (isZh) {
-              return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj['zh_CN'] || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
-            } else {
-              return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj['en_US'] || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
-            }
-          }
-
-          // 其他情况转换为字符串
-          try {
-            return String(value);
-          } catch {
-            return '';
-          }
-        };
-
-        const normalized: Game = {
-          ...game,
-          title: getStringValue(game.title, false),
-          title_zh: getStringValue(game.title_zh, true),
-          description: getStringValue(game.description, false),
-          description_zh: getStringValue(game.description_zh, true),
-        };
-
-        // 调试：如果还是对象，打印出来并强制转换
-        if (typeof normalized.title === 'object' || typeof normalized.title_zh === 'object') {
-          console.warn('Game data normalization failed, forcing conversion:', {
-            original: game,
-            normalized: normalized
-          });
-          // 强制转换为字符串
-          if (typeof normalized.title === 'object') {
-            normalized.title = getStringValue(normalized.title, false);
-          }
-          if (typeof normalized.title_zh === 'object') {
-            normalized.title_zh = getStringValue(normalized.title_zh, true);
-          }
-          if (normalized.description && typeof normalized.description === 'object') {
-            normalized.description = getStringValue(normalized.description, false);
-          }
-          if (normalized.description_zh && typeof normalized.description_zh === 'object') {
-            normalized.description_zh = getStringValue(normalized.description_zh, true);
-          }
-        }
-
-        return normalized;
-      };
-
-      const normalizedRecommended = recommended.map(normalizeGame);
-      const normalizedGames = games.map(normalizeGame);
-
-      setRecommendedGames(normalizedRecommended);
-      setAllGames(normalizedGames);
+      setRecommendedGames(recommended);
 
       // 按类别分组游戏
-      const grouped = normalizedGames.reduce((acc, game) => {
+      const grouped = games.reduce((acc, game) => {
         if (!acc[game.category]) {
           acc[game.category] = [];
         }
@@ -199,7 +129,6 @@ export default function DashboardPage() {
       }, {} as Record<string, Game[]>);
       setGamesByCategory(grouped);
 
-      setAvailableTests(tests);
       setCompletedTests(testResults);
     } catch (error) {
       console.error('加载数据失败:', error);
@@ -275,7 +204,7 @@ export default function DashboardPage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                           <img
                             src={game.thumbnail_url}
-                            alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                            alt={game.title[language]}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </div>
@@ -283,10 +212,10 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent className="px-3 pt-0 pb-2 flex flex-col">
                       <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1 text-center -mt-3.5 font-semibold">
-                        {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                        {game.title[language]}
                       </CardTitle>
                       <CardDescription className="text-sm line-clamp-2 text-center text-muted-foreground leading-relaxed">
-                        {safeString(language === 'zh-CN' ? game.description_zh : game.description, language === 'zh-CN')}
+                        {game.description?.[language]}
                       </CardDescription>
                     </CardContent>
                   </Card>
@@ -321,7 +250,7 @@ export default function DashboardPage() {
                               <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                               <img
                                 src={game.thumbnail_url}
-                                alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                                alt={game.title[language]}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
@@ -329,7 +258,7 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent className="px-2 pt-0 pb-2 flex flex-col">
                           <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 text-center -mt-4 font-medium">
-                            {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                            {game.title[language]}
                           </CardTitle>
                         </CardContent>
                       </Card>
