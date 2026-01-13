@@ -253,6 +253,11 @@ export default function ResultPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
 
+  useEffect(() => {
+    // 当页面加载或结果获取完成时，滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [result]);
+
   const loadResult = async () => {
     if (!user) return;
 
@@ -455,7 +460,7 @@ export default function ResultPage() {
             </div>
 
             <div className="comparison-container">
-              <h3>{lang === 'zh-CN' ? '与人群对比分析' : 'Comparison with Population'}</h3>
+              <h3 className="text-center font-bold">{lang === 'zh-CN' ? '与人群对比分析' : 'Comparison with Population'}</h3>
               <p>{t(level.comparativeAnalysis, lang, '')}</p>
 
               <div className="chart-container" aria-label="comparison chart">
@@ -543,7 +548,21 @@ export default function ResultPage() {
               ))}
             </ul>
 
-            <div
+            
+            <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
+              {t(level.trainingPlan.title, lang, '')}
+            </h2>
+
+            <p>{t(level.trainingPlan.intro, lang, '')}</p>
+
+            <ul className="recommendation-list">
+              {level.trainingPlan.items.map((it, i) => (
+                <li key={i} style={{ borderLeftColor: accent }}>
+                  {t(it, lang, '')}
+                </li>
+              ))}
+            </ul>
+            {/* <div
               className="training-plan"
               style={{
                 backgroundColor: level.trainingPlan.style?.backgroundColor ?? '#f0f8ff',
@@ -551,14 +570,12 @@ export default function ResultPage() {
                 padding: level.trainingPlan.style?.padding ?? 20,
               }}
             >
-              <h3>{t(level.trainingPlan.title, lang, '')}</h3>
-              <p>{t(level.trainingPlan.intro, lang, '')}</p>
               <ol>
                 {level.trainingPlan.items.map((it, idx) => (
                   <li key={idx}>{t(it, lang, '')}</li>
                 ))}
               </ol>
-            </div>
+            </div> */}
           </div>
 
           {/* Certificate */}

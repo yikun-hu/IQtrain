@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,9 +14,18 @@ export default function DashboardPage() {
   const { language } = useLanguage();
   const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState('training');
   const [loading, setLoading] = useState(true);
+
+  // 检查URL参数并设置初始标签页
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && (tabParam === 'training' || tabParam === 'tests')) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   // Training相关状态
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
@@ -259,7 +268,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -285,7 +294,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -311,7 +320,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -338,7 +347,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -365,7 +374,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -391,7 +400,7 @@ export default function DashboardPage() {
                     </CardDescription>
                     <div className="flex gap-4 text-sm text-muted-foreground mt-2">
                       <span>⏱️ 5-10 {language === 'zh' ? '分钟' : 'min'}</span>
-                      <span>📝 10 {language === 'zh' ? '题' : 'questions'}</span>
+                      <span>📝 20 {language === 'zh' ? '题' : 'questions'}</span>
                     </div>
                   </CardHeader>
                   <CardContent>

@@ -102,7 +102,7 @@ export default function PaymentPage() {
         setLoadingPlan(true);
 
         const [planData, configData] = await Promise.all([
-          planId ? getSubscriptionPlan(planId) : getSubscriptionPlan('7b4640d2-c81c-4132-b1c6-9eea66fe66cd'),
+          planId ? getSubscriptionPlan(planId) : getSubscriptionPlan('dc1188f6-7d2a-40f9-97f6-648a975fe82c'),
           getPaymentGatewayConfig(),
         ]);
 
@@ -143,6 +143,20 @@ export default function PaymentPage() {
     return () => clearInterval(timer);
   }, []);
 
+  // 页面加载时检查用户状态：未登录且未答题则跳转到首页
+  useEffect(() => {
+    // 检查用户是否已登录
+    const isLoggedIn = !!user;
+    // 检查是否有用户答题信息
+    const hasUserInfo = localStorage.getItem('userInfo');
+    
+    // 如果用户未登录且未答题，直接跳转到首页
+    if (!isLoggedIn && !hasUserInfo) {
+      navigate('/');
+      return;
+    }
+  }, [user, navigate]);
+  
   // 购买横幅轮播
   useEffect(() => {
     const bannerTimer = setInterval(() => {
@@ -277,18 +291,6 @@ export default function PaymentPage() {
       const timeTakenStr = localStorage.getItem('testTimeTaken');
       const paymentDetailsStr = localStorage.getItem('paymentDetails');
 
-      if (!userInfoStr) {
-        toast({
-          title: language === 'zh' ? '错误' : 'Error',
-          description: language === 'zh' ? '请先完成测试或提供邮箱信息' : 'Please complete the test or provide email information first',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const userInfo = JSON.parse(userInfoStr);
-      const paymentDetails = paymentDetailsStr ? JSON.parse(paymentDetailsStr) : null;
-
       if (!user) {
         toast({
           title: language === 'zh' ? '错误' : 'Error',
@@ -297,6 +299,12 @@ export default function PaymentPage() {
         });
         return;
       }
+
+      let userInfo = null;
+      if (userInfoStr) {
+        userInfo = JSON.parse(userInfoStr);
+      }
+      const paymentDetails = paymentDetailsStr ? JSON.parse(paymentDetailsStr) : null;
 
       // 显示支付处理模态框
       setShowPaymentProcessingModal(true);
@@ -314,10 +322,10 @@ export default function PaymentPage() {
           .from('profiles')
           .insert({
             id: userId,
-            email: user.email || userInfo.email,
-            full_name: userInfo.fullName,
-            age: userInfo.age,
-            gender: userInfo.gender,
+            email: user.email || (userInfo?.email || ''),
+            full_name: userInfo?.fullName,
+            age: userInfo?.age,
+            gender: userInfo?.gender,
             // role: 'user',
             // has_paid: true,
             // subscription_type: type,
@@ -331,7 +339,7 @@ export default function PaymentPage() {
           console.error('创建profile失败:', profileError);
           throw new Error('创建账号失败');
         }
-      } else {
+      } else if (userInfo) {
         await updateProfile(userId, {
           full_name: userInfo.fullName || undefined,
           age: userInfo.age,
@@ -354,6 +362,7 @@ export default function PaymentPage() {
           user_id: userId,
           answers: testAnswers,
           score,
+          test_type: 'iq',
           iq_score: iqScore,
           dimension_scores: dimensionScores,
           time_taken: timeTaken,
@@ -387,8 +396,14 @@ export default function PaymentPage() {
       setPaymentSuccess(true);
 
       setTimeout(() => {
-        // 跳转到结果页面
-        navigate('/result');
+        // 根据是否有用户答题信息决定跳转目标
+        if (userInfoStr) {
+          // 用户已答题，跳转到结果页面
+          navigate('/result');
+        } else {
+          // 用户未答题，跳转到仪表盘
+          navigate('/dashboard');
+        }
       }, 1000);
     } catch (error: any) {
       console.error('支付失败:', error);
@@ -776,7 +791,7 @@ export default function PaymentPage() {
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-lg line-through text-gray-400">
-                        ${selectedPlan ? (selectedPlan.trial_price * 3.5).toFixed(2) : '6.99'}
+                        ${selectedPlan ? (selectedPlan.trial_price * 10).toFixed(2) : '19.80'}
                       </span>
                       <span className="text-3xl font-bold text-primary">
                         ${selectedPlan ? selectedPlan.trial_price.toFixed(2) : amount.toFixed(2)}

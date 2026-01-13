@@ -16,6 +16,59 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+// ---- 图片预加载：全局内存缓存（模块级，跨render复用）----
+const imageTaskCache = new Map<string, Promise<void>>(); // url -> Promise(加载+解码完成)
+
+/** 预加载并尽可能解码到内存；同URL只做一次 */
+function preloadImage(url?: string | null): Promise<void> {
+  if (!url) return Promise.resolve();
+
+  const key = url.trim();
+  if (!key) return Promise.resolve();
+
+  const existing = imageTaskCache.get(key);
+  if (existing) return existing;
+
+  const task = new Promise<void>((resolve) => {
+    const img = new Image();
+    // 如果你的图片是跨域且需要绘制到canvas，才需要 crossOrigin；否则可不设
+    // img.crossOrigin = 'anonymous';
+
+    img.onload = async () => {
+      // 尽量让浏览器把图片解码进内存，降低切换闪烁
+      try {
+        // @ts-ignore - 部分浏览器支持 HTMLImageElement.decode()
+        if (typeof img.decode === 'function') await img.decode();
+      } catch {
+        // decode 失败不影响流程
+      }
+      resolve();
+    };
+    img.onerror = () => resolve(); // 出错也 resolve，避免卡住队列
+    img.src = key;
+  });
+
+  imageTaskCache.set(key, task);
+  return task;
+}
+
+/** 顺序预加载（严格从前到后） */
+async function preloadAllQuestionsSequentially(list: IQQuestion[], signal?: AbortSignal) {
+  for (const q of list) {
+    if (signal?.aborted) return;
+
+    // 题干图
+    await preloadImage(q.image_url);
+
+    // 选项图（按 A-F 顺序）
+    await preloadImage(q.option_a);
+    await preloadImage(q.option_b);
+    await preloadImage(q.option_c);
+    await preloadImage(q.option_d);
+    await preloadImage(q.option_e);
+    await preloadImage(q.option_f);
+  }
+}
 
 export default function TestPage() {
   const { t, language } = useLanguage();
@@ -67,6 +120,48 @@ export default function TestPage() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [testStarted, showCompletionModal, currentQuestion, questions]);
+
+  // 题目获取后：立刻从前往后顺序预加载所有图片
+  useEffect(() => {
+    if (!questions.length) return;
+
+    const controller = new AbortController();
+
+    // 不阻塞首屏：丢到空闲/宏任务里开始
+    const start = () => {
+      preloadAllQuestionsSequentially(questions, controller.signal);
+    };
+
+    // 有 requestIdleCallback 用它，没有就 setTimeout
+    const w = window as any;
+    if (typeof w.requestIdleCallback === 'function') {
+      const id = w.requestIdleCallback(start);
+      return () => {
+        controller.abort();
+        w.cancelIdleCallback?.(id);
+      };
+    } else {
+      const id = window.setTimeout(start, 0);
+      return () => {
+        controller.abort();
+        window.clearTimeout(id);
+      };
+    }
+  }, [questions]);
+
+  // 切到任意题目时：兜底确保“当前题+6选项”已在缓存（避免用户在全量预加载未完成时跳题闪一下）
+  useEffect(() => {
+    const q = questions[currentQuestion];
+    if (!q) return;
+
+    preloadImage(q.image_url);
+    preloadImage(q.option_a);
+    preloadImage(q.option_b);
+    preloadImage(q.option_c);
+    preloadImage(q.option_d);
+    preloadImage(q.option_e);
+    preloadImage(q.option_f);
+  }, [questions, currentQuestion]);
 
   const loadQuestions = async () => {
     try {
@@ -136,7 +231,7 @@ export default function TestPage() {
           setShowCompletionModal(true);
         }
       }
-    }, 400);
+    }, 200);
   };
 
   const handleNext = () => {
@@ -153,29 +248,29 @@ export default function TestPage() {
 
   const handleSubmit = async () => {
     const timeTaken = elapsedTime;
-    
+
     // 保存答案和用时到localStorage（作为备份）
     localStorage.setItem('testAnswers', JSON.stringify(answers));
     localStorage.setItem('testTimeTaken', timeTaken.toString());
-    
+
     // 计算分数
     const correctCount = questions.reduce((count, question) => {
       const userAnswer = answers[question.question_number];
       return userAnswer === question.correct_answer ? count + 1 : count;
     }, 0);
-    
+
     // 检查正确答案数量是否小于等于7道
     if (correctCount <= 7) {
       setShowInsufficientModal(true);
       return;
     }
-    
+
     // 如果用户已登录，直接保存到后端
     if (user) {
       try {
         const score = Math.round((correctCount / questions.length) * 100);
         const iqScore = Math.round(85 + (score / 100) * 60); // IQ范围: 85-145
-        
+
         // 计算各维度分数
         const dimensionScores: Record<string, number> = {
           memory: 0,
@@ -184,7 +279,7 @@ export default function TestPage() {
           concentration: 0,
           logic: 0,
         };
-        
+
         const dimensionCounts: Record<string, number> = {
           memory: 0,
           speed: 0,
@@ -192,18 +287,18 @@ export default function TestPage() {
           concentration: 0,
           logic: 0,
         };
-        
+
         questions.forEach((question) => {
           const userAnswer = answers[question.question_number];
           const isCorrect = userAnswer === question.correct_answer;
           const dimension = question.dimension;
-          
+
           if (dimensionScores[dimension] !== undefined) {
             dimensionScores[dimension] += isCorrect ? 1 : 0;
             dimensionCounts[dimension] += 1;
           }
         });
-        
+
         // 转换为百分比
         Object.keys(dimensionScores).forEach((dimension) => {
           if (dimensionCounts[dimension] > 0) {
@@ -212,7 +307,7 @@ export default function TestPage() {
             );
           }
         });
-        
+
         // 保存测试结果
         await saveTestResult({
           user_id: user.id,
@@ -223,7 +318,7 @@ export default function TestPage() {
           dimension_scores: dimensionScores,
           time_taken: timeTaken,
         });
-        
+
         toast({
           title: language === 'zh' ? '成功' : 'Success',
           description: language === 'zh' ? '测试结果已保存' : 'Test results saved',
@@ -233,7 +328,7 @@ export default function TestPage() {
         // 即使保存失败也继续流程
       }
     }
-    
+
     // 跳转到加载分析页面
     navigate('/loading-analysis');
   };
@@ -266,7 +361,7 @@ export default function TestPage() {
   // 开始页面 - 横向排列3个说明
   if (!testStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex items-center py-8">
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex pt-12 py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <Card className="shadow-2xl">
             <CardContent className="pt-12 pb-12">
@@ -280,8 +375,8 @@ export default function TestPage() {
                   {language === 'zh' ? 'IQ 测试即将开始' : 'IQ Test About to Begin'}
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  {language === 'zh' 
-                    ? '请仔细阅读以下说明，确保您在最佳状态下完成测试' 
+                  {language === 'zh'
+                    ? '请仔细阅读以下说明，确保您在最佳状态下完成测试'
                     : 'Please read the instructions carefully to ensure optimal test conditions'}
                 </p>
               </div>
@@ -298,8 +393,8 @@ export default function TestPage() {
                     {language === 'zh' ? '题目数量' : 'Questions'}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh' 
-                      ? `共${questions.length}道题，难度递增` 
+                    {language === 'zh'
+                      ? `共${questions.length}道题，难度递增`
                       : `${questions.length} questions, increasing difficulty`}
                   </p>
                 </div>
@@ -314,8 +409,8 @@ export default function TestPage() {
                     {language === 'zh' ? '答题方式' : 'Answer Method'}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh' 
-                      ? '6个选项选1个，支持键盘快捷键' 
+                    {language === 'zh'
+                      ? '6个选项选1个，支持键盘快捷键'
                       : '6 options, keyboard shortcuts supported'}
                   </p>
                 </div>
@@ -330,8 +425,8 @@ export default function TestPage() {
                     {language === 'zh' ? '灵活作答' : 'Flexible'}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {language === 'zh' 
-                      ? '可跳过题目，随时返回修改' 
+                    {language === 'zh'
+                      ? '可跳过题目，随时返回修改'
                       : 'Skip questions, return anytime'}
                   </p>
                 </div>
@@ -355,11 +450,11 @@ export default function TestPage() {
   }
 
   const question = questions[currentQuestion];
-  
+
   // 安全检查：确保question对象存在
   if (!question) {
     return (
-      <div className="min-h-screen bg-muted flex items-center justify-center">
+      <div className="min-h-screen bg-muted flex md:pt-12 justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
@@ -385,7 +480,7 @@ export default function TestPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-muted flex items-center py-4">
+    <div className="min-h-screen bg-muted flex pt-12 py-4">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="space-y-4">
           {/* 计时器和进度条 */}
@@ -409,14 +504,15 @@ export default function TestPage() {
                 {/* 左侧：问题图片 */}
                 <div className="flex items-center justify-center flex-col">
                   <h3 className="text-lg font-semibold mb-4">
-                    {language === 'zh' ? '从下方选项中选择最符合的一项：' : 'Select the most appropriate option from below:'}
+                    {language === 'zh' ? '根据图像从下方选项中选择最符合的一项' : 'Select the most appropriate option according to the picture'}
                   </h3>
-                  <div className="w-full max-w-sm">
-                    <div className="aspect-square border-2 border-border rounded-lg overflow-hidden shadow-inner bg-muted/30">
+                  <div className="w-full max-w-md flex justify-center">
+                    <div className="border-2 border-border rounded-lg overflow-hidden shadow-inner bg-muted/30 p-6">
                       <img
                         src={question.image_url}
                         alt={`Question ${question.question_number}`}
-                        className="w-full h-full object-contain"
+                        className="max-w-full h-auto object-contain"
+                        loading="eager" decoding="async" draggable={false}
                       />
                     </div>
                   </div>
@@ -427,33 +523,32 @@ export default function TestPage() {
                   <h3 className="text-lg font-semibold mb-4">
                     {language === 'zh' ? '选择您的答案：' : 'Choose Your Answer:'}
                   </h3>
-                  <div className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-3">
+                  <div className="grid grid-cols-3 gap-3 mb-6 md:grid-cols-3">
                     {options.map((option) => {
                       const isSelected = answers[question.question_number] === option.label;
                       const isJustSelected = selectedOption === option.label;
-                      
+
                       return (
                         <button
                           key={option.label}
                           onClick={() => handleAnswer(option.label)}
-                          className={`relative aspect-square border-2 rounded-lg transition-all duration-200 ${
-                            isSelected || isJustSelected
-                              ? 'border-secondary bg-secondary/10'
-                              : 'border-border bg-white hover:border-secondary'
-                          }`}
+                          className={`relative aspect-square border-2 rounded-lg transition-all duration-200 ${isSelected || isJustSelected
+                            ? 'border-secondary bg-secondary/10'
+                            : 'border-border bg-white hover:border-secondary'
+                            }`}
                         >
-                          <div className={`absolute top-2 left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                            isSelected || isJustSelected
-                              ? 'bg-secondary text-white'
-                              : 'bg-muted text-foreground'
-                          }`}>
+                          <div className={`absolute top-2 left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${isSelected || isJustSelected
+                            ? 'bg-secondary text-white'
+                            : 'bg-muted text-foreground'
+                            }`}>
                             {option.number}
                           </div>
-                          <div className="flex items-center justify-center h-full p-2">
+                          <div className="flex items-center justify-center h-full px-6 pt-6">
                             <img
                               src={option.value}
                               alt={`Option ${option.label}`}
                               className="w-full h-full object-contain"
+                              loading="eager" decoding="async" draggable={false}
                             />
                           </div>
                         </button>
@@ -512,13 +607,12 @@ export default function TestPage() {
               <button
                 key={index}
                 onClick={() => setCurrentQuestion(index)}
-                className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${
-                  index === currentQuestion
-                    ? 'bg-primary text-white scale-110'
-                    : answers[questions[index].question_number]
-                      ? 'bg-accent text-white'
-                      : 'bg-white border-2 border-border text-foreground hover:border-primary'
-                }`}
+                className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${index === currentQuestion
+                  ? 'bg-primary text-white scale-110'
+                  : answers[questions[index].question_number]
+                    ? 'bg-accent text-white'
+                    : 'bg-white border-2 border-border text-foreground hover:border-primary'
+                  }`}
               >
                 {index + 1}
               </button>
@@ -547,8 +641,8 @@ export default function TestPage() {
               </div>
               {answeredCount < questions.length && (
                 <p className="text-sm text-muted-foreground">
-                  {language === 'zh' 
-                    ? `还有 ${questions.length - answeredCount} 道题未作答` 
+                  {language === 'zh'
+                    ? `还有 ${questions.length - answeredCount} 道题未作答`
                     : `${questions.length - answeredCount} questions unanswered`}
                 </p>
               )}
@@ -581,7 +675,7 @@ export default function TestPage() {
             </DialogTitle>
             <DialogDescription className="text-center space-y-4 pt-4">
               <p className="text-lg">
-                {language === 'zh' ? '答对的题目小于等于7道，不足以支撑IQ分析。' : 'Correct answers are less than or equal to 7, which is not enough to support IQ analysis.'}
+                {language === 'zh' ? '您的测试结果不在我们目前的测试范围内。您可以仔细尝试再次测试，我们会做出更准确的评估。' : 'Your IQ is not within the current range of our test. You can try again carefully, and we will make a more accurate assessment.'}
               </p>
               <p className="text-lg">
                 {language === 'zh' ? '请重新答题。' : 'Please retake the test.'}
@@ -593,6 +687,7 @@ export default function TestPage() {
               onClick={() => {
                 // 重置测试状态，让用户重新开始
                 setShowInsufficientModal(false);
+                setShowCompletionModal(false); // 重置完成模态框状态
                 setTestStarted(false);
                 setCurrentQuestion(0);
                 setAnswers({});

@@ -187,7 +187,6 @@ export default function ScaleTestPage() {
                   <div
                     key={option.value}
                     className="flex items-center space-x-3 p-4 rounded-lg border-2 border-border hover:border-primary hover:bg-accent/50 transition-all cursor-pointer"
-                    onClick={() => !submitting && handleAnswer(option.value)}
                   >
                     <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
                     <Label
