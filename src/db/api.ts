@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult, SubscriptionPlan, PaymentGatewayConfig } from '@/types/types';
+import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult, SubscriptionPlan, PaymentGatewayConfig, Language } from '@/types/types';
 
 // ==================== 用户相关 ====================
 
@@ -211,11 +211,15 @@ export async function getUserTrainingRecords(userId: string, limit?: number) {
 
 // ==================== 认证相关 ====================
 
-export async function signInWithOTP(email: string) {
+export async function signInWithOTP(email: string, language: Language) {
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: window.location.origin,
+      data: {
+        test: 'hello',
+        language
+      }
     },
   });
   

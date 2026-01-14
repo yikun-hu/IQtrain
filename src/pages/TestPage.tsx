@@ -81,16 +81,15 @@ export default function TestPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
   const [startTime, setStartTime] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadQuestions();
-  }, []);
+
 
   useEffect(() => {
     if (testStarted && !showCompletionModal) {
@@ -196,18 +195,36 @@ export default function TestPage() {
   };
 
   const handleStartTest = async () => {
-    // 安全检查：确保题目已加载
-    if (questions.length === 0) {
+    // 开始加载动画并加载题目
+    setButtonLoading(true);
+    
+    try {
+      // 加载题目
+      const data = await getAllQuestions();
+      if (data.length === 0) {
+        toast({
+          title: t.common.error,
+          description: t.test.errors.noQuestions,
+          variant: 'destructive',
+        });
+        navigate('/');
+        return;
+      }
+      setQuestions(data);
+      
+      // 加载成功后开始测试
+      setTestStarted(true);
+      setStartTime(Date.now());
+    } catch (error) {
+      console.error('加载题目失败:', error);
       toast({
         title: t.common.error,
-        description: t.test.errors.notLoaded,
+        description: t.test.errors.loadFailed,
         variant: 'destructive',
       });
-      return;
+    } finally {
+      setButtonLoading(false);
     }
-
-    setTestStarted(true);
-    setStartTime(Date.now());
   };
 
   const handleAnswer = (answer: string) => {
@@ -361,7 +378,7 @@ export default function TestPage() {
     );
   }
 
-  if (questions.length === 0) {
+  if (questions.length === 0 && testStarted) {
     return null;
   }
 
@@ -436,9 +453,17 @@ export default function TestPage() {
                 <Button
                   size="lg"
                   onClick={handleStartTest}
+                  disabled={buttonLoading}
                   className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-6"
                 >
-                  {t.test.start.startButton}
+                  {buttonLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {/* {t.test.start.loadingQuestions} */}
+                    </>
+                  ) : (
+                    t.test.start.startButton
+                  )}
                 </Button>
                 <p className="text-xs text-muted-foreground mt-3 max-w-md mx-auto">
                   {t.test.start.disclaimer}

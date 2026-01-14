@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      await signInWithOTP(email);
+      await signInWithOTP(email, language);
       setStep('code');
       toast({
         title: t.common.success,
@@ -155,23 +155,25 @@ export default function LoginPage() {
                 </p>
               </div>
 
-              <Button
-                type="submit"
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
-                disabled={loading}
-              >
-                {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
-                {t.login.verifyButton}
-              </Button>
+              <div className="flex gap-3">
 
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-12 bg-outline text-foreground hover:bg-outline/90"
-                onClick={() => setStep('email')}
-              >
-                {t.login.backButton}
-              </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1 h-12 bg-outline text-foreground hover:bg-outline/90"
+                  onClick={() => setStep('email')}
+                >
+                  {t.login.backButton}
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-semibold"
+                  disabled={loading}
+                >
+                  {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                  {t.login.verifyButton}
+                </Button>
+              </div>
             </form>
           )}
         </div>

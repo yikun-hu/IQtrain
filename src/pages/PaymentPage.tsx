@@ -164,7 +164,7 @@ export default function PaymentPage() {
 
     setOtpLoading(true);
     try {
-      await signInWithOTP(otpEmail);
+      await signInWithOTP(otpEmail, language);
       setOtpStep('code');
       toast({
         title: t.common.success,
