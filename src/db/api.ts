@@ -250,23 +250,42 @@ export async function getAllGames() {
   
   if (error) throw error;
   
-  // 确保 title 和 description 是字符串
+  // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象
   const normalizeGame = (game: any): Game => {
-    const getString = (val: any): string => {
-      if (typeof val === 'string') return val;
-      if (val == null) return '';
-      if (typeof val === 'object') {
-        return val.en || val['en-US'] || val.zh || val['zh-CN'] || '';
+    // 解析 JSON 字符串为 ITranslatedField 对象
+    const parseTranslatedField = (value: any): any => {
+      // 如果已经是对象，直接返回
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        return value;
       }
-      return String(val || '');
+      
+      // 如果是 JSON 字符串，解析它
+      if (typeof value === 'string' && value.trim().startsWith('{')) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          console.warn('Failed to parse JSON string:', value, e);
+          // 解析失败，返回默认值
+          return { 'en-US': value, 'zh-CN': value };
+        }
+      }
+      
+      // 如果是普通字符串，转换为对象格式
+      if (typeof value === 'string') {
+        return { 'en-US': value, 'zh-CN': value };
+      }
+      
+      // 如果是 null 或 undefined，返回空对象
+      return { 'en-US': '', 'zh-CN': '' };
     };
     
     return {
       ...game,
-      title: getString(game.title),
-      title_zh: getString(game.title_zh),
-      description: game.description ? getString(game.description) : '',
-      description_zh: game.description_zh ? getString(game.description_zh) : '',
+      title: parseTranslatedField(game.title),
+      description: game.description ? parseTranslatedField(game.description) : undefined,
+      // 保留 title_zh 和 description_zh 用于向后兼容（如果存在）
+      title_zh: game.title_zh || '',
+      description_zh: game.description_zh || '',
     };
   };
   
@@ -292,27 +311,46 @@ export async function getRandomGames(count: number = 3) {
     .select('*')
     .limit(100); // 先获取所有游戏
   
-  // 确保 title 和 description 是字符串
+  if (error) throw error;
+  
+  // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象
   const normalizeGame = (game: any): Game => {
-    const getString = (val: any): string => {
-      if (typeof val === 'string') return val;
-      if (val == null) return '';
-      if (typeof val === 'object') {
-        return val.en || val['en-US'] || val.zh || val['zh-CN'] || '';
+    // 解析 JSON 字符串为 ITranslatedField 对象
+    const parseTranslatedField = (value: any): any => {
+      // 如果已经是对象，直接返回
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        return value;
       }
-      return String(val || '');
+      
+      // 如果是 JSON 字符串，解析它
+      if (typeof value === 'string' && value.trim().startsWith('{')) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          console.warn('Failed to parse JSON string:', value, e);
+          // 解析失败，返回默认值
+          return { 'en-US': value, 'zh-CN': value };
+        }
+      }
+      
+      // 如果是普通字符串，转换为对象格式
+      if (typeof value === 'string') {
+        return { 'en-US': value, 'zh-CN': value };
+      }
+      
+      // 如果是 null 或 undefined，返回空对象
+      return { 'en-US': '', 'zh-CN': '' };
     };
     
     return {
       ...game,
-      title: getString(game.title),
-      title_zh: getString(game.title_zh),
-      description: game.description ? getString(game.description) : '',
-      description_zh: game.description_zh ? getString(game.description_zh) : '',
+      title: parseTranslatedField(game.title),
+      description: game.description ? parseTranslatedField(game.description) : undefined,
+      // 保留 title_zh 和 description_zh 用于向后兼容（如果存在）
+      title_zh: game.title_zh || '',
+      description_zh: game.description_zh || '',
     };
   };
-  
-  if (error) throw error;
   
   // 规范化并随机打乱
   const normalized = Array.isArray(data) ? data.map(normalizeGame) : [];

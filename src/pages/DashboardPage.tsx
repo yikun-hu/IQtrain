@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useLanguage } from '@/contexts/LanguageContext';
+import type { ITranslatedField } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllGames, getRandomGames, getAllTests, getTestResults } from '@/db/api';
+import { getAllGames, getAllTests, getTestResults } from '@/db/api';
 import type { Game, Test } from '@/types/types';
 import { Loader2, FileText } from 'lucide-react';
 
@@ -111,80 +112,21 @@ export default function DashboardPage() {
 
     setLoading(true);
     try {
-      // 加载游戏数据
-      const [recommended, games, tests, testResults] = await Promise.all([
-        getRandomGames(3),
+      // 加载游戏数据 - 优化：只调用一次 getAllGames，然后在客户端随机选择推荐游戏
+      const [games, tests, testResults] = await Promise.all([
         getAllGames(),
         getAllTests(),
         getTestResults(user.id),
       ]);
 
-      // 确保游戏数据的 title 和 description 是字符串
-      const normalizeGame = (game: Game): Game => {
-        const getStringValue = (value: any, isZh: boolean = false): string => {
-          // 如果已经是字符串，直接返回
-          if (typeof value === 'string') {
-            return value;
-          }
+      // 从所有游戏中随机选择3个作为推荐游戏
+      const shuffled = [...games].sort(() => Math.random() - 0.5);
+      const recommended = shuffled.slice(0, 3);
 
-          // 如果是 null 或 undefined，返回空字符串
-          if (value == null) {
-            return '';
-          }
-
-          // 如果是对象，尝试提取语言属性
-          if (typeof value === 'object') {
-            // 尝试各种可能的属性名格式
-            const obj = value as any;
-            if (isZh) {
-              return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj['zh_CN'] || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
-            } else {
-              return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj['en_US'] || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
-            }
-          }
-
-          // 其他情况转换为字符串
-          try {
-            return String(value);
-          } catch {
-            return '';
-          }
-        };
-
-        const normalized: Game = {
-          ...game,
-          title: getStringValue(game.title, false),
-          title_zh: getStringValue(game.title_zh, true),
-          description: getStringValue(game.description, false),
-          description_zh: getStringValue(game.description_zh, true),
-        };
-
-        // 调试：如果还是对象，打印出来并强制转换
-        if (typeof normalized.title === 'object' || typeof normalized.title_zh === 'object') {
-          console.warn('Game data normalization failed, forcing conversion:', {
-            original: game,
-            normalized: normalized
-          });
-          // 强制转换为字符串
-          if (typeof normalized.title === 'object') {
-            normalized.title = getStringValue(normalized.title, false);
-          }
-          if (typeof normalized.title_zh === 'object') {
-            normalized.title_zh = getStringValue(normalized.title_zh, true);
-          }
-          if (normalized.description && typeof normalized.description === 'object') {
-            normalized.description = getStringValue(normalized.description, false);
-          }
-          if (normalized.description_zh && typeof normalized.description_zh === 'object') {
-            normalized.description_zh = getStringValue(normalized.description_zh, true);
-          }
-        }
-
-        return normalized;
-      };
-
-      const normalizedRecommended = recommended.map(normalizeGame);
-      const normalizedGames = games.map(normalizeGame);
+      // 游戏数据已经在 API 层规范化，这里直接使用
+      // 如果 API 返回的数据还需要进一步处理，可以在这里添加
+      const normalizedRecommended = recommended;
+      const normalizedGames = games;
 
       setRecommendedGames(normalizedRecommended);
       setAllGames(normalizedGames);
@@ -212,27 +154,12 @@ export default function DashboardPage() {
     return t.dashboard.gameCategories[category as keyof typeof t.dashboard.gameCategories] || category;
   };
 
-  // 安全地获取字符串值（用于渲染）
-  const safeString = (value: any, isZh: boolean = false): string => {
-    if (typeof value === 'string') {
-      return value;
-    }
-    if (value == null) {
-      return '';
-    }
-    if (typeof value === 'object') {
-      const obj = value as any;
-      if (isZh) {
-        return obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || obj['zh_CN'] || obj.zhCN || obj.en || obj['en-US'] || obj.en_US || obj.enUS || '';
-      } else {
-        return obj.en || obj['en-US'] || obj.en_US || obj.enUS || obj['en_US'] || obj.enUS || obj.zh || obj['zh-CN'] || obj.zh_CN || obj.zhCN || '';
-      }
-    }
-    try {
-      return String(value);
-    } catch {
-      return '';
-    }
+  // 获取翻译字段的值（从 ITranslatedField 对象中根据当前语言获取）
+  const getTranslatedValue = (field: ITranslatedField | undefined, fallback: string = ''): string => {
+    if (!field) return fallback;
+    if (typeof field === 'string') return field;
+    // 优先使用当前语言，然后回退到 en-US，最后是 zh-CN
+    return field[language] || field['en-US'] || field['zh-CN'] || fallback;
   };
 
   // 如果认证状态或数据正在加载，显示加载界面
@@ -263,7 +190,11 @@ export default function DashboardPage() {
                 <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedGames.map((game) => (
+                {recommendedGames.map((game) => {
+                  const gameTitle = getTranslatedValue(game.title);
+                  const gameDescription = getTranslatedValue(game.description);
+
+                  return (
                   <Card
                     key={game.id}
                     className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
@@ -275,7 +206,7 @@ export default function DashboardPage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                           <img
                             src={game.thumbnail_url}
-                            alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                            alt={gameTitle}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </div>
@@ -283,14 +214,15 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent className="px-3 pt-0 pb-2 flex flex-col">
                       <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1 text-center -mt-3.5 font-semibold">
-                        {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                        {gameTitle}
                       </CardTitle>
                       <CardDescription className="text-sm line-clamp-2 text-center text-muted-foreground leading-relaxed">
-                        {safeString(language === 'zh-CN' ? game.description_zh : game.description, language === 'zh-CN')}
+                        {gameDescription}
                       </CardDescription>
                     </CardContent>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             </section>
 
@@ -309,7 +241,10 @@ export default function DashboardPage() {
                     {String(getCategoryName(category) || category)}
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {games.map((game) => (
+                    {games.map((game) => {
+                      const gameTitle = getTranslatedValue(game.title);
+
+                      return (
                       <Card
                         key={game.id}
                         className="group hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/20 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
@@ -321,7 +256,7 @@ export default function DashboardPage() {
                               <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                               <img
                                 src={game.thumbnail_url}
-                                alt={safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                                alt={gameTitle}
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
@@ -329,11 +264,12 @@ export default function DashboardPage() {
                         </CardHeader>
                         <CardContent className="px-2 pt-0 pb-2 flex flex-col">
                           <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 text-center -mt-4 font-medium">
-                            {safeString(language === 'zh-CN' ? game.title_zh : game.title, language === 'zh-CN')}
+                            {gameTitle}
                           </CardTitle>
                         </CardContent>
                       </Card>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}

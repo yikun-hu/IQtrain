@@ -79,11 +79,9 @@ export interface TrainingRecord {
 export interface Game {
   id: string;
   title: ITranslatedField;
-  title_zh: string;
   category: GameCategory;
   url: string;
   description?: ITranslatedField;
-  description_zh?: string;
   thumbnail_url?: string;
   created_at: string;
   updated_at: string;
