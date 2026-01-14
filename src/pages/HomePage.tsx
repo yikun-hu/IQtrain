@@ -1,503 +1,772 @@
-import { useState } from 'react';
+// HomePage.tsx
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Brain, Zap, Target, Award, TrendingUp, Clock, Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Star,
+  StarHalf,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  UserPlus,
+  Timer,
+  BadgeCheck,
+  BarChart3,
+  Activity,
+  Crown,
+  Microscope, ScanSearch, FileBarChart,
+  BrainCircuit, Dumbbell, Puzzle,
+} from 'lucide-react';
+
+type Country = { name: string; code: string; iq: number };
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+// Abramowitz and Stegun erf approximation
+function erfApprox(x: number) {
+  const sign = x < 0 ? -1 : 1;
+  const ax = Math.abs(x);
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const p = 0.3275911;
+
+  const t = 1 / (1 + p * ax);
+  const y =
+    1 -
+    (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t) * Math.exp(-ax * ax);
+
+  return sign * y;
+}
+
+function normalCdf(z: number) {
+  return 0.5 * (1 + erfApprox(z / Math.SQRT2));
+}
+
+function shuffle<T>(arr: T[]) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function HomePage() {
-    const { t } = useLanguage();
-    const navigate = useNavigate();
-    const [currentTestimonial, setCurrentTestimonial] = useState(0);
-    const [currentCountryPage, setCurrentCountryPage] = useState(0);
+  const { t: allT } = useLanguage();
+  const t: any = (allT as any).home ?? (allT as any);
 
-    const features = [
-        {
-            icon: <Brain className="h-12 w-12 text-primary" />,
-            title: t.home.features.feature1.title,
-            description: t.home.features.feature1.description,
-        },
-        {
-            icon: <Zap className="h-12 w-12 text-secondary" />,
-            title: t.home.features.feature2.title,
-            description: t.home.features.feature2.description,
-        },
-        {
-            icon: <Target className="h-12 w-12 text-accent" />,
-            title: t.home.features.feature3.title,
-            description: t.home.features.feature3.description,
-        },
-        {
-            icon: <Award className="h-12 w-12 text-primary" />,
-            title: t.home.features.feature4.title,
-            description: t.home.features.feature4.description,
-        },
-    ];
+  const navigate = useNavigate();
 
-    const dimensions = [
-        { name: t.home.dimensions.memory, icon: <Brain className="h-6 w-6" /> },
-        { name: t.home.dimensions.speed, icon: <Zap className="h-6 w-6" /> },
-        { name: t.home.dimensions.reaction, icon: <TrendingUp className="h-6 w-6" /> },
-        { name: t.home.dimensions.concentration, icon: <Target className="h-6 w-6" /> },
-        { name: t.home.dimensions.logic, icon: <Clock className="h-6 w-6" /> },
-    ];
+  // -------------------------
+  // Countries marquee data (use provided list, shuffle, 1 decimal)
+  // -------------------------
+  const countries: Country[] = useMemo(
+    () =>
+      shuffle([
+        { name: 'China', code: 'cn', iq: 107.19 },
+        { name: 'South Korea', code: 'kr', iq: 106.43 },
+        { name: 'Japan', code: 'jp', iq: 106.4 },
+        { name: 'Iran', code: 'ir', iq: 106.3 },
+        { name: 'Singapore', code: 'sg', iq: 105.14 },
+        { name: 'Russia', code: 'ru', iq: 103.16 },
+        { name: 'Mongolia', code: 'mn', iq: 102.86 },
+        { name: 'Australia', code: 'au', iq: 102.57 },
+        { name: 'Spain', code: 'es', iq: 102.3 },
+        { name: 'New Zealand', code: 'nz', iq: 102.08 },
+        { name: 'Canada', code: 'ca', iq: 101.65 },
+        { name: 'France', code: 'fr', iq: 101.42 },
+        { name: 'Italy', code: 'it', iq: 100.84 },
+        { name: 'Switzerland', code: 'ch', iq: 100.75 },
+        { name: 'Malaysia', code: 'my', iq: 100.48 },
+        { name: 'Finland', code: 'fi', iq: 100.3 },
+        { name: 'Vietnam', code: 'vn', iq: 100.12 },
+        { name: 'Belgium', code: 'be', iq: 100.11 },
+        { name: 'USA', code: 'us', iq: 99.74 },
+        { name: 'Netherlands', code: 'nl', iq: 99.72 },
+        { name: 'UK', code: 'gb', iq: 99.68 },
+        { name: 'Austria', code: 'at', iq: 99.65 },
+        { name: 'Germany', code: 'de', iq: 99.64 },
+        { name: 'Poland', code: 'pl', iq: 99.35 },
+        { name: 'India', code: 'in', iq: 99.08 },
+        { name: 'Israel', code: 'il', iq: 99.07 },
+        { name: 'Turkey', code: 'tr', iq: 99.07 },
+        { name: 'Thailand', code: 'th', iq: 101.52 },
+        { name: 'Slovenia', code: 'si', iq: 101.96 },
+        { name: 'Brazil', code: 'br', iq: 87.0 },
+        { name: 'Mexico', code: 'mx', iq: 88.0 },
+      ]),
+    [],
+  );
 
-    // 客户评价数据
-    const testimonials = [
-        {
-            name: t.home.testimonials.customers[0].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[0].comment,
-            bgColor: 'bg-primary',
-        },
-        {
-            name: t.home.testimonials.customers[1].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[1].comment,
-            bgColor: 'bg-secondary',
-        },
-        {
-            name: t.home.testimonials.customers[2].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[2].comment,
-            bgColor: 'bg-accent',
-        },
-        {
-            name: t.home.testimonials.customers[3].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[3].comment,
-            bgColor: 'bg-primary',
-        },
-        {
-            name: t.home.testimonials.customers[4].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[4].comment,
-            bgColor: 'bg-secondary',
-        },
-        {
-            name: t.home.testimonials.customers[5].name,
-            rating: 5,
-            comment: t.home.testimonials.customers[5].comment,
-            bgColor: 'bg-accent',
-        },
-    ];
+  const chartWrapRef = useRef<HTMLDivElement | null>(null);
+  const [pillPos, setPillPos] = useState<{ left: number; top: number } | null>(null);
 
-    // 国家智商数据（19个国家，删除中国）
-    const countries = [
-        {
-            name: 'Singapore',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/05102730-f5a0-4015-9ecc-8bc6b3e2b8a3.jpg',
-            iq: 108
-        },
-        {
-            name: 'Japan',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/76ca579a-b690-4f35-927b-48fb12eac00e.jpg',
-            iq: 106
-        },
-        {
-            name: 'South Korea',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/9f258f7c-8a77-47fc-be79-09966c141134.jpg',
-            iq: 106
-        },
-        {
-            name: 'United States',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/e7e3c56f-1898-48a5-b8b0-c222cebc1dcc.jpg',
-            iq: 98
-        },
-        {
-            name: 'United Kingdom',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/538797a9-9f5c-4dd8-a8bd-f335ad5295e3.jpg',
-            iq: 100
-        },
-        {
-            name: 'Germany',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/a206c84d-cfd9-44d1-8583-2ae6b36c4b1a.jpg',
-            iq: 102
-        },
-        {
-            name: 'France',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/97f4f8a6-51f9-4ae9-a76e-8fd6287a5e3c.jpg',
-            iq: 98
-        },
-        {
-            name: 'Canada',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/dd38f8e5-ef0f-4553-9540-8c9d4e4fb12b.jpg',
-            iq: 99
-        },
-        {
-            name: 'Australia',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/a20579c5-cbcd-4579-a21e-907a561f117e.jpg',
-            iq: 99
-        },
-        {
-            name: 'Switzerland',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/78597d04-647e-4512-bacc-71b62c025124.jpg',
-            iq: 101
-        },
-        {
-            name: 'Netherlands',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/9da357ce-d63c-40f2-bb99-303053d1ad62.jpg',
-            iq: 100
-        },
-        {
-            name: 'Sweden',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/1467c38e-ea8d-484b-98f3-5941689920a6.jpg',
-            iq: 99
-        },
-        {
-            name: 'Norway',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/96c37474-f1f5-4ac9-bed8-2be923cf9a06.jpg',
-            iq: 100
-        },
-        {
-            name: 'Finland',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/674e2244-a165-419e-9b7b-d77ca4489d0a.jpg',
-            iq: 101
-        },
-        {
-            name: 'Italy',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/132e73f3-9197-4683-b8e1-5cb30aeb60f9.jpg',
-            iq: 97
-        },
-        {
-            name: 'Spain',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/e69d19ba-9bc7-4348-beb1-5d0db5811e4b.jpg',
-            iq: 97
-        },
-        {
-            name: 'Russia',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/82586693-e36e-4314-8d51-7e1069e76ee1.jpg',
-            iq: 97
-        },
-        {
-            name: 'India',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/b741527c-3d8d-4cd1-9489-4483c7ce8b59.jpg',
-            iq: 82
-        },
-        {
-            name: 'Brazil',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/7368a80a-4cf2-4b2f-8cf6-f8a2119e3e9e.jpg',
-            iq: 87
-        },
-        {
-            name: 'Mexico',
-            flag: 'https://miaoda-site-img.cdn.bcebos.com/images/730b5668-4cc8-4db0-b1f8-6b5ed840f54b.jpg',
-            iq: 88
-        },
-    ];
 
-    const nextTestimonial = () => {
-        setCurrentTestimonial((prev) => (prev + 3) % testimonials.length);
-    };
+  // -------------------------
+  // Testimonials
+  // -------------------------
+  const testimonials = useMemo(() => {
+    const list = t.testimonials?.customers ?? [];
 
-    const prevTestimonial = () => {
-        setCurrentTestimonial((prev) => (prev - 3 + testimonials.length) % testimonials.length);
-    };
+    // 评分：混合 4 / 4.5 / 5（按你 6 条顺序）
+    const ratings = [5, 4.5, 5, 4, 4.5, 5];
 
-    const nextCountryPage = () => {
-        setCurrentCountryPage((prev) => (prev + 1) % Math.ceil(countries.length / 4));
-    };
-
-    const prevCountryPage = () => {
-        setCurrentCountryPage((prev) => (prev - 1 + Math.ceil(countries.length / 4)) % Math.ceil(countries.length / 4));
-    };
-
-    // 获取当前页的4个国家
-    const currentCountries = countries.slice(currentCountryPage * 4, currentCountryPage * 4 + 4);
+    return ratings.map((rating, i) => ({
+      name: list[i]?.name ?? '',
+      comment: list[i]?.comment ?? '',
+      location: list[i]?.location ?? '',
+      time: list[i]?.time ?? '',
+      rating,
+    }));
+  }, [t]);
+  const renderStars = (rating: number) => {
+    const full = Math.floor(rating);
+    const hasHalf = rating - full >= 0.5;
 
     return (
-        <div className="min-h-screen">
-            {/* Hero Section - 优化版 */}
-            <section
-                className="relative bg-gradient-to-br from-primary via-accent to-secondary py-20 xl:py-32 overflow-hidden">
-                {/* 背景装饰图标 */}
-                <div className="absolute inset-0 opacity-10">
-                    <Brain className="absolute top-10 left-10 h-16 w-16 text-white animate-pulse" />
-                    <Zap className="absolute top-20 right-20 h-12 w-12 text-white animate-pulse"
-                        style={{ animationDelay: '0.5s' }} />
-                    <Target className="absolute bottom-20 left-1/4 h-14 w-14 text-white animate-pulse"
-                        style={{ animationDelay: '1s' }} />
-                    <Award className="absolute bottom-10 right-1/3 h-16 w-16 text-white animate-pulse"
-                        style={{ animationDelay: '1.5s' }} />
-                    <TrendingUp className="absolute top-1/3 right-10 h-12 w-12 text-white animate-pulse"
-                        style={{ animationDelay: '2s' }} />
-                    <Clock className="absolute bottom-1/3 left-10 h-14 w-14 text-white animate-pulse"
-                        style={{ animationDelay: '2.5s' }} />
-                </div>
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: 5 }).map((_, idx) => {
+          const i = idx + 1;
 
-                <div className="container mx-auto px-4 text-center relative z-10">
-                    <h1 className="text-4xl font-bold text-white xl:text-6xl mb-6">
-                        {t.home.hero.title}{' '}
-                        <span className="text-secondary">{t.home.hero.titleHighlight}</span>
-                    </h1>
-
-                    {/* 统计数据展示框 */}
-                    <div className="flex flex-col items-center justify-center gap-4 mb-8 md:flex-row md:gap-8">
-                        <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/30">
-                            <p className="text-white text-sm xl:text-base">
-                                {t.home.statistics.testsTaken}
-                            </p>
-                        </div>
-                        <div className="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/30">
-                            <p className="text-white text-sm xl:text-base">
-                                {t.home.statistics.averageScore}
-                            </p>
-                        </div>
-                    </div>
-
-                    <p className="text-lg text-white/90 xl:text-xl mb-8 max-w-2xl mx-auto">
-                        {t.home.hero.subtitle}
-                    </p>
-
-                    <Button
-                        size="lg"
-                        onClick={() => navigate('/test')}
-                        className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 py-6 mb-4"
-                    >
-                        {t.home.hero.cta}
-                    </Button>
-
-                    {/* 三分钟提示 */}
-                    <p className="text-white/80 text-sm xl:text-base">
-                        {t.home.statistics.testTime}
-                    </p>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="py-16 xl:py-24 bg-background">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {t.home.features.title}
-                    </h2>
-                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
-                        {features.map((feature, index) => (
-                            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                                <CardHeader>
-                                    <div className="flex justify-center mb-4">{feature.icon}</div>
-                                    <CardTitle>{feature.title}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <CardDescription>{feature.description}</CardDescription>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* 智商分布部分 */}
-            <section className="py-16 xl:py-24 bg-muted">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {t.home.iqDistribution.title}
-                    </h2>
-                    <div className="max-w-4xl mx-auto">
-                        <Card>
-                            <CardContent className="pt-6">
-                                <h3 className="text-xl font-semibold text-center mb-6">
-                                    {t.home.iqDistribution.averagePopulation}
-                                </h3>
-                                {/* 钟形曲线图表 */}
-                                <div className="relative h-64 flex items-end justify-center mb-8">
-                                    <svg viewBox="0 0 400 200" className="w-full h-full">
-                                        <path
-                                            d="M 0 200 Q 50 200 100 150 T 200 50 T 300 150 T 400 200"
-                                            fill="none"
-                                            stroke="hsl(var(--primary))"
-                                            strokeWidth="3"
-                                        />
-                                        <path
-                                            d="M 0 200 Q 50 200 100 150 T 200 50 T 300 150 T 400 200 L 400 200 L 0 200 Z"
-                                            fill="hsl(var(--primary))"
-                                            opacity="0.2"
-                                        />
-                                        {/* IQ标记 */}
-                                        <text x="80" y="195" fontSize="12" fill="currentColor">70</text>
-                                        <text x="140" y="195" fontSize="12" fill="currentColor">85</text>
-                                        <text x="190" y="195" fontSize="14" fill="hsl(var(--primary))"
-                                            fontWeight="bold">100
-                                        </text>
-                                        <text x="250" y="195" fontSize="12" fill="currentColor">115</text>
-                                        <text x="310" y="195" fontSize="12" fill="currentColor">130</text>
-                                    </svg>
-                                </div>
-                                <div className="text-center">
-                                    <Button
-                                        size="lg"
-                                        onClick={() => navigate('/test')}
-                                        className="bg-primary hover:bg-primary/90"
-                                    >
-                                        {t.home.iqDistribution.testNow}
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-
-            {/* Dimensions Section */}
-            <section className="py-16 xl:py-24 bg-background">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {t.home.dimensions.title}
-                    </h2>
-                    <div className="grid grid-cols-2 gap-4 max-w-4xl mx-auto md:grid-cols-3 xl:grid-cols-5">
-                        {dimensions.map((dimension, index) => (
-                            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                                <CardContent className="pt-6">
-                                    <div className="flex justify-center mb-3 text-primary">
-                                        {dimension.icon}
-                                    </div>
-                                    <p className="font-semibold">{dimension.name}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* 客户评价部分 */}
-            <section className="py-16 xl:py-24 bg-muted">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {t.home.testimonials.sectionTitle}
-                    </h2>
-                    <div className="max-w-6xl mx-auto relative">
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            {testimonials.slice(currentTestimonial, currentTestimonial + 3).map((testimonial, index) => (
-                                <Card key={index}
-                                    className={`${testimonial.bgColor} text-white hover:shadow-xl transition-shadow`}>
-                                    <CardContent className="pt-6">
-                                        {/* 星级评分 */}
-                                        <div className="flex justify-center mb-4">
-                                            {[...Array(testimonial.rating)].map((_, i) => (
-                                                <Star key={i} className="h-5 w-5 fill-current" />
-                                            ))}
-                                        </div>
-                                        {/* 评论文本 */}
-                                        <p className="text-sm mb-4 min-h-24">
-                                            "{testimonial.comment}"
-                                        </p>
-                                        {/* 用户信息 */}
-                                        <div className="flex items-center justify-center">
-                                            <div
-                                                className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
-                                                <span className="text-lg font-bold">{testimonial.name[0]}</span>
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold">{testimonial.name}</p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                        {/* 轮播控制按钮 */}
-                        <div className="flex justify-center gap-4 mt-8">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={prevTestimonial}
-                                className="rounded-full"
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={nextTestimonial}
-                                className="rounded-full"
-                            >
-                                <ChevronRight className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 国家智商部分 - 轮播形式 */}
-            <section className="py-16 xl:py-24 bg-background">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 xl:text-4xl">
-                        {t.home.countries.title}
-                    </h2>
-                    <div className="max-w-4xl mx-auto">
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {currentCountries.map((country, index) => (
-                                <Card key={index} className="hover:shadow-lg transition-shadow">
-                                    <CardContent className="pt-6">
-                                        <div className="flex items-center gap-4">
-                                            {/* 国旗图片 */}
-                                            <div
-                                                className="w-24 h-16 flex-shrink-0 rounded overflow-hidden border border-border">
-                                                <img
-                                                    src={country.flag}
-                                                    alt={country.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </div>
-                                            {/* 国家名称和智商分数 */}
-                                            <div className="flex-1">
-                                                <p className="font-semibold text-lg mb-1">{country.name}</p>
-                                                <p className="text-3xl font-bold text-primary">{country.iq}</p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                        {/* 轮播控制按钮 */}
-                        <div className="flex justify-center gap-4 mt-8">
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={prevCountryPage}
-                                className="rounded-full"
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                            <div className="flex items-center gap-2">
-                                {[...Array(Math.ceil(countries.length / 4))].map((_, index) => (
-                                    <div
-                                        key={index}
-                                        className={`h-2 w-2 rounded-full transition-all ${index === currentCountryPage ? 'bg-primary w-8' : 'bg-muted'
-                                            }`}
-                                    />
-                                ))}
-                            </div>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={nextCountryPage}
-                                className="rounded-full"
-                            >
-                                <ChevronRight className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-16 xl:py-24 bg-gradient-to-r from-primary to-accent">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold text-white mb-6 xl:text-4xl">
-                        {t.home.hero.title} {t.home.hero.titleHighlight}
-                    </h2>
-                    <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-                        {t.home.hero.subtitle}
-                    </p>
-                    <Button
-                        size="lg"
-                        onClick={() => navigate('/test')}
-                        className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6"
-                    >
-                        {t.home.hero.cta}
-                    </Button>
-                </div>
-            </section>
-        </div>
+          if (i <= full) {
+            return <Star key={i} className="h-4 w-4 fill-current text-primary" />;
+          }
+          if (hasHalf && i === full + 1) {
+            return <StarHalf key={i} className="h-4 w-4 fill-current text-primary" />;
+          }
+          return <Star key={i} className="h-4 w-4 text-muted-foreground/35" />;
+        })}
+      </div>
     );
+  };
+
+
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const visibleTestimonials = testimonials.slice(testimonialIndex, testimonialIndex + 3);
+
+  const prevTestimonials = () =>
+    setTestimonialIndex((v) => (v - 3 < 0 ? Math.max(0, testimonials.length - 3) : v - 3));
+  const nextTestimonials = () =>
+    setTestimonialIndex((v) => (v + 3 >= testimonials.length ? 0 : v + 3));
+
+  // -------------------------
+  // Hero interactive IQ curve + slider (FIXED pointer mismatch using SVG CTM)
+  // -------------------------
+  const [iq, setIq] = useState(100);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const iqMin = 55;
+  const iqMax = 145;
+  const mean = 100;
+  const sd = 15;
+
+  // Plot geometry in viewBox units
+  const viewW = 600;
+  const viewH = 260;
+  const plotLeft = 18;
+  const plotRight = 582;
+  const baseY = 218;
+
+  const iqToX = (v: number) => {
+    const r = (v - iqMin) / (iqMax - iqMin);
+    return plotLeft + r * (plotRight - plotLeft);
+  };
+
+  const xToIq = (x: number) => {
+    const r = (x - plotLeft) / (plotRight - plotLeft);
+    return iqMin + clamp(r, 0, 1) * (iqMax - iqMin);
+  };
+
+  const curveY = (xIq: number) => {
+    const z = (xIq - mean) / sd;
+    const pdf = Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI);
+    const scale = 170;
+    return baseY - pdf * scale * 2.2;
+  };
+
+  const percentile = useMemo(() => {
+    const z = (iq - mean) / sd;
+    return clamp(normalCdf(z) * 100, 0, 100);
+  }, [iq]);
+
+  const pathD = useMemo(() => {
+    let d = '';
+    for (let x = iqMin; x <= iqMax; x += 1) {
+      const vx = iqToX(x);
+      const vy = curveY(x);
+      d += x === iqMin ? `M ${vx} ${vy}` : ` L ${vx} ${vy}`;
+    }
+    return d;
+  }, []);
+
+  const areaD = useMemo(() => {
+    return `${pathD} L ${plotRight} ${baseY} L ${plotLeft} ${baseY} Z`;
+  }, [pathD]);
+
+  const markerX = useMemo(() => iqToX(iq), [iq]);
+
+  const clientToSvgX = (clientX: number, clientY: number) => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+
+    const pt = svg.createSVGPoint();
+    pt.x = clientX;
+    pt.y = clientY;
+
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+
+    const inv = ctm.inverse();
+    const sp = pt.matrixTransform(inv);
+    return sp.x;
+  };
+
+  const setIqFromPointer = (clientX: number, clientY: number) => {
+    const x = clientToSvgX(clientX, clientY);
+    if (x == null) return;
+    // clamp to the real plot range so cursor aligns with point
+    const clampedX = clamp(x, plotLeft, plotRight);
+    const v = xToIq(clampedX);
+    setIq(Math.round(v));
+  };
+
+  // -------------------------
+  // Live bubble (fade + gradient name, NOT covering chart)
+  // -------------------------
+  const liveNames = useMemo(
+    () => ['Sophia', 'Daniel', 'Ava', 'Lucas', 'Mia', 'Ethan', 'Liam', 'Olivia'],
+    [],
+  );
+  const [live, setLive] = useState<{ name: string; score: number }>(() => ({
+    name: liveNames[Math.floor(Math.random() * liveNames.length)],
+    score: 95 + Math.floor(Math.random() * 45),
+  }));
+  const [liveFade, setLiveFade] = useState(false);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setLiveFade(true);
+      window.setTimeout(() => {
+        setLive({
+          name: liveNames[Math.floor(Math.random() * liveNames.length)],
+          score: 95 + Math.floor(Math.random() * 45),
+        });
+        setLiveFade(false);
+      }, 220);
+    }, 4200);
+    return () => window.clearInterval(id);
+  }, [liveNames]);
+
+  const updatePillPos = () => {
+    const svg = svgRef.current;
+    const wrap = chartWrapRef.current;
+    if (!svg || !wrap) return;
+
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return;
+
+    // 取曲线点坐标（SVG viewBox 坐标）
+    const vx = markerX;
+    const vy = curveY(iq);
+
+    // 转为屏幕坐标
+    const pt = svg.createSVGPoint();
+    pt.x = vx;
+    pt.y = vy;
+    const sp = pt.matrixTransform(ctm);
+
+    // 转为相对父容器坐标
+    const wrapRect = wrap.getBoundingClientRect();
+    setPillPos({
+      left: sp.x - wrapRect.left,
+      top: sp.y - wrapRect.top,
+    });
+  };
+
+  useEffect(() => {
+    updatePillPos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [iq, markerX]); // markerX 由 iq 推导也可不写，但写上更保险
+
+  useEffect(() => {
+    const onResize = () => updatePillPos();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+
+  // -------------------------
+  // Sections data
+  // -------------------------
+  const methodCards = [
+    { icon: Microscope, title: t.method1TitleShort, desc: t.method1DescShort },
+    { icon: ScanSearch, title: t.method2TitleShort, desc: t.method2DescShort },
+    { icon: FileBarChart, title: t.method3TitleShort, desc: t.method3DescShort },
+    { icon: ShieldCheck, title: t.method4TitleShort, desc: t.method4DescShort },
+  ];
+
+
+  const services = [
+    { icon: BrainCircuit, title: t.service1TitleShort, desc: t.service1DescShort }, // IQ
+    { icon: Activity, title: t.service2TitleShort, desc: t.service2DescShort },     // Stress
+    { icon: Crown, title: t.service3TitleShort, desc: t.service3DescShort },        // Leadership
+    { icon: Dumbbell, title: t.service4TitleShort, desc: t.service4DescShort },     // Memory training
+    { icon: Puzzle, title: t.service5TitleShort, desc: t.service5DescShort },       // Games
+  ];
+
+
+  const steps = [
+    { icon: <UserPlus className="h-5 w-5" />, title: t.step1Title, desc: t.step1Desc },
+    { icon: <Timer className="h-5 w-5" />, title: t.step2Title, desc: t.step2Desc },
+    { icon: <BadgeCheck className="h-5 w-5" />, title: t.step3Title, desc: t.step3Desc },
+    { icon: <BarChart3 className="h-5 w-5" />, title: t.step4Title, desc: t.step4Desc },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <style>{`
+        @keyframes myiq-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+
+      {/* HERO */}
+      <section className="bg-muted/40">
+        <div className="container mx-auto px-4 pt-8 pb-3 md:pt-10">
+          <div className="grid gap-6 lg:grid-cols-2 lg:items-center">
+            {/* Left */}
+            <div className="max-w-xl">
+              {/* <p className="text-sm font-medium text-muted-foreground">{t.heroKicker}</p> */}
+              <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-5xl">
+                <span className="text-foreground">{t.heroTitlePrefix}</span>{' '}
+                <span className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  {t.heroTitleGradient}
+                </span>
+              </h1>
+
+              <p className="mt-3 text-base text-muted-foreground md:text-lg">{t.heroSubtitle}</p>
+
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <Button
+                  onClick={() => navigate('/test')}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  size="lg"
+                >
+                  {t.heroCta}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    const el = document.getElementById('services');
+                    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="bg-background hover:bg-background/90 border border-border text-foreground"
+                >
+                  {t.heroSecondaryCta}
+                </Button>
+              </div>
+
+              {/* Social proof */}
+              <div className="mt-5 flex items-center gap-10">
+                <div className="flex -space-x-3">
+                  {[12, 32, 45, 56].map((n, idx) => (
+                    <img
+                      key={idx}
+                      src={`https://i.pravatar.cc/80?img=${n}`}
+                      alt="user"
+                      className="h-9 w-9 rounded-full border-2 border-background object-cover"
+                    />
+                  ))}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-current text-primary" />
+                    ))}
+                    <span className="ml-2 text-sm font-medium text-foreground">{t.socialProofTitle}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-gray-500 tabular-nums">{t.testsThisMonthNumber}</span>{' '}
+                    {t.testsThisMonthText}
+                  </p>
+
+                </div>
+              </div>
+            </div>
+
+            {/* Right: chart */}
+            <Card className="border-border/60 shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <CardTitle className="text-base font-semibold">{t.chartTitle}</CardTitle>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {t.percentileText.replace('{p}', percentile.toFixed(1)).replace('{iq}', String(iq))}
+                    </p>
+                  </div>
+
+                  {/* Live bubble (outside plot area, never blocks) */}
+                  <div
+                    className={`shrink-0 rounded-full bg-background px-3 py-1 text-xs shadow-sm transition-opacity duration-200 ${liveFade ? 'opacity-0' : 'opacity-100'
+                      }`}
+                  >
+                    <span className="bg-gradient-to-r from-primary to-accent bg-clip-text font-semibold text-transparent">
+                      {live.name}
+                    </span>{' '}
+                    <span className="text-muted-foreground">{t.liveScored.replace('{iq}', String(live.score))}</span>
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="pt-0">
+                <div ref={chartWrapRef} className="relative">
+                  <svg
+                    ref={svgRef}
+                    viewBox={`0 0 ${viewW} ${viewH}`}
+                    className="h-48 w-full md:h-52"
+                    preserveAspectRatio="xMidYMid meet"
+                    onPointerDown={(e) => {
+                      e.currentTarget.setPointerCapture(e.pointerId);
+                      setIqFromPointer(e.clientX, e.clientY);
+                    }}
+                    onPointerMove={(e) => {
+                      if ((e.buttons ?? 0) === 0) return;
+                      setIqFromPointer(e.clientX, e.clientY);
+                    }}
+                    role="presentation"
+                  >
+                    <defs>
+                      <linearGradient id="myiqFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.22" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* plot area */}
+                    <path d={areaD} fill="url(#myiqFill)" />
+                    <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="3" />
+
+                    {/* Ticks */}
+                    {([55, 70, 85, 100, 115, 130, 145] as const).map((v) => {
+                      const x = iqToX(v);
+                      return (
+                        <g key={v}>
+                          <line x1={x} y1={baseY} x2={x} y2={24} stroke="hsl(var(--border))" strokeDasharray="4 6" />
+                          <text x={x} y={248} textAnchor="middle" fontSize="12" fill="hsl(var(--muted-foreground))">
+                            {v}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* Marker */}
+                    <line
+                      x1={markerX}
+                      y1={baseY}
+                      x2={markerX}
+                      y2={14}
+                      stroke="hsl(var(--primary))"
+                      strokeDasharray="6 6"
+                      strokeOpacity="0.55"
+                    />
+                    <circle
+                      cx={markerX}
+                      cy={curveY(iq)}
+                      r={7}
+                      fill="hsl(var(--primary))"
+                      stroke="white"
+                      strokeWidth="3"
+                    />
+
+                    {/* precise hitbox = plot only (no “white blank” clicks) */}
+                    <rect x={plotLeft} y={10} width={plotRight - plotLeft} height={baseY - 10} fill="transparent" />
+                  </svg>
+
+                  {/* IQ pill (pixel-accurate: always above the dot) */}
+                  {pillPos && (
+                    <div
+                      className="pointer-events-none absolute z-10"
+                      style={{
+                        left: pillPos.left,
+                        top: pillPos.top,
+                        transform: 'translate(-50%, -100%)',
+                        marginTop: -18, // 往上再抬一点：不盖住小圆点（可调 -14 ~ -26）
+                      }}
+                    >
+                      <div className="relative">
+                        <div className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
+                          IQ {iq}
+                        </div>
+                        <div
+                          className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2"
+                          style={{
+                            borderLeft: '6px solid transparent',
+                            borderRight: '6px solid transparent',
+                            borderTop: '8px solid hsl(var(--primary))',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+
+
+                  {/* Slider */}
+                  <div className="mt-3">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{t.sliderMin.replace('{iq}', String(iqMin))}</span>
+                      <span>{t.dragHint}</span>
+                      <span>{t.sliderMax.replace('{iq}', String(iqMax))}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={iqMin}
+                      max={iqMax}
+                      value={iq}
+                      onChange={(e) => setIq(Number(e.target.value))}
+                      className="mt-2 w-full accent-[hsl(var(--primary))]"
+                      aria-label="IQ slider"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <Button
+                    onClick={() => navigate('/test')}
+                    className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                    size="lg"
+                  >
+                    {t.heroCta}
+                  </Button>
+                  <p className="mt-2 text-center text-xs text-muted-foreground">{t.heroTimeHint}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Countries marquee (bigger flags, 2-line text, more spacing, no per-item border, fix overflow) */}
+        <div className="border-t bg-background/60">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-medium text-foreground">{t.countryStripTitle}</p>
+              {/* <p className="hidden text-sm text-muted-foreground md:block">{t.countryStripHint}</p> */}
+            </div>
+
+            <div className="mt-2 overflow-hidden rounded-xl bg-background">
+              <div className="relative">
+                <div
+                  className="flex w-[200%] items-center gap-8 py-2"
+                  style={{ animation: 'myiq-marquee 28s linear infinite' }}
+                >
+                  {[...countries, ...countries].map((c, idx) => (
+                    <div key={`${c.code}-${idx}`} className="mx-1 flex items-center gap-3">
+                      <img
+                        src={`https://flagcdn.com/w80/${c.code}.png`}
+                        alt={c.name}
+                        className="h-6 w-10 rounded-sm object-cover"
+                        loading="lazy"
+                      />
+                      <div className="min-w-[110px] max-w-[160px] overflow-hidden">
+                        <div className="truncate text-sm font-medium text-foreground">{c.name}</div>
+                        <div className="text-sm font-semibold tabular-nums text-primary">
+                          {c.iq.toFixed(1)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-background to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Scientific method */}
+      <section className="py-12 md:py-14">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{t.methodSectionTitle}</h2>
+            <p className="mt-2 text-muted-foreground">{t.methodSectionSub}</p>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {methodCards.map((it, idx) => {
+              const Icon = it.icon;
+              return (
+                <Card key={idx} className="shadow-sm">
+                  <CardContent className="pt-7 pb-6 text-center">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                      <Icon className="h-7 w-7 text-primary" />
+                    </div>
+
+                    <p className="mt-4 text-base font-semibold text-foreground">{it.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{it.desc}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* Services (background a bit stronger) */}
+      <section id="services" className="bg-muted/60 py-12 md:py-14">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{t.servicesTitle}</h2>
+            <p className="mt-2 text-muted-foreground">{t.servicesSub}</p>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            {services.map((s, idx) => {
+              const Icon = s.icon;
+              return (
+                <Card key={idx} className="shadow-sm">
+                  <CardContent className="pt-7 pb-6 text-center">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                      <Icon className="h-7 w-7 text-primary" />
+                    </div>
+
+                    <p className="mt-4 text-base font-semibold text-foreground">{s.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{s.desc}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-12 md:py-14">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{t.testimonialTitle}</h2>
+            <p className="mt-2 text-muted-foreground">{t.testimonialSub}</p>
+          </div>
+
+          <div className="mt-8">
+            <div className="grid gap-4 md:grid-cols-3">
+              {visibleTestimonials.map((r, idx) => {
+                const initial = (r.name || '?').trim().slice(0, 1).toUpperCase();
+                return (
+                  <Card key={idx} className="shadow-sm">
+                    <CardContent className="pt-0">
+                      {/* comment */}
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        “{r.comment}”
+                      </p>
+
+                      {/* name + stars (below comment) */}
+                      <div className="mt-4 flex items-center justify-between gap-3">
+                        <p className="font-semibold text-foreground">{r.name}</p>
+                        {renderStars(r.rating)}
+                      </div>
+
+                      {/* meta line */}
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        -- {r.location} · {r.time}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Button variant="outline" size="icon" className="rounded-full" onClick={prevTestimonials}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="rounded-full" onClick={nextTestimonials}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How it works (light background, no button) */}
+      <section id="how-it-works" className="bg-muted/40 py-14 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{t.flowTitle}</h2>
+            <p className="mt-3 text-muted-foreground">{t.flowSub}</p>
+          </div>
+
+          <div className="mt-12">
+            {/* desktop */}
+            <div className="relative mx-auto hidden max-w-6xl md:block">
+              <div className="absolute left-10 right-10 top-6 h-px bg-border" />
+              <div className="grid grid-cols-4 gap-8">
+                {steps.map((s, i) => (
+                  <div key={i} className="text-center">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-background ring-1 ring-border shadow-sm">
+                      <div className="text-primary">{s.icon}</div>
+                    </div>
+                    <p className="mt-4 text-base font-semibold text-foreground">{s.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* mobile */}
+            <div className="mx-auto grid max-w-xl gap-4 md:hidden">
+              {steps.map((s, i) => (
+                <div key={i} className="rounded-2xl bg-background p-5 ring-1 ring-border shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 ring-1 ring-border">
+                      <div className="text-primary">{s.icon}</div>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">{s.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{s.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Get To Know (button here, deep blue, big area) */}
+      <section className="bg-primary/95 py-14 md:py-16">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+            <div className="text-primary-foreground">
+              <p className="text-sm font-medium text-primary-foreground/80">{t.finalKicker}</p>
+              <p className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">{t.finalTitle}</p>
+              <p className="mt-3 max-w-2xl text-primary-foreground/80">{t.finalSub}</p>
+            </div>
+
+            <Button
+              size="lg"
+              onClick={() => navigate('/test')}
+              className="bg-white text-primary hover:bg-white/90"
+            >
+              {t.finalCta}
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

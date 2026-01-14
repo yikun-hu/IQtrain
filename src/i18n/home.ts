@@ -1,577 +1,265 @@
-export default {
+const home = {
   "en-US": {
-    title: 'IQ Train',
-    hero: {
-      title: 'Discover Your Accurate',
-      titleHighlight: 'IQ',
-      subtitle: 'Professional IQ assessment and brain training platform',
-      cta: 'START NOW',
-    },
-    features: {
-      title: 'Why Choose IQ Train',
-      feature1: {
-        title: 'Scientific Assessment',
-        description: '20 standardized questions covering 5 cognitive dimensions',
-      },
-      feature2: {
-        title: 'Detailed Report',
-        description: 'Comprehensive analysis with personalized recommendations',
-      },
-      feature3: {
-        title: 'Brain Training',
-        description: 'Daily training plans to enhance cognitive abilities',
-      },
-      feature4: {
-        title: 'Professional Certificate',
-        description: 'Official IQ certificate upon completion',
-      },
-    },
-    dimensions: {
-      title: 'Test Dimensions',
-      memory: 'Memory',
-      speed: 'Speed',
-      reaction: 'Reaction',
-      concentration: 'Concentration',
-      logic: 'Logic',
-    },
+    heroKicker: "IQ Test",
+    heroTitle: "What Is Your IQ Score/Level?",
+    heroTitlePrefix: "What Is Your",
+    heroTitleGradient: "IQ Score/Level?",
+    testsThisMonthNumber: "28193",
+    testsThisMonthText: "IQ tests conducted this month",
+    heroSubtitle:
+      "Get Results in 3 Minutes — a quick, structured assessment that turns your answers into a clear IQ score, percentile ranking, and practical insights you can actually use.",
+    heroCta: "Start IQ Test Now",
+    heroSecondaryCta: "Explore More",
+    heroTimeHint:
+      "Typical completion time: ~3 minutes. You’ll see your score and percentile right after finishing.",
+    socialProofTitle: "Excellent user reviews",
+    socialProofSub:
+      "Trusted daily by thousands — quick to finish, easy to understand, and surprisingly detailed.",
+    chartTitle: "Global IQ Distribution",
+    dragHint: "Drag the curve or use the slider",
+    percentileText:
+      "The selected IQ score IQ {iq} is higher than {p}% of people.",
+    percentileLead: "IQ {iq} • Higher than {p}%",
+    percentileHint: "Drag to preview",
+    liveScored: "just scored {iq}",
+    sliderMin: "Min {iq}",
+    sliderMax: "Max {iq}",
+
+    countryStripTitle: "Average IQ by Country",
+    countryStripHint:
+      "Auto-scrolling overview • values shown with 1 decimal • order is randomized to avoid bias from fixed ranking.",
+
+    methodSectionSub:
+      "We focus on consistency, interpretability, and usefulness — so results are not just a number, but a clear explanation you can act on.",
+    method1Title: "Standardized Evaluation",
+    method1Desc:
+      "Your result is mapped to a standard IQ scale (SD=15), so scores remain comparable across time. We normalize outcomes to reduce noise and keep interpretation consistent. This helps you understand where you stand without overreacting to small fluctuations.",
+    method2Title: "Multi-dimensional Analysis",
+    method2Desc:
+      "Beyond a total score, we analyze patterns and problem-solving signals across multiple angles. The goal is clarity: what kinds of reasoning you do well, and where you might improve. This turns a quick test into a useful profile.",
+    method3Title: "Detailed Report",
+    method3Desc:
+      "You’ll get a readable summary plus a structured breakdown: score, percentile, and practical notes. It’s designed for quick scanning first, then deeper review later. We also highlight what your performance suggests about learning and training priorities.",
+    method4Title: "Privacy Protection",
+    method4Desc:
+      "Your results are stored securely and handled with privacy in mind. We avoid unnecessary data collection and keep your information protected by default. You stay in control of access across devices and sessions.",
+
+    servicesTitle: "More than an IQ test",
+    servicesSub:
+      "IQ Train is built as a personal development toolkit — take quick checks, practice skills, and track progress over time with lightweight, practical modules.",
+    service1Title: "IQ Test",
+    service1Desc:
+      "A quick, standardized IQ-style test with score + percentile. Designed for clarity and repeatability so you can re-check later and compare.",
+    service2Title: "Stress Index Check",
+    service2Desc:
+      "A short self-check to understand stress load and recovery signals. Helpful as a weekly reflection tool and for keeping habits stable.",
+    service3Title: "Leadership Potential",
+    service3Desc:
+      "Assess decision style, consistency, and influence tendencies. A practical overview for personal growth and communication improvement.",
+    service4Title: "Memory Training",
+    service4Desc:
+      "Short drills that target recall, attention, and working-memory stamina. Built to be simple: practice a few minutes, then stop.",
+    service5Title: "Number & Logic Games",
+    service5Desc:
+      "Lightweight puzzles that train pattern recognition, mental flexibility, and logical reasoning — with clear difficulty progression.",
+    methodSectionTitle: "A scientific, structured assessment",
+    method1TitleShort: "Standardized Assessment",
+    method1DescShort:
+      "Based on internationally recognized IQ testing standards to ensure accuracy and comparability. All questions are rigorously validated by psychology research.",
+    method2TitleShort: "Multi-dimensional Analysis",
+    method2DescShort:
+      "Beyond an overall IQ score, we analyze key cognitive dimensions such as logical reasoning, spatial visualization, pattern recognition, and verbal comprehension.",
+    method3TitleShort: "Detailed Report",
+    method3DescShort:
+      "After completing the test, you’ll receive a detailed cognitive report with score interpretation, strengths analysis, and personalized recommendations.",
+    method4TitleShort: "Privacy Protection",
+    method4DescShort:
+      "We strictly protect your test data and personal privacy. All data transfers are encrypted to ensure information security.",
+
+    service1TitleShort: "IQ Test",
+    service1DescShort:
+      "Built on a standardized assessment framework, it delivers an IQ score and percentile ranking quickly, with clear interpretation to help you establish a comparable baseline over time.",
+    service2TitleShort: "Stress Index Check",
+    service2DescShort:
+      "A short self-check that evaluates recent stress load and recovery status, highlights potential sources and warning signals, and provides practical suggestions you can apply immediately.",
+    service3TitleShort: "Leadership Potential",
+    service3DescShort:
+      "Assesses decision style, goal orientation, communication influence, and collaboration tendencies to reveal strengths and improvement areas, helping you grow leadership and expression skills.",
+    service4TitleShort: "Memory Training",
+    service4DescShort:
+      "Progressive training modules for memory and focus, covering working memory, short-term recall, and attention stability, designed to support long-term improvement through practice.",
+    service5TitleShort: "Number & Logic Games",
+    service5DescShort:
+      "Interactive puzzles focused on numbers, patterns, and logic, with progressive difficulty and instant feedback to strengthen reasoning ability and mental flexibility.",
+
+    testimonialTitle: "Trusted by users worldwide",
+    testimonialSub:
+      "Feedback from people who completed the test. Many users mention the experience feels focused, the report is easy to read, and the percentile view helps them understand the score instantly.",
     testimonials: {
-      title: 'User Reviews',
-      sectionTitle: 'Customer Testimonials',
       customers: [
-        {
-          name: 'John Smith',
-          comment: 'Very professional IQ testing platform! The test questions are scientifically designed, and the report analysis is detailed.',
-        },
-        {
-          name: 'Sarah Johnson',
-          comment: 'Great testing experience with a clean and beautiful interface. Completed in 20 minutes with highly accurate results!',
-        },
-        {
-          name: 'Michael Chen',
-          comment: 'The training module is very useful. Daily training significantly improves thinking ability. Great customer service!',
-        },
-        {
-          name: 'Emily Wang',
-          comment: 'Reasonable price and great value. The detailed report helped me identify my strengths and areas for improvement.',
-        },
-        {
-          name: 'David Lee',
-          comment: 'Bilingual support is thoughtful. Smooth testing process and beautifully designed certificate for job and academic applications.',
-        },
-        {
-          name: 'Lisa Zhang',
-          comment: 'As an educator, I find this platform very professional. Questions meet international standards with a scientific scoring system.',
-        },
-      ],
+        { name: "Emily Carter", comment: "Smooth flow — finished in minutes and the report actually explains what the score means.", location: "San Francisco", time: "2 days ago" },
+        { name: "Noah Anderson", comment: "Tried it out of curiosity. The percentile view makes the result easy to understand.", location: "London", time: "this week" },
+        { name: "Mina Suzuki", comment: "Challenging but not frustrating. Clean UI keeps you focused.", location: "Toronto", time: "yesterday" },
+        { name: "William Harris", comment: "More detailed than expected — strengths + practical suggestions were useful.", location: "Sydney", time: "3 days ago" },
+        { name: "Charles Bumstead", comment: "Quick and clear. I’ll retake later to compare progress.", location: "Singapore", time: "last week" },
+        { name: "Richard Davis", comment: "Great as a lightweight baseline to track over time.", location: "Berlin", time: "just now" },
+      ]
     },
-    statistics: {
-      testsTaken: '36,168 IQ tests taken this month',
-      averageScore: 'Average IQ score is 112',
-      testTime: '⚡ Complete the test in just 3 minutes',
-    },
-    iqDistribution: {
-      title: 'IQ Distribution',
-      averagePopulation: 'Average Population IQ',
-      testNow: 'Test Your IQ Now!',
-    },
-    countries: {
-      title: 'Average IQ by Country',
-    },
-    pricing: {
-      title: 'Pricing Plans',
-      oneTime: {
-        title: 'Full Report',
-        price: '$1.98',
-        description: 'One-time payment',
-        features: [
-          'Complete IQ test',
-          'Detailed analysis report',
-          'Official certificate',
-          'Lifetime access',
-        ],
-        cta: 'Get Report',
-      },
-      monthly: {
-        title: 'Premium Training',
-        price: '$28.80',
-        period: '/month',
-        description: 'Monthly subscription',
-        features: [
-          'All report features',
-          'Daily training plans',
-          'Progress tracking',
-          'Priority support',
-        ],
-        cta: 'Subscribe',
-      },
-    },
-    footer: {
-      copyright: '2025 IQ Train. All rights reserved.',
-      privacy: 'Privacy Policy',
-      terms: 'Terms of Service',
-      contact: 'Contact Us',
-      rightsReserved: 'All rights reserved.',
-      language: 'Language',
-    },
+
+    flowTitle: "How it works",
+    flowSub:
+      "Four steps from start to insight — designed to be fast, low-friction, and easy to revisit when you want to compare future results.",
+    step1Title: "Create an Account",
+    step1Desc:
+      "Save your results, access your report later, and keep everything synced across devices. This also helps you track changes over time.",
+    step2Title: "Complete the Test",
+    step2Desc:
+      "Answer the questions in a focused session (typically a few minutes). The experience is optimized to stay simple and distraction-free.",
+    step3Title: "Get Your Report",
+    step3Desc:
+      "Receive your IQ score, percentile ranking, and a practical summary. You’ll see both the headline result and a clear explanation.",
+    step4Title: "View Your Results",
+    step4Desc:
+      "Review your breakdown, revisit training modules, and compare future attempts. Use it as a lightweight baseline for improvement.",
+
+    finalKicker: "Get To Know Your IQ",
+    finalTitle: "See your IQ level in minutes",
+    finalSub:
+      "Start now and receive your results instantly — score, percentile, and a clear summary you can revisit anytime.",
+    finalCta: "Start Test"
   },
+
   "zh-CN": {
-    title: 'IQ Train',
-    hero: {
-      title: '发现你的准确',
-      titleHighlight: 'IQ',
-      subtitle: '专业的智商评估和大脑训练平台',
-      cta: '立即开始',
-    },
-    features: {
-      title: '为什么选择 IQ Train',
-      feature1: {
-        title: '科学评估',
-        description: '20道标准化题目，涵盖5个认知维度',
-      },
-      feature2: {
-        title: '详细报告',
-        description: '全面分析，提供个性化建议',
-      },
-      feature3: {
-        title: '大脑训练',
-        description: '每日训练计划，提升认知能力',
-      },
-      feature4: {
-        title: '专业证书',
-        description: '完成测试后获得官方IQ证书',
-      },
-    },
-    dimensions: {
-      title: '测试维度',
-      memory: '记忆力',
-      speed: '速度',
-      reaction: '反应力',
-      concentration: '专注力',
-      logic: '逻辑思维',
-    },
+    heroKicker: "IQ 测试",
+    heroTitle: "你的 IQ 分数/等级是多少？",
+    heroSubtitle:
+      "3 分钟出结果——用结构化测评把你的作答转化为清晰的 IQ 分数、百分位排名与可执行的提升建议，不止是一个数字。",
+    heroCta: "立即开始 IQ 测试",
+    heroSecondaryCta: "查看更多",
+    heroTimeHint:
+      "通常约 3 分钟完成。提交后即可看到分数、百分位与报告摘要。",
+    socialProofTitle: "用户好评",
+    socialProofSub:
+      "每天都有大量用户完成测试：体验专注不打扰，结果解释清晰，报告内容比想象中更细。",
+    chartTitle: "全球 IQ 分布",
+    dragHint: "拖拽曲线或使用滑动条",
+    percentileText:
+      "选择的 IQ {iq} 超过了 {p}% 的人群。",
+    percentileLead: "IQ {iq} · 超过 {p}%",
+    percentileHint: "拖动预览",
+    liveScored: "刚测得 {iq}",
+    sliderMin: "最小 {iq}",
+    sliderMax: "最大 {iq}",
+
+    countryStripTitle: "各国平均 IQ",
+    countryStripHint:
+      "自动滚动展示 • 保留 1 位小数 • 顺序随机打乱，避免固定排序带来的偏见感。",
+
+    methodSectionSub:
+      "我们强调一致性、可解释性与实用性：结果不仅可对比，更能读懂含义，并知道下一步怎么提升。",
+    method1Title: "标准化评估",
+    method1Desc:
+      "结果映射到标准 IQ 量表（SD=15），保证不同时间、不同测次的解释口径一致。我们会对输出做规范化处理，减少偶然波动带来的误读，让“变化”更有意义。",
+    method2Title: "多维度分析",
+    method2Desc:
+      "不仅给出总分，还会从多角度分析解题信号与思维模式。核心目标是“说清楚”：你擅长哪类推理、可能卡在哪类题型，以及改进方向是什么。",
+    method3Title: "详细报告",
+    method3Desc:
+      "报告包含：分数、百分位、结构化解读与实用建议。先一眼看懂结论，再按需深读细节；也方便你后续复测对比，形成个人基线与成长轨迹。",
+    method4Title: "隐私保护",
+    method4Desc:
+      "默认以隐私优先：尽量少采集、强保护、可控访问。结果安全保存，你可以跨设备查看，也能用于长期跟踪，而不必担心被滥用。",
+
+    servicesTitle: "不止 IQ 测试",
+    servicesSub:
+      "IQ Train 更像一个轻量化的个人成长工具箱：快速自检、能力训练与进度追踪，把“测到”变成“提升到”。",
+    service1Title: "IQ 测试",
+    service1Desc:
+      "标准化 IQ 风格测评：分数 + 百分位 + 报告解读。设计重点是清晰与可复测，便于后续对比进步。",
+    service2Title: "压力指数自检",
+    service2Desc:
+      "短时自检你的压力负荷与恢复状态，适合每周做一次回顾。用来帮助你稳住节奏、优化作息与工作强度。",
+    service3Title: "领导力潜力测评",
+    service3Desc:
+      "评估决策风格、一致性与影响力倾向，提供可执行的沟通与管理建议。适合做自我认知与成长参考。",
+    service4Title: "记忆训练",
+    service4Desc:
+      "针对回忆力、注意力与工作记忆耐力的短训练。每次几分钟即可完成，适合碎片时间，强调“轻量可坚持”。",
+    service5Title: "数字与逻辑游戏",
+    service5Desc:
+      "循序渐进的轻量益智题：训练模式识别、思维灵活度与逻辑推理。难度有梯度，适合用来热身与巩固。",
+    methodSectionTitle: "专业、科学的评估方法",
+    method1TitleShort: "标准化评估",
+    method1DescShort:
+      "基于国际通用的智商测试标准，确保测试结果的准确性和可比性。所有题目都经过严格的心理学验证。",
+    method2TitleShort: "多维度分析",
+    method2DescShort:
+      "不仅提供总体智商分数，还分析逻辑推理、空间想象、模式识别和语言理解等关键认知维度。",
+    method3TitleShort: "详细报告",
+    method3DescShort:
+      "测试完成后，您将获得一份详细的认知能力报告，包含分数解读、优势分析和个性化建议。",
+    method4TitleShort: "隐私保护",
+    method4DescShort:
+      "我们严格保护您的测试数据和隐私信息，所有数据传输都经过加密处理，确保信息安全。",
+
+    service1TitleShort: "IQ 测试",
+    service1DescShort:
+      "基于标准化测评框架，快速给出 IQ 分数与百分位排名，并提供清晰的结果解读，帮助您建立可对比的能力基线。",
+    service2TitleShort: "压力指数自检",
+    service2DescShort:
+      "通过简短量表评估近期压力水平与恢复状态，识别可能的压力来源与风险信号，并给出可执行的调整建议。",
+    service3TitleShort: "领导力潜力测评",
+    service3DescShort:
+      "围绕决策风格、目标驱动、沟通影响力与协作倾向进行评估，帮助您了解优势与改进方向，提升管理与表达能力。",
+    service4TitleShort: "记忆训练",
+    service4DescShort:
+      "提供循序渐进的记忆与专注训练模块，覆盖工作记忆、短时记忆与注意力稳定性，帮助您通过练习形成长期提升。",
+    service5TitleShort: "数字和逻辑游戏",
+    service5DescShort:
+      "通过数字、模式与逻辑类互动题目进行脑力训练，强调难度递进与即时反馈，帮助提升推理能力与思维灵活度。",
+
+
+    testimonialTitle: "全球用户信赖",
+    testimonialSub:
+      "来自已完成测试用户的真实反馈。很多人提到：体验专注不花哨，报告阅读门槛低，尤其是百分位展示能立刻理解分数的意义。",
     testimonials: {
-      title: '用户评价',
-      sectionTitle: '客户心声',
       customers: [
-        {
-          name: '张伟',
-          comment: '非常专业的IQ测试平台！测试题目设计科学，报告分析详细，让我对自己的智力水平有了清晰的认识。',
-        },
-        {
-          name: '李娜',
-          comment: '测试体验很好，界面简洁美观。20分钟就能完成测试，结果准确度很高，推荐给所有想了解自己智商的朋友！',
-        },
-        {
-          name: '王明',
-          comment: '训练模块非常有用，每天坚持训练能明显感觉到思维能力的提升。客服响应及时，服务态度很好。',
-        },
-        {
-          name: '刘芳',
-          comment: '价格合理，物超所值。测试报告非常详细，包含了各个维度的分析，帮助我找到了自己的优势和需要改进的地方。',
-        },
-        {
-          name: '陈杰',
-          comment: '支持中英双语很贴心，测试过程流畅，没有任何卡顿。证书设计精美，可以用于求职和学术申请。',
-        },
-        {
-          name: '赵敏',
-          comment: '作为教育工作者，我觉得这个平台非常专业。题目设计符合国际标准，评分系统科学合理，值得信赖。',
-        },
-      ],
+        { name: "张伟", comment: "我测完第一感觉就是：流程很顺，几分钟就出结果。报告把分数怎么来的、代表什么讲得挺明白。", location: "上海", time: "2天前" },
+        { name: "李娜", comment: "本来随便试试，结果比想象中认真。百分位这个展示特别直观，一眼就能知道自己大概在什么水平。", location: "杭州", time: "本周" },
+        { name: "王磊", comment: "题目有点挑战但不无聊，做起来很专注。整体界面干净，完成后也不会被一堆花里胡哨的东西打断。", location: "北京", time: "昨天" },
+        { name: "陈静", comment: "报告比我预期详细，除了分数还有优势点和建议，看完大概知道自己该怎么练。", location: "成都", time: "3天前" },
+        { name: "刘洋", comment: "用起来挺舒服的，3分钟左右就搞定，结果也好理解。我准备过段时间再测一次看看有没有进步。", location: "深圳", time: "上周" },
+        { name: "周敏", comment: "适合当成一个长期的参考基线，偶尔测一次对比一下。短小不费劲，反而更容易坚持。", location: "南京", time: "刚刚" },
+      ]
     },
-    statistics: {
-      testsTaken: '本月进行了 36,168 次智商测试',
-      averageScore: '平均智商分数为 112',
-      testTime: '⚡ 三分钟即可完成测试',
-    },
-    iqDistribution: {
-      title: '智商分布',
-      averagePopulation: '平均人口智商',
-      testNow: '立即测试你的智商！',
-    },
-    countries: {
-      title: '各国平均智商',
-    },
-    pricing: {
-      title: '价格方案',
-      oneTime: {
-        title: '完整报告',
-        price: '$1.98',
-        description: '一次性付费',
-        features: [
-          '完整IQ测试',
-          '详细分析报告',
-          '官方证书',
-          '终身访问',
-        ],
-        cta: '获取报告',
-      },
-      monthly: {
-        title: '高级训练',
-        price: '$28.80',
-        period: '/月',
-        description: '月度订阅',
-        features: [
-          '所有报告功能',
-          '每日训练计划',
-          '进度追踪',
-          '优先支持',
-        ],
-        cta: '订阅',
-      },
-    },
-    footer: {
-      copyright: '2025 IQ Train. 版权所有.',
-      privacy: '隐私政策',
-      terms: '服务条款',
-      contact: '联系我们',
-      rightsReserved: '保留所有权利。',
-      language: '语言',
-    },
-  },
-  "de-DE": {
-    title: 'IQ Train',
-    hero: {
-      title: 'Entdecken Sie Ihr Genaues',
-      titleHighlight: 'IQ',
-      subtitle: 'Professionelle IQ-Bewertungs- und Gehirntrainingsplattform',
-      cta: 'JETZT STARTEN',
-    },
-    features: {
-      title: 'Warum IQ Train wählen',
-      feature1: {
-        title: 'Wissenschaftliche Bewertung',
-        description: '20 standardisierte Fragen, die 5 kognitive Dimensionen abdecken',
-      },
-      feature2: {
-        title: 'Detaillierter Bericht',
-        description: 'Umfassende Analyse mit personalisierten Empfehlungen',
-      },
-      feature3: {
-        title: 'Gehirntraining',
-        description: 'Tägliche Trainingspläne zur Verbesserung der kognitiven Fähigkeiten',
-      },
-      feature4: {
-        title: 'Professionelles Zertifikat',
-        description: 'Offizielles IQ-Zertifikat nach Abschluss',
-      },
-    },
-    dimensions: {
-      title: 'Testdimensionen',
-      memory: 'Gedächtnis',
-      speed: 'Geschwindigkeit',
-      reaction: 'Reaktion',
-      concentration: 'Konzentration',
-      logic: 'Logik',
-    },
-    testimonials: {
-      title: 'Benutzerbewertungen',
-      sectionTitle: 'Kundenbewertungen',
-      customers: [
-        {
-          name: 'John Smith',
-          comment: 'Sehr professionelle IQ-Testplattform! Die Testfragen sind wissenschaftlich gestaltet, und die Berichtsanalysen sind detailliert.',
-        },
-        {
-          name: 'Sarah Johnson',
-          comment: 'Tolle Testerfahrung mit einer sauberen und schönen Benutzeroberfläche. In 20 Minuten abgeschlossen mit hochgenauen Ergebnissen!',
-        },
-        {
-          name: 'Michael Chen',
-          comment: 'Das Trainingsmodul ist sehr nützlich. Tägliches Training verbessert erheblich die Denkfähigkeit. Toller Kundenservice!',
-        },
-        {
-          name: 'Emily Wang',
-          comment: 'Angemessener Preis und großartiger Wert. Der detaillierte Bericht half mir, meine Stärken und Verbesserungsbereiche zu identifizieren.',
-        },
-        {
-          name: 'David Lee',
-          comment: 'Die zweisprachige Unterstützung ist durchdacht. Reibungsloser Testprozess und schön gestaltetes Zertifikat für Job- und akademische Bewerbungen.',
-        },
-        {
-          name: 'Lisa Zhang',
-          comment: 'Als Pädagoge finde ich diese Plattform sehr professionell. Die Fragen entsprechen internationalen Standards mit einem wissenschaftlichen Bewertungssystem.',
-        },
-      ],
-    },
-    statistics: {
-      testsTaken: '36.168 IQ-Tests wurden diesen Monat durchgeführt',
-      averageScore: 'Der durchschnittliche IQ-Score beträgt 112',
-      testTime: '⚡ Testen Sie in nur 3 Minuten',
-    },
-    iqDistribution: {
-      title: 'IQ-Verteilung',
-      averagePopulation: 'Durchschnittlicher IQ der Bevölkerung',
-      testNow: 'Testen Sie jetzt Ihren IQ!',
-    },
-    countries: {
-      title: 'Durchschnittlicher IQ nach Land',
-    },
-    pricing: {
-      title: 'Preise',
-      oneTime: {
-        title: 'Vollständiger Bericht',
-        price: '$1.98',
-        description: 'Einmalige Zahlung',
-        features: [
-          'Vollständiger IQ-Test',
-          'Detaillierter Analysebericht',
-          'Offizielles Zertifikat',
-          'Lebenslanger Zugang',
-        ],
-        cta: 'Bericht erhalten',
-      },
-      monthly: {
-        title: 'Premium-Training',
-        price: '$28.80',
-        period: '/Monat',
-        description: 'Monatliches Abonnement',
-        features: [
-          'Alle Berichtsfunktionen',
-          'Tägliche Trainingspläne',
-          'Fortschrittsverfolgung',
-          'Prioritätsunterstützung',
-        ],
-        cta: 'Abonnieren',
-      },
-    },
-    footer: {
-      copyright: '2025 IQ Train. Alle Rechte vorbehalten.',
-      privacy: 'Datenschutz-Bestimmungen',
-      terms: 'Nutzungsbedingungen',
-      contact: 'Kontaktieren Sie uns',
-      rightsReserved: 'Alle Rechte vorbehalten.',
-      language: 'Sprache',
-    },
-  },
-  "fr-FR": {
-    title: 'IQ Train',
-    hero: {
-      title: 'Découvrez Votre Précis',
-      titleHighlight: 'IQ',
-      subtitle: 'Plateforme professionnelle d\'évaluation du QI et d\'entraînement cérébral',
-      cta: 'COMMENCER MAINTENANT',
-    },
-    features: {
-      title: 'Pourquoi Choisir IQ Train',
-      feature1: {
-        title: 'Évaluation Scientifique',
-        description: '20 questions standardisées couvrant 5 dimensions cognitives',
-      },
-      feature2: {
-        title: 'Rapport Détaille',
-        description: 'Analyse complète avec des recommandations personnalisées',
-      },
-      feature3: {
-        title: 'Entraînement Cérébral',
-        description: 'Plans d\'entraînement quotidiens pour améliorer les capacités cognitives',
-      },
-      feature4: {
-        title: 'Certificat Professionnel',
-        description: 'Certificat IQ officiel après achèvement',
-      },
-    },
-    dimensions: {
-      title: 'Dimensions du Test',
-      memory: 'Mémoire',
-      speed: 'Vitesse',
-      reaction: 'Réaction',
-      concentration: 'Concentration',
-      logic: 'Logique',
-    },
-    testimonials: {
-      title: 'Avis des Utilisateurs',
-      sectionTitle: 'Témoignages de Clients',
-      customers: [
-        {
-          name: 'John Smith',
-          comment: 'Plateforme de test IQ très professionnelle ! Les questions de test sont conçues scientifiquement, et l\'analyse du rapport est détaillée.',
-        },
-        {
-          name: 'Sarah Johnson',
-          comment: 'Excellente expérience de test avec une interface propre et belle. Terminé en 20 minutes avec des résultats très précis !',
-        },
-        {
-          name: 'Michael Chen',
-          comment: 'Le module d\'entraînement est très utile. L\'entraînement quotidien améliore considérablement la capacité de réflexion. Excellent service client !',
-        },
-        {
-          name: 'Emily Wang',
-          comment: 'Prix raisonnable et grande valeur. Le rapport détaillé m\'a aidé à identifier mes forces et mes domaines à améliorer.',
-        },
-        {
-          name: 'David Lee',
-          comment: 'Le support bilingue est réfléchi. Processus de test fluide et certificat magnifiquement conçu pour les candidatures professionnelles et académiques.',
-        },
-        {
-          name: 'Lisa Zhang',
-          comment: 'En tant qu\'éducateur, je trouve cette plateforme très professionnelle. Les questions répondent aux normes internationales avec un système de notation scientifique.',
-        },
-      ],
-    },
-    statistics: {
-      testsTaken: '36 168 tests de QI passés ce mois-ci',
-      averageScore: 'Le score IQ moyen est de 112',
-      testTime: '⚡ Complétez le test en seulement 3 minutes',
-    },
-    iqDistribution: {
-      title: 'Distribution du QI',
-      averagePopulation: 'QI moyen de la population',
-      testNow: 'Testez Votre QI Maintenant !',
-    },
-    countries: {
-      title: 'QI Moyen par Pays',
-    },
-    pricing: {
-      title: 'Plans de Tarification',
-      oneTime: {
-        title: 'Rapport Complet',
-        price: '$1.98',
-        description: 'Paiement unique',
-        features: [
-          'Test IQ complet',
-          'Rapport d\'analyse détaillé',
-          'Certificat officiel',
-          'Accès à vie',
-        ],
-        cta: 'Obtenir le Rapport',
-      },
-      monthly: {
-        title: 'Entraînement Premium',
-        price: '$28.80',
-        period: '/mois',
-        description: 'Abonnement mensuel',
-        features: [
-          'Toutes les fonctionnalités du rapport',
-          'Plans d\'entraînement quotidiens',
-          'Suivi des progrès',
-          'Support prioritaire',
-        ],
-        cta: 'S\'abonner',
-      },
-    },
-    footer: {
-      copyright: '2025 IQ Train. Tous droits réservés.',
-      privacy: 'Politique de Confidentialité',
-      terms: 'Conditions de Service',
-      contact: 'Contactez-nous',
-      rightsReserved: 'Tous droits réservés.',
-      language: 'Langue',
-    },
-  },
-  "zh-TW": {
-    title: 'IQ Train',
-    hero: {
-      title: '發現你的準確',
-      titleHighlight: 'IQ',
-      subtitle: '專業的智商評估和大腦訓練平台',
-      cta: '立即開始',
-    },
-    features: {
-      title: '為什麼選擇 IQ Train',
-      feature1: {
-        title: '科學評估',
-        description: '20道標準化題目，涵蓋5個認知維度',
-      },
-      feature2: {
-        title: '詳細報告',
-        description: '全面分析，提供個性化建議',
-      },
-      feature3: {
-        title: '大腦訓練',
-        description: '每日訓練計劃，提升認知能力',
-      },
-      feature4: {
-        title: '專業證書',
-        description: '完成測試後獲得官方IQ證書',
-      },
-    },
-    dimensions: {
-      title: '測試維度',
-      memory: '記憶力',
-      speed: '速度',
-      reaction: '反應力',
-      concentration: '專注力',
-      logic: '邏輯思維',
-    },
-    testimonials: {
-      title: '用戶評價',
-      sectionTitle: '客戶心聲',
-      customers: [
-        {
-          name: '張偉',
-          comment: '非常專業的IQ測試平台！測試題目設計科學，報告分析詳細，讓我對自己的智力水平有了清晰的認識。',
-        },
-        {
-          name: '李娜',
-          comment: '測試體驗很好，介面簡潔美觀。20分鐘就能完成測試，結果準確度很高，推薦給所有想了解自己智商的朋友！',
-        },
-        {
-          name: '王明',
-          comment: '訓練模組非常有用，每天堅持訓練能明顯感覺到思維能力的提升。客服響應及時，服務態度很好。',
-        },
-        {
-          name: '劉芳',
-          comment: '價格合理，物超所值。測試報告非常詳細，包含了各個維度的分析，幫助我找到了自己的優勢和需要改進的地方。',
-        },
-        {
-          name: '陳杰',
-          comment: '支持中英雙語很貼心，測試過程流暢，沒有任何卡頓。證書設計精美，可以用於求職和學術申請。',
-        },
-        {
-          name: '趙敏',
-          comment: '作為教育工作者，我覺得這個平台非常專業。題目設計符合國際標準，評分系統科學合理，值得信賴。',
-        },
-      ],
-    },
-    statistics: {
-      testsTaken: '本月進行了 36,168 次智商測試',
-      averageScore: '平均智商分數為 112',
-      testTime: '⚡ 三分鐘即可完成測試',
-    },
-    iqDistribution: {
-      title: '智商分布',
-      averagePopulation: '平均人口智商',
-      testNow: '立即測試你的智商！',
-    },
-    countries: {
-      title: '各國平均智商',
-    },
-    pricing: {
-      title: '價格方案',
-      oneTime: {
-        title: '完整報告',
-        price: '$1.98',
-        description: '一次性付費',
-        features: [
-          '完整IQ測試',
-          '詳細分析報告',
-          '官方證書',
-          '終身訪問',
-        ],
-        cta: '獲取報告',
-      },
-      monthly: {
-        title: '高級訓練',
-        price: '$28.80',
-        period: '/月',
-        description: '月度訂閱',
-        features: [
-          '所有報告功能',
-          '每日訓練計劃',
-          '進度追蹤',
-          '優先支持',
-        ],
-        cta: '訂閱',
-      },
-    },
-    footer: {
-      copyright: '2025 IQ Train. 版權所有。',
-      privacy: '隱私政策',
-      terms: '服務條款',
-      contact: '聯繫我們',
-      rightsReserved: '保留所有權利。',
-      language: '語言',
-    },
+
+    flowTitle: "如何测试",
+    flowSub:
+      "四步完成从开始到洞察：快、顺、低摩擦；并且方便你后续复测对比，把结果变成长期可用的个人基线。",
+    step1Title: "注册账户",
+    step1Desc:
+      "保存结果并随时查看报告，支持跨设备同步。也便于你后续复测时做对比，形成个人成长轨迹。",
+    step2Title: "完成测试",
+    step2Desc:
+      "专注作答，通常几分钟即可完成。体验设计强调简单不打扰，让你把注意力放在题目上。",
+    step3Title: "获取报告",
+    step3Desc:
+      "立即获得 IQ 分数、百分位与结构化解读。你能快速看懂结论，也可以深入查看细节与建议。",
+    step4Title: "查看结果",
+    step4Desc:
+      "复盘你的优势与改进点，进入训练模块，并与后续测次对比。把它当作一个轻量但持续的提升工具。",
+
+    finalKicker: "了解你的 IQ",
+    finalTitle: "几分钟就能看到你的 IQ 水平",
+    finalSub:
+      "现在开始，立刻获得分数、百分位与清晰解读；随时可回看，也能复测对比进步。",
+    finalCta: "开始测试",
+    heroTitlePrefix: "你的",
+    heroTitleGradient: "IQ 分数/等级是多少？",
+    testsThisMonthNumber: "28193",
+    testsThisMonthText: "本月已完成 IQ 测试",
+
   }
-}
+};
+
+export default home;

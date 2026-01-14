@@ -20,14 +20,14 @@ export function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-2">IQ Train</h3>
             <p className="text-sm text-muted-foreground">
-              {t.home.hero.subtitle}
+              {t.common.subtitle}
             </p>
           </div>
 
           {/* Language Selector */}
           <div>
             <h4 className="font-semibold mb-4">
-              {t.home.footer.language}
+              {t.common.language}
             </h4>
             <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
               <SelectTrigger className="w-full max-w-[200px]">
@@ -45,14 +45,14 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-8 border-t border-border pt-8 flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
           <p className="text-sm text-muted-foreground">
-            © 2025 IQ Train. {t.home.footer.rightsReserved}
+            © 2025 IQ Train. {t.common.rightsReserved}
           </p>
           <div className="flex space-x-4">
             <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              {t.home.footer.privacy}
+              {t.common.privacy}
             </Link>
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              {t.home.footer.terms}
+              {t.common.terms}
             </Link>
             <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               {t.header.cookie_policy}
