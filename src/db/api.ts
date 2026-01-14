@@ -258,7 +258,7 @@ export async function getAllGames() {
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         return value;
       }
-      
+
       // 如果是 JSON 字符串，解析它
       if (typeof value === 'string' && value.trim().startsWith('{')) {
         try {
@@ -269,12 +269,12 @@ export async function getAllGames() {
           return { 'en-US': value, 'zh-CN': value };
         }
       }
-      
+
       // 如果是普通字符串，转换为对象格式
       if (typeof value === 'string') {
         return { 'en-US': value, 'zh-CN': value };
       }
-      
+
       // 如果是 null 或 undefined，返回空对象
       return { 'en-US': '', 'zh-CN': '' };
     };
@@ -283,9 +283,6 @@ export async function getAllGames() {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
-      // 保留 title_zh 和 description_zh 用于向后兼容（如果存在）
-      title_zh: game.title_zh || '',
-      description_zh: game.description_zh || '',
     };
   };
   
@@ -312,7 +309,7 @@ export async function getRandomGames(count: number = 3) {
     .limit(100); // 先获取所有游戏
   
   if (error) throw error;
-  
+
   // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象
   const normalizeGame = (game: any): Game => {
     // 解析 JSON 字符串为 ITranslatedField 对象
@@ -321,7 +318,7 @@ export async function getRandomGames(count: number = 3) {
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         return value;
       }
-      
+
       // 如果是 JSON 字符串，解析它
       if (typeof value === 'string' && value.trim().startsWith('{')) {
         try {
@@ -332,12 +329,12 @@ export async function getRandomGames(count: number = 3) {
           return { 'en-US': value, 'zh-CN': value };
         }
       }
-      
+
       // 如果是普通字符串，转换为对象格式
       if (typeof value === 'string') {
         return { 'en-US': value, 'zh-CN': value };
       }
-      
+
       // 如果是 null 或 undefined，返回空对象
       return { 'en-US': '', 'zh-CN': '' };
     };
@@ -346,9 +343,6 @@ export async function getRandomGames(count: number = 3) {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
-      // 保留 title_zh 和 description_zh 用于向后兼容（如果存在）
-      title_zh: game.title_zh || '',
-      description_zh: game.description_zh || '',
     };
   };
   
@@ -564,11 +558,11 @@ export async function getScaleTestQuestions(testType: ScaleTestType) {
 }
 
 // 获取量表评分规则
-export async function getScaleScoringRules(testType: ScaleTestType, language: string = 'en-US') {
+export async function getScaleScoringRules(testType: ScaleTestType) {
   const { data, error } = await supabase
     .from('scale_scoring_rules')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .order('level', { ascending: true });
   
@@ -577,11 +571,11 @@ export async function getScaleScoringRules(testType: ScaleTestType, language: st
 }
 
 // 根据分数获取对应的评分规则
-export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number, language: string = 'en-US') {
+export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number) {
   const { data, error } = await supabase
     .from('scale_scoring_rules')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .lte('score_min', score)
     .gte('score_max', score)
@@ -592,11 +586,11 @@ export async function getScaleScoringRuleByScore(testType: ScaleTestType, score:
 }
 
 // 获取测试配置
-export async function getScaleTestConfig(testType: ScaleTestType, language: string = 'en-US') {
+export async function getScaleTestConfig(testType: ScaleTestType) {
   const { data, error } = await supabase
     .from('scale_test_configs')
     .select('*')
-    .eq('language', language)
+    // .eq('language', language)
     .eq('test_type', testType)
     .maybeSingle();
   

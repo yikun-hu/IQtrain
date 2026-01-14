@@ -228,5 +228,350 @@ export default {
       rightsReserved: '保留所有权利。',
       language: '语言',
     },
+  },
+  "de-DE": {
+    title: 'IQ Train',
+    hero: {
+      title: 'Entdecken Sie Ihr Genaues',
+      titleHighlight: 'IQ',
+      subtitle: 'Professionelle IQ-Bewertungs- und Gehirntrainingsplattform',
+      cta: 'JETZT STARTEN',
+    },
+    features: {
+      title: 'Warum IQ Train wählen',
+      feature1: {
+        title: 'Wissenschaftliche Bewertung',
+        description: '20 standardisierte Fragen, die 5 kognitive Dimensionen abdecken',
+      },
+      feature2: {
+        title: 'Detaillierter Bericht',
+        description: 'Umfassende Analyse mit personalisierten Empfehlungen',
+      },
+      feature3: {
+        title: 'Gehirntraining',
+        description: 'Tägliche Trainingspläne zur Verbesserung der kognitiven Fähigkeiten',
+      },
+      feature4: {
+        title: 'Professionelles Zertifikat',
+        description: 'Offizielles IQ-Zertifikat nach Abschluss',
+      },
+    },
+    dimensions: {
+      title: 'Testdimensionen',
+      memory: 'Gedächtnis',
+      speed: 'Geschwindigkeit',
+      reaction: 'Reaktion',
+      concentration: 'Konzentration',
+      logic: 'Logik',
+    },
+    testimonials: {
+      title: 'Benutzerbewertungen',
+      sectionTitle: 'Kundenbewertungen',
+      customers: [
+        {
+          name: 'John Smith',
+          comment: 'Sehr professionelle IQ-Testplattform! Die Testfragen sind wissenschaftlich gestaltet, und die Berichtsanalysen sind detailliert.',
+        },
+        {
+          name: 'Sarah Johnson',
+          comment: 'Tolle Testerfahrung mit einer sauberen und schönen Benutzeroberfläche. In 20 Minuten abgeschlossen mit hochgenauen Ergebnissen!',
+        },
+        {
+          name: 'Michael Chen',
+          comment: 'Das Trainingsmodul ist sehr nützlich. Tägliches Training verbessert erheblich die Denkfähigkeit. Toller Kundenservice!',
+        },
+        {
+          name: 'Emily Wang',
+          comment: 'Angemessener Preis und großartiger Wert. Der detaillierte Bericht half mir, meine Stärken und Verbesserungsbereiche zu identifizieren.',
+        },
+        {
+          name: 'David Lee',
+          comment: 'Die zweisprachige Unterstützung ist durchdacht. Reibungsloser Testprozess und schön gestaltetes Zertifikat für Job- und akademische Bewerbungen.',
+        },
+        {
+          name: 'Lisa Zhang',
+          comment: 'Als Pädagoge finde ich diese Plattform sehr professionell. Die Fragen entsprechen internationalen Standards mit einem wissenschaftlichen Bewertungssystem.',
+        },
+      ],
+    },
+    statistics: {
+      testsTaken: '36.168 IQ-Tests wurden diesen Monat durchgeführt',
+      averageScore: 'Der durchschnittliche IQ-Score beträgt 112',
+      testTime: '⚡ Testen Sie in nur 3 Minuten',
+    },
+    iqDistribution: {
+      title: 'IQ-Verteilung',
+      averagePopulation: 'Durchschnittlicher IQ der Bevölkerung',
+      testNow: 'Testen Sie jetzt Ihren IQ!',
+    },
+    countries: {
+      title: 'Durchschnittlicher IQ nach Land',
+    },
+    pricing: {
+      title: 'Preise',
+      oneTime: {
+        title: 'Vollständiger Bericht',
+        price: '$1.98',
+        description: 'Einmalige Zahlung',
+        features: [
+          'Vollständiger IQ-Test',
+          'Detaillierter Analysebericht',
+          'Offizielles Zertifikat',
+          'Lebenslanger Zugang',
+        ],
+        cta: 'Bericht erhalten',
+      },
+      monthly: {
+        title: 'Premium-Training',
+        price: '$28.80',
+        period: '/Monat',
+        description: 'Monatliches Abonnement',
+        features: [
+          'Alle Berichtsfunktionen',
+          'Tägliche Trainingspläne',
+          'Fortschrittsverfolgung',
+          'Prioritätsunterstützung',
+        ],
+        cta: 'Abonnieren',
+      },
+    },
+    footer: {
+      copyright: '2025 IQ Train. Alle Rechte vorbehalten.',
+      privacy: 'Datenschutz-Bestimmungen',
+      terms: 'Nutzungsbedingungen',
+      contact: 'Kontaktieren Sie uns',
+      rightsReserved: 'Alle Rechte vorbehalten.',
+      language: 'Sprache',
+    },
+  },
+  "fr-FR": {
+    title: 'IQ Train',
+    hero: {
+      title: 'Découvrez Votre Précis',
+      titleHighlight: 'IQ',
+      subtitle: 'Plateforme professionnelle d\'évaluation du QI et d\'entraînement cérébral',
+      cta: 'COMMENCER MAINTENANT',
+    },
+    features: {
+      title: 'Pourquoi Choisir IQ Train',
+      feature1: {
+        title: 'Évaluation Scientifique',
+        description: '20 questions standardisées couvrant 5 dimensions cognitives',
+      },
+      feature2: {
+        title: 'Rapport Détaille',
+        description: 'Analyse complète avec des recommandations personnalisées',
+      },
+      feature3: {
+        title: 'Entraînement Cérébral',
+        description: 'Plans d\'entraînement quotidiens pour améliorer les capacités cognitives',
+      },
+      feature4: {
+        title: 'Certificat Professionnel',
+        description: 'Certificat IQ officiel après achèvement',
+      },
+    },
+    dimensions: {
+      title: 'Dimensions du Test',
+      memory: 'Mémoire',
+      speed: 'Vitesse',
+      reaction: 'Réaction',
+      concentration: 'Concentration',
+      logic: 'Logique',
+    },
+    testimonials: {
+      title: 'Avis des Utilisateurs',
+      sectionTitle: 'Témoignages de Clients',
+      customers: [
+        {
+          name: 'John Smith',
+          comment: 'Plateforme de test IQ très professionnelle ! Les questions de test sont conçues scientifiquement, et l\'analyse du rapport est détaillée.',
+        },
+        {
+          name: 'Sarah Johnson',
+          comment: 'Excellente expérience de test avec une interface propre et belle. Terminé en 20 minutes avec des résultats très précis !',
+        },
+        {
+          name: 'Michael Chen',
+          comment: 'Le module d\'entraînement est très utile. L\'entraînement quotidien améliore considérablement la capacité de réflexion. Excellent service client !',
+        },
+        {
+          name: 'Emily Wang',
+          comment: 'Prix raisonnable et grande valeur. Le rapport détaillé m\'a aidé à identifier mes forces et mes domaines à améliorer.',
+        },
+        {
+          name: 'David Lee',
+          comment: 'Le support bilingue est réfléchi. Processus de test fluide et certificat magnifiquement conçu pour les candidatures professionnelles et académiques.',
+        },
+        {
+          name: 'Lisa Zhang',
+          comment: 'En tant qu\'éducateur, je trouve cette plateforme très professionnelle. Les questions répondent aux normes internationales avec un système de notation scientifique.',
+        },
+      ],
+    },
+    statistics: {
+      testsTaken: '36 168 tests de QI passés ce mois-ci',
+      averageScore: 'Le score IQ moyen est de 112',
+      testTime: '⚡ Complétez le test en seulement 3 minutes',
+    },
+    iqDistribution: {
+      title: 'Distribution du QI',
+      averagePopulation: 'QI moyen de la population',
+      testNow: 'Testez Votre QI Maintenant !',
+    },
+    countries: {
+      title: 'QI Moyen par Pays',
+    },
+    pricing: {
+      title: 'Plans de Tarification',
+      oneTime: {
+        title: 'Rapport Complet',
+        price: '$1.98',
+        description: 'Paiement unique',
+        features: [
+          'Test IQ complet',
+          'Rapport d\'analyse détaillé',
+          'Certificat officiel',
+          'Accès à vie',
+        ],
+        cta: 'Obtenir le Rapport',
+      },
+      monthly: {
+        title: 'Entraînement Premium',
+        price: '$28.80',
+        period: '/mois',
+        description: 'Abonnement mensuel',
+        features: [
+          'Toutes les fonctionnalités du rapport',
+          'Plans d\'entraînement quotidiens',
+          'Suivi des progrès',
+          'Support prioritaire',
+        ],
+        cta: 'S\'abonner',
+      },
+    },
+    footer: {
+      copyright: '2025 IQ Train. Tous droits réservés.',
+      privacy: 'Politique de Confidentialité',
+      terms: 'Conditions de Service',
+      contact: 'Contactez-nous',
+      rightsReserved: 'Tous droits réservés.',
+      language: 'Langue',
+    },
+  },
+  "zh-TW": {
+    title: 'IQ Train',
+    hero: {
+      title: '發現你的準確',
+      titleHighlight: 'IQ',
+      subtitle: '專業的智商評估和大腦訓練平台',
+      cta: '立即開始',
+    },
+    features: {
+      title: '為什麼選擇 IQ Train',
+      feature1: {
+        title: '科學評估',
+        description: '20道標準化題目，涵蓋5個認知維度',
+      },
+      feature2: {
+        title: '詳細報告',
+        description: '全面分析，提供個性化建議',
+      },
+      feature3: {
+        title: '大腦訓練',
+        description: '每日訓練計劃，提升認知能力',
+      },
+      feature4: {
+        title: '專業證書',
+        description: '完成測試後獲得官方IQ證書',
+      },
+    },
+    dimensions: {
+      title: '測試維度',
+      memory: '記憶力',
+      speed: '速度',
+      reaction: '反應力',
+      concentration: '專注力',
+      logic: '邏輯思維',
+    },
+    testimonials: {
+      title: '用戶評價',
+      sectionTitle: '客戶心聲',
+      customers: [
+        {
+          name: '張偉',
+          comment: '非常專業的IQ測試平台！測試題目設計科學，報告分析詳細，讓我對自己的智力水平有了清晰的認識。',
+        },
+        {
+          name: '李娜',
+          comment: '測試體驗很好，介面簡潔美觀。20分鐘就能完成測試，結果準確度很高，推薦給所有想了解自己智商的朋友！',
+        },
+        {
+          name: '王明',
+          comment: '訓練模組非常有用，每天堅持訓練能明顯感覺到思維能力的提升。客服響應及時，服務態度很好。',
+        },
+        {
+          name: '劉芳',
+          comment: '價格合理，物超所值。測試報告非常詳細，包含了各個維度的分析，幫助我找到了自己的優勢和需要改進的地方。',
+        },
+        {
+          name: '陳杰',
+          comment: '支持中英雙語很貼心，測試過程流暢，沒有任何卡頓。證書設計精美，可以用於求職和學術申請。',
+        },
+        {
+          name: '趙敏',
+          comment: '作為教育工作者，我覺得這個平台非常專業。題目設計符合國際標準，評分系統科學合理，值得信賴。',
+        },
+      ],
+    },
+    statistics: {
+      testsTaken: '本月進行了 36,168 次智商測試',
+      averageScore: '平均智商分數為 112',
+      testTime: '⚡ 三分鐘即可完成測試',
+    },
+    iqDistribution: {
+      title: '智商分布',
+      averagePopulation: '平均人口智商',
+      testNow: '立即測試你的智商！',
+    },
+    countries: {
+      title: '各國平均智商',
+    },
+    pricing: {
+      title: '價格方案',
+      oneTime: {
+        title: '完整報告',
+        price: '$1.98',
+        description: '一次性付費',
+        features: [
+          '完整IQ測試',
+          '詳細分析報告',
+          '官方證書',
+          '終身訪問',
+        ],
+        cta: '獲取報告',
+      },
+      monthly: {
+        title: '高級訓練',
+        price: '$28.80',
+        period: '/月',
+        description: '月度訂閱',
+        features: [
+          '所有報告功能',
+          '每日訓練計劃',
+          '進度追蹤',
+          '優先支持',
+        ],
+        cta: '訂閱',
+      },
+    },
+    footer: {
+      copyright: '2025 IQ Train. 版權所有。',
+      privacy: '隱私政策',
+      terms: '服務條款',
+      contact: '聯繫我們',
+      rightsReserved: '保留所有權利。',
+      language: '語言',
+    },
   }
 }

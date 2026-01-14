@@ -86,13 +86,11 @@ export default function PaymentPage() {
       try {
         setLoadingPlan(true);
 
-        const [planData, configData] = await Promise.all([
+        const [planData] = await Promise.all([
           planId ? getSubscriptionPlan(planId) : getSubscriptionPlan('dc1188f6-7d2a-40f9-97f6-648a975fe82c'),
-          getPaymentGatewayConfig(),
         ]);
 
         if (planData) setSelectedPlan(planData);
-        if (configData) setGatewayConfig(configData);
       } catch (error) {
         console.error('加载订阅包或支付网关配置失败:', error);
         toast({

@@ -86,7 +86,7 @@ export default function ScaleTestPage() {
       const percentile = calculatePercentile(totalScore, maxScore);
 
       // 获取对应的等级
-      const scoringRule = await getScaleScoringRuleByScore(testType as ScaleTestType, totalScore, language);
+      const scoringRule = await getScaleScoringRuleByScore(testType as ScaleTestType, totalScore);
 
       if (!scoringRule) {
         throw new Error('无法找到对应的评分规则');

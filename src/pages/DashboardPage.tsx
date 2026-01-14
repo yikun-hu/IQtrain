@@ -34,7 +34,6 @@ export default function DashboardPage() {
   const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
 
   // Test相关状态
-  const [availableTests, setAvailableTests] = useState<Test[]>([]);
   const [completedTests, setCompletedTests] = useState<any[]>([]);
 
   // 订阅提示模态框状态
@@ -141,7 +140,6 @@ export default function DashboardPage() {
       }, {} as Record<string, Game[]>);
       setGamesByCategory(grouped);
 
-      setAvailableTests(tests);
       setCompletedTests(testResults);
     } catch (error) {
       console.error('加载数据失败:', error);

@@ -6,175 +6,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-import iqTable from '@/i18n/iqtable';
+import { iqReportMeta } from '@/components/result/iqreport-meta';
 
 type I18nText = Record<string, string | undefined>;
-
-type IqLevelConfig = {
-  id: number;
-  name: I18nText;
-  iqRange: [number, number];
-  percentile: I18nText;
-  descriptionShort?: I18nText;
-  colors: {
-    headerGradient: string;
-    accent: string;
-    accentDark: string;
-    badgeText: string;
-    badgeGradient: string;
-  };
-  reportTitle?: I18nText;
-  overview: {
-    leadTemplate: I18nText;
-    body: I18nText;
-  };
-  cognitiveProfile: {
-    patternRecognition: number;
-    spatialReasoning: number;
-    logicalDeduction: number;
-    processingSpeed: number;
-  };
-  cognitiveLabels: { key: keyof IqLevelConfig['cognitiveProfile']; label: I18nText }[];
-  comparativeAnalysis: I18nText;
-  chart: {
-    type: string;
-    bars: Array<
-      | { label: I18nText; heightPct: number; color: string }
-      | { labelTemplate: I18nText; heightPct: number; colorFrom: string }
-    >;
-    note: I18nText;
-  };
-  strengths: { title: I18nText; detail: I18nText }[];
-  recommendations: { title: I18nText; detail: I18nText }[];
-  trainingPlan: {
-    title: I18nText;
-    intro: I18nText;
-    items: Array<I18nText>;
-    style?: { backgroundColor?: string; radius?: number; padding?: number };
-  };
-  certificate: {
-    titleTemplate: I18nText;
-    paragraphs: Array<I18nText>;
-    idTemplate?: string;
-    dateLineTemplate?: I18nText;
-    footnote?: I18nText;
-  };
-};
-
-type IqTableConfig = {
-  rendering: {
-    titleTemplate: I18nText;
-    header: {
-      watermarkText: I18nText;
-      title: I18nText;
-      subtitle: I18nText;
-    };
-    meta: {
-      items: Array<{
-        key: string;
-        label: I18nText;
-        valueFrom: string;
-      }>;
-    };
-    sectionsOrder: string[];
-  };
-  computedDefaults: {
-    accuracyByLevelId: Record<string, number>;
-    report: { idTemplate: string; seqDefault: string; version: string };
-  };
-  theme: {
-    page: {
-      backgroundColor: string;
-      textColor: string;
-      lineHeight: number;
-      fontFamily: string;
-    };
-    container: {
-      maxWidth: number;
-      backgroundColor: string;
-      shadow: string;
-    };
-    header: {
-      padding: string;
-      watermark: { fontSize: number; opacity: number; top: number; right: number };
-    };
-    badge: {
-      padding: string;
-      radius: number;
-      fontSize: string;
-      shadow: string;
-      defaultGradient: string;
-    };
-    meta: {
-      backgroundColor: string;
-      borderColor: string;
-      valueFontSize: string;
-      labelFontSize: string;
-    };
-    section: {
-      titleFontSize: string;
-      titleUnderlineColor: string;
-    };
-    card: {
-      backgroundColor: string;
-      borderColor: string;
-      radius: number;
-    };
-    lists: {
-      itemBackgroundColor: string;
-      itemPadding: string;
-      itemRadius: string;
-    };
-    certificate: {
-      borderWidth: number;
-      radius: number;
-      padding: number;
-      background: string;
-    };
-    footer: {
-      backgroundColor: string;
-      borderColor: string;
-      fontSize: string;
-      textColor: string;
-    };
-    disclaimer: {
-      backgroundColor: string;
-      borderLeftColor: string;
-      padding: number;
-      radius: string;
-    };
-    responsive: {
-      breakpoint: number;
-      mobilePadding: string;
-      cognitiveGridColumnsDesktop: number;
-      cognitiveGridColumnsMobile: number;
-    };
-    print: { hidePrintButton: boolean; containerShadow: string };
-  };
-  levels: IqLevelConfig[];
-  commonSections: {
-    science: {
-      title: I18nText;
-      intro: I18nText;
-      items: Array<{ title: I18nText; detail: I18nText }>;
-    };
-    disclaimer: {
-      title: I18nText;
-      items: Array<I18nText>;
-    };
-    footer: {
-      copyright: I18nText;
-      generatedAtTemplate: I18nText;
-      reportIdTemplate: I18nText;
-      miniDisclaimer: I18nText;
-    };
-    ui: {
-      printButtonText: I18nText;
-    };
-  };
-};
-
-const TABLE = iqTable as unknown as IqTableConfig;
 
 // ---------- helpers ----------
 function iqtableT(map: I18nText | undefined, lang: Language, fallback = ''): string {
@@ -193,15 +27,6 @@ function applyTemplate(template: string, vars: Record<string, string | number | 
 function safeHtml(html: string) {
   // content from local iqtable.ts
   return { __html: html };
-}
-function selectLevelByIq(levels: IqLevelConfig[], iq: number): IqLevelConfig | null {
-  for (const lv of levels) {
-    const [min, max] = lv.iqRange;
-    if (iq >= min && iq <= max) {
-      return lv;
-    }
-  }
-  return null;
 }
 function formatDateYYYYMMDD(d: Date) {
   const y = d.getFullYear();
@@ -236,6 +61,17 @@ export default function ResultPage() {
 
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const TABLE = iqReportMeta(t);
+  function selectLevelByIq(levels: typeof TABLE.levels, iq: number): typeof TABLE.levels[0] | null {
+    for (const lv of levels) {
+      const [min, max] = lv.iqRange;
+      if (iq >= min && iq <= max) {
+        return lv;
+      }
+    }
+    return null;
+  }
 
   useEffect(() => {
     if (authLoading) return;
@@ -317,12 +153,13 @@ export default function ResultPage() {
 
   const accuracyValue =
     (typeof result.score === 'number' ? result.score : undefined) ??
-    TABLE.computedDefaults.accuracyByLevelId[String(level.id)] ??
+    // @ts-expect-error
+    TABLE.computedDefaults.accuracyByLevelId[level.id] ??
     0;
   const accuracyText = `${accuracyValue}%`;
 
-  const documentTitle = applyTemplate(iqtableT(TABLE.rendering.titleTemplate, lang, ''), {
-    levelName: iqtableT(level.name, lang, ''),
+  const documentTitle = applyTemplate(TABLE.rendering.titleTemplate, {
+    levelName: level.name,
   });
 
   const metaItems = TABLE.rendering.meta.items.map((it) => {
@@ -332,7 +169,7 @@ export default function ResultPage() {
         value = String(iq);
         break;
       case 'level.percentile':
-        value = iqtableT(level.percentile, lang, '');
+        value = level.percentile;
         break;
       case 'computed.accuracyText':
         value = accuracyText;
@@ -343,18 +180,18 @@ export default function ResultPage() {
       default:
         value = '';
     }
-    return { key: it.key, label: iqtableT(it.label, lang, ''), value };
+    return { key: it.key, label: it.label, value };
   });
 
-  const overviewLeadHtml = applyTemplate(iqtableT(level.overview.leadTemplate, lang, ''), {
-    levelName: iqtableT(level.name, lang, ''),
+  const overviewLeadHtml = applyTemplate(level.overview.leadTemplate, {
+    levelName: level.name,
     iqMin: level.iqRange?.[0],
-    percentile: iqtableT(level.percentile, lang, ''),
+    percentile: level.percentile,
   });
 
   const badgeText =
-    `${iqtableT(level.name, lang, '')}${t.result.levelSuffix}` +
-    (level.descriptionShort ? ` (${iqtableT(level.descriptionShort, lang, '')})` : '');
+    `${level.name}${t.result.levelSuffix}` +
+    (level.descriptionShort ? ` (${level.descriptionShort})` : '');
 
   const chartBars = level.chart?.bars ?? [];
   const accent = level.colors?.accent ?? '#8A2BE2';
@@ -372,10 +209,10 @@ export default function ResultPage() {
           }}
         >
           <div className="header-watermark">
-            {iqtableT(TABLE.rendering.header.watermarkText, lang, 'MENSA')}
+            {TABLE.rendering.header.watermarkText}
           </div>
-          <h1 className="report-title">{iqtableT(TABLE.rendering.header.title, lang, '')}</h1>
-          <p className="report-subtitle">{iqtableT(TABLE.rendering.header.subtitle, lang, '')}</p>
+          <h1 className="report-title">{TABLE.rendering.header.title}</h1>
+          <p className="report-subtitle">{TABLE.rendering.header.subtitle}</p>
           <div
             className="level-badge"
             style={{
@@ -412,7 +249,7 @@ export default function ResultPage() {
             </h2>
 
             <p dangerouslySetInnerHTML={safeHtml(overviewLeadHtml)} />
-            <p>{iqtableT(level.overview.body, lang, '')}</p>
+            <p>{level.overview.body}</p>
 
             {/* <div className="center-block">
               <button
@@ -441,13 +278,14 @@ export default function ResultPage() {
 
             <div className="cognitive-grid">
               {level.cognitiveLabels.map((item) => {
+                // @ts-expect-error
                 const v = level.cognitiveProfile[item.key];
                 return (
                   <div key={String(item.key)} className="cognitive-card">
                     <div className="cognitive-value" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
                       {v}%
                     </div>
-                    <div className="cognitive-label">{iqtableT(item.label, lang, '')}</div>
+                    <div className="cognitive-label">{item.label}</div>
                   </div>
                 );
               })}
@@ -455,7 +293,7 @@ export default function ResultPage() {
 
             <div className="comparison-container">
               <h3 className="text-center font-bold">{t.result.comparisonTitle}</h3>
-              <p>{iqtableT(level.comparativeAnalysis, lang, '')}</p>
+              <p>{level.comparativeAnalysis}</p>
 
               <div className="chart-container" aria-label="comparison chart">
                 {chartBars.map((bar, idx) => {
@@ -470,9 +308,9 @@ export default function ResultPage() {
 
                   const label =
                     'label' in bar
-                      ? iqtableT(bar.label, lang, '')
-                      : applyTemplate(iqtableT(bar.labelTemplate, lang, ''), {
-                        percentile: iqtableT(level.percentile, lang, ''),
+                      ? bar.label
+                      : applyTemplate(bar.labelTemplate, {
+                        percentile: level.percentile,
                       });
 
                   const isYou = idx === chartBars.length - 1;
@@ -504,7 +342,7 @@ export default function ResultPage() {
 
               <p>
                 <strong>{t.result.interpretation}</strong>
-                {iqtableT(level.chart.note, lang, '')}
+                {level.chart.note}
               </p>
             </div>
           </div>
@@ -520,7 +358,7 @@ export default function ResultPage() {
             <ul className="strength-list">
               {level.strengths.map((s, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  <strong>{iqtableT(s.title, lang, '')}：</strong> {iqtableT(s.detail, lang, '')}
+                  <strong>{s.title}：</strong> {s.detail}
                 </li>
               ))}
             </ul>
@@ -537,22 +375,22 @@ export default function ResultPage() {
             <ul className="recommendation-list">
               {level.recommendations.map((r, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  <strong>{iqtableT(r.title, lang, '')}：</strong> {iqtableT(r.detail, lang, '')}
+                  <strong>{r.title}：</strong> {r.detail}
                 </li>
               ))}
             </ul>
 
 
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {iqtableT(level.trainingPlan.title, lang, '')}
+              {level.trainingPlan.title}
             </h2>
 
-            <p>{iqtableT(level.trainingPlan.intro, lang, '')}</p>
+            <p>{level.trainingPlan.intro}</p>
 
             <ul className="recommendation-list">
               {level.trainingPlan.items.map((it, i) => (
                 <li key={i} style={{ borderLeftColor: accent }}>
-                  {iqtableT(it, lang, '')}
+                  {it}
                 </li>
               ))}
             </ul>
@@ -576,15 +414,15 @@ export default function ResultPage() {
           <div className="certificate" style={{ borderColor: accent }}>
             <div className="certificate-bg" />
             <h3 className="certificate-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {applyTemplate(iqtableT(level.certificate.titleTemplate, lang, ''), {
-                levelReportTitle: iqtableT(level.reportTitle, lang, iqtableT(level.name, lang, '')),
+              {applyTemplate(level.certificate.titleTemplate, {
+                levelReportTitle: level.reportTitle,
               })}
             </h3>
 
             {level.certificate.paragraphs.map((p, idx) => {
-              const html = applyTemplate(iqtableT(p, lang, ''), {
-                levelName: iqtableT(level.name, lang, ''),
-                percentile: iqtableT(level.percentile, lang, ''),
+              const html = applyTemplate(p, {
+                levelName: level.name,
+                percentile: level.percentile,
                 iq,
               });
               return <p key={idx} dangerouslySetInnerHTML={safeHtml(html)} />;
@@ -600,24 +438,24 @@ export default function ResultPage() {
             </div>
 
             <p>
-              {applyTemplate(iqtableT(level.certificate.dateLineTemplate, lang, ''), {
+              {applyTemplate(level.certificate.dateLineTemplate, {
                 testDateCN,
               })}
             </p>
 
-            <p className="certificate-footnote">{iqtableT(level.certificate.footnote, lang, '')}</p>
+            <p className="certificate-footnote">{level.certificate.footnote}</p>
           </div>
 
           {/* Science */}
           <div className="section">
             <h2 className="section-title" style={{ color: level.colors?.accentDark ?? '#5D0C9D' }}>
-              {iqtableT(TABLE.commonSections.science.title, lang, '')}
+              {TABLE.commonSections.science.title}
             </h2>
-            <p>{iqtableT(TABLE.commonSections.science.intro, lang, '')}</p>
+            <p>{TABLE.commonSections.science.intro}</p>
             <ul>
               {TABLE.commonSections.science.items.map((it, i) => (
                 <li key={i}>
-                  <strong>{iqtableT(it.title, lang, '')}：</strong> {iqtableT(it.detail, lang, '')}
+                  <strong>{it.title}：</strong> {it.detail}
                 </li>
               ))}
             </ul>
@@ -625,10 +463,10 @@ export default function ResultPage() {
 
           {/* Disclaimer */}
           <div className="disclaimer">
-            <h3>{iqtableT(TABLE.commonSections.disclaimer.title, lang, '')}</h3>
+            <h3>{TABLE.commonSections.disclaimer.title}</h3>
             {TABLE.commonSections.disclaimer.items.map((it, i) => (
               <p key={i}>
-                {i + 1}. {iqtableT(it, lang, '')}
+                {i + 1}. {it}
               </p>
             ))}
           </div>
@@ -636,16 +474,16 @@ export default function ResultPage() {
 
         <div className="footer">
           <p>
-            {iqtableT(TABLE.commonSections.footer.copyright, lang, '')} |{' '}
-            {applyTemplate(iqtableT(TABLE.commonSections.footer.generatedAtTemplate, lang, ''), { generatedAt })}
+            {TABLE.commonSections.footer.copyright} |{' '}
+            {applyTemplate(TABLE.commonSections.footer.generatedAtTemplate, { generatedAt })}
           </p>
           <p>
-            {applyTemplate(iqtableT(TABLE.commonSections.footer.reportIdTemplate, lang, ''), {
+            {applyTemplate(TABLE.commonSections.footer.reportIdTemplate, {
               reportId,
               reportVersion,
             })}
           </p>
-          <p className="footer-mini">{iqtableT(TABLE.commonSections.footer.miniDisclaimer, lang, '')}</p>
+          <p className="footer-mini">{TABLE.commonSections.footer.miniDisclaimer}</p>
         </div>
       </div>
 
