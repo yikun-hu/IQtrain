@@ -168,13 +168,13 @@ export default function Header() {
             <div className="flex items-center gap-4">
               {/* 语言切换 */}
               <Select value={language} onValueChange={handleLanguageChange}>
-                <SelectTrigger className="w-24 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <SelectTrigger className="w-32 bg-white/10 border-white/20 text-white hover:bg-white/20">
                   <Globe className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {SupportedLanguages.map((lang) => (
-                    <SelectItem key={lang.value} value={lang.value}>{lang.labelAbbr}</SelectItem>
+                    <SelectItem key={lang.value} value={lang.value}>{lang.label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

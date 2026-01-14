@@ -197,7 +197,7 @@ export default function TestPage() {
   const handleStartTest = async () => {
     // 开始加载动画并加载题目
     setButtonLoading(true);
-    
+
     try {
       // 加载题目
       const data = await getAllQuestions();
@@ -211,7 +211,7 @@ export default function TestPage() {
         return;
       }
       setQuestions(data);
-      
+
       // 加载成功后开始测试
       setTestStarted(true);
       setStartTime(Date.now());
@@ -403,8 +403,27 @@ export default function TestPage() {
                 </p>
               </div>
 
+              {/* 开始按钮 */}
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  onClick={handleStartTest}
+                  disabled={buttonLoading}
+                  className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-6"
+                >
+                  {buttonLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      {/* {t.test.start.loadingQuestions} */}
+                    </>
+                  ) : (
+                    t.test.start.startButton
+                  )}
+                </Button>
+              </div>
+
               {/* 3个说明 - 横向排列 */}
-              <div className="grid grid-cols-1 gap-6 mb-12 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 my-6 md:grid-cols-3">
                 <div className="text-center p-6 bg-muted rounded-lg">
                   <div className="flex justify-center mb-4">
                     <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
@@ -446,29 +465,12 @@ export default function TestPage() {
                     {t.test.start.flexibleDesc}
                   </p>
                 </div>
+
               </div>
 
-              {/* 开始按钮 */}
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  onClick={handleStartTest}
-                  disabled={buttonLoading}
-                  className="bg-primary hover:bg-primary/90 text-white text-lg px-12 py-6"
-                >
-                  {buttonLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      {/* {t.test.start.loadingQuestions} */}
-                    </>
-                  ) : (
-                    t.test.start.startButton
-                  )}
-                </Button>
-                <p className="text-xs text-muted-foreground mt-3 max-w-md mx-auto">
-                  {t.test.start.disclaimer}
-                </p>
-              </div>
+              <p className="text-center text-xs text-muted-foreground mt-1 max-w-md mx-auto">
+                {t.test.start.disclaimer}
+              </p>
             </CardContent>
           </Card>
         </div>
