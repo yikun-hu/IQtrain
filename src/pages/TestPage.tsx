@@ -408,14 +408,14 @@ export default function TestPage() {
                 <div className="text-center p-6 bg-muted rounded-lg">
                   <div className="flex justify-center mb-4">
                     <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                      {questions.length}
+                      20
                     </div>
                   </div>
                   <h3 className="font-semibold text-lg mb-2">
                     {t.test.start.questions}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {t.test.start.questionsDesc(questions.length)}
+                    {t.test.start.questionsDesc(20)}
                   </p>
                 </div>
 
