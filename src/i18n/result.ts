@@ -20,6 +20,7 @@ export default {
     tip: '提示',
     downloadDev: '下载功能开发中',
     levelSuffix: '级别',
+    to: '致',
   },
   "en-US": {
     error: 'Error',
@@ -42,6 +43,7 @@ export default {
     tip: 'Tip',
     downloadDev: 'Download function in development',
     levelSuffix: ' Level',
+    to: 'To',
   },
   "de-DE": {
     error: 'Fehler',
@@ -64,6 +66,7 @@ export default {
     tip: 'Tipp',
     downloadDev: 'Download-Funktion in Entwicklung',
     levelSuffix: ' Niveau',
+    to: 'Für',
   },
   "fr-FR": {
     error: 'Erreur',
@@ -86,6 +89,7 @@ export default {
     tip: 'Astuce',
     downloadDev: 'Fonction de téléchargement en développement',
     levelSuffix: ' Niveau',
+    to: 'À',
   },
   "zh-TW": {
     error: '錯誤',
@@ -108,5 +112,6 @@ export default {
     tip: '提示',
     downloadDev: '下載功能開發中',
     levelSuffix: '級別',
+    to: '致',
   }
 }

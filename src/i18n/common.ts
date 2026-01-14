@@ -19,8 +19,9 @@ export default {
     language: 'Language',
     rightsReserved: 'All rights reserved.',
     privacy: 'Privacy Policy',
-    terms: 'Terms',
-      subtitle: "Get Results in 3 Minutes",
+    terms: 'Terms of Service',
+    subtitle: "Get Results in 3 Minutes",
+    refund_policy: 'Refund Policy',
   },
   "zh-CN": {
     loading: '加载中...',
@@ -44,6 +45,7 @@ export default {
     privacy: '隐私政策',
     terms: '服务条款',
     subtitle: '3分钟内获取结果',
+    refund_policy: '退款政策',
   },
   "de-DE": {
     loading: 'Laden...',
@@ -67,6 +69,8 @@ export default {
     privacy: 'Datenschutzrichtlinie',
     terms: 'Nutzungsbedingungen',
     subtitle: '3 Minuten Ergebnisse erhalten',
+    // refund policy in de
+    refund_policy: 'Terugbetalingsbeleid',
   },
   "fr-FR": {
     loading: 'Chargement...',
@@ -90,6 +94,7 @@ export default {
     privacy: 'Politique de confidentialité',
     terms: 'Conditions d\'utilisation',
     subtitle: '3 minutes de résultats',
+    refund_policy: 'Politique de remboursement',
   },
   "zh-TW": {
     loading: '載入中...',
@@ -113,5 +118,6 @@ export default {
     privacy: '隱私政策',
     terms: '服務條款',
     subtitle: '3 分鐘內獲取結果',
+    refund_policy: '退款政策',
   },
 };

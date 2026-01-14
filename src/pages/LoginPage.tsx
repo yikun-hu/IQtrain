@@ -167,7 +167,7 @@ export default function LoginPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-12"
+                className="w-full h-12 bg-outline text-foreground hover:bg-outline/90"
                 onClick={() => setStep('email')}
               >
                 {t.login.backButton}

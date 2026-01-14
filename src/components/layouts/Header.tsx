@@ -213,23 +213,18 @@ export default function Header() {
                       <span>{t.header.dashboard}</span>
                     </DropdownMenuItem>
 
-                    <DropdownMenuSeparator />
+                    {hasSubscription ? null : <DropdownMenuSeparator />}
 
-                    {hasSubscription ? (
-                      <DropdownMenuItem onClick={() => setShowUnsubscribeDialog(true)}>
-                        <Bell className="mr-2 h-4 w-4" />
-                        <span>{t.header.unsubscribe}</span>
-                      </DropdownMenuItem>
-                    ) : (
+                    {hasSubscription ? null : (
                       <DropdownMenuItem onClick={() => navigate('/pricing')}>
                         <CreditCard className="mr-2 h-4 w-4" />
-                        <span>{t.header.subscribe}</span>
+                        <span>{t.header.pricing}</span>
                       </DropdownMenuItem>
                     )}
 
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem onClick={() => navigate('/privacy-policy')}>
+                    {/* <DropdownMenuItem onClick={() => navigate('/privacy-policy')}>
                       <FileCheck className="mr-2 h-4 w-4" />
                       <span>{t.header.privacy_policy}</span>
                     </DropdownMenuItem>
@@ -244,7 +239,7 @@ export default function Header() {
                       <span>{t.header.cookie_policy}</span>
                     </DropdownMenuItem>
 
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator /> */}
 
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />

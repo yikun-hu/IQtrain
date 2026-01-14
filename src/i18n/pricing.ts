@@ -34,7 +34,7 @@ export default {
     faqs: [
       {
         question: 'What if I\'m not satisfied with the program?',
-        answer: 'We believe you will love the value and benefits of myIQ. However, if you are not satisfied or encounter technical issues, you may be eligible for a refund. Please refer to our refund policy for more details.'
+        answer: 'We believe you will love the value and benefits of IQ Train. However, if you are not satisfied or encounter technical issues, you may be eligible for a refund. Please refer to our refund policy for more details.'
       },
       {
         question: 'How do I cancel my subscription?',
@@ -45,7 +45,7 @@ export default {
         answer: 'Our IQ test takes up to 20 minutes to complete. Each test must be completed in one sitting and cannot be paused. This ensures the most accurate results. Please plan for uninterrupted time before starting any test.'
       },
       {
-        question: 'Can I access myIQ on multiple devices?',
+        question: 'Can I access IQ Train on multiple devices?',
         answer: 'Yes! Your subscription works on all devices – smartphones, tablets, and computers. Your progress syncs across all valid months you are logged in.'
       }
     ],
@@ -136,7 +136,7 @@ export default {
     faqs: [
       {
         question: '如果我对该程序不满意该怎么办？',
-        answer: '我们相信您会喜爱 myIQ 的价值和好处。但如果您不满意或遇到技术问题，您可能有资格获得退款。请参阅我们的退款政策以了解更多细节。'
+        answer: '我们相信您会喜爱 IQ Train 的价值和好处。但如果您不满意或遇到技术问题，您可能有资格获得退款。请参阅我们的退款政策以了解更多细节。'
       },
       {
         question: '如何取消我的订阅？',
@@ -147,7 +147,7 @@ export default {
         answer: '我们的智商测试最多需要 20 分钟才能完成。每个测试必须一次完成，不能暂停。因为这可以确保最准确的结果。在开始任何测试之前，请计划好不间断的时间。'
       },
       {
-        question: '我可以在多个设备上访问 myIQ 吗？',
+        question: '我可以在多个设备上访问 IQ Train 吗？',
         answer: '是的！您的订阅适用于所有设备 – 智能手机、平板电脑和计算机。您的进度会在您登录的所有有效月日同步。'
       }
     ],
@@ -238,7 +238,7 @@ export default {
     faqs: [
       {
         question: 'Was ist, wenn ich mit dem Programm nicht zufrieden bin?',
-        answer: 'Wir glauben, dass Sie den Wert und die Vorteile von myIQ lieben werden. Wenn Sie jedoch nicht zufrieden sind oder technische Probleme haben, können Sie möglicherweise eine Rückerstattung beantragen. Bitte beachten Sie unsere Rückerstattungsrichtlinien für weitere Informationen.'
+        answer: 'Wir glauben, dass Sie den Wert und die Vorteile von IQ Train lieben werden. Wenn Sie jedoch nicht zufrieden sind oder technische Probleme haben, können Sie möglicherweise eine Rückerstattung beantragen. Bitte beachten Sie unsere Rückerstattungsrichtlinien für weitere Informationen.'
       },
       {
         question: 'Wie kündige ich mein Abonnement?',
@@ -249,7 +249,7 @@ export default {
         answer: 'Unser IQ-Test dauert bis zu 20 Minuten. Jeder Test muss in einer Sitzung abgeschlossen werden und kann nicht pausiert werden. Dies gewährleistet die genauesten Ergebnisse. Bitte planen Sie ununterbrochene Zeit ein, bevor Sie mit einem Test beginnen.'
       },
       {
-        question: 'Kann ich auf mehreren Geräten auf myIQ zugreifen?',
+        question: 'Kann ich auf mehreren Geräten auf IQ Train zugreifen?',
         answer: 'Ja! Ihr Abonnement funktioniert auf allen Geräten – Smartphones, Tablets und Computern. Ihr Fortschritt wird über alle gültigen Monate synchronisiert, in denen Sie angemeldet sind.'
       }
     ],
@@ -340,7 +340,7 @@ export default {
     faqs: [
       {
         question: 'Que faire si je ne suis pas satisfait du programme ?',
-        answer: 'Nous croyons que vous allez adorer la valeur et les avantages de myIQ. Cependant, si vous n\'êtes pas satisfait ou si vous rencontrez des problèmes techniques, vous pourriez être éligible à un remboursement. Veuillez consulter notre politique de remboursement pour plus de détails.'
+        answer: 'Nous croyons que vous allez adorer la valeur et les avantages de IQ Train. Cependant, si vous n\'êtes pas satisfait ou si vous rencontrez des problèmes techniques, vous pourriez être éligible à un remboursement. Veuillez consulter notre politique de remboursement pour plus de détails.'
       },
       {
         question: 'Comment annuler mon abonnement ?',
@@ -351,7 +351,7 @@ export default {
         answer: 'Notre test de QI prend jusqu\'à 20 minutes à compléter. Chaque test doit être terminé en une seule fois et ne peut pas être mis en pause. Cela garantit les résultats les plus précis. Veuillez prévoir un temps ininterrompu avant de commencer un test.'
       },
       {
-        question: 'Puis-je accéder à myIQ sur plusieurs appareils ?',
+        question: 'Puis-je accéder à IQ Train sur plusieurs appareils ?',
         answer: 'Oui ! Votre abonnement fonctionne sur tous les appareils – smartphones, tablettes et ordinateurs. Vos progrès se synchronisent sur tous les mois valides où vous êtes connecté.'
       }
     ],
@@ -442,7 +442,7 @@ export default {
     faqs: [
       {
         question: '如果我對該程序不滿意該怎麼辦？',
-        answer: '我們相信您會喜愛 myIQ 的價值和好處。但如果您不滿意或遇到技術問題，您可能有資格獲得退款。請參閱我們的退款政策以了解更多細節。'
+        answer: '我們相信您會喜愛 IQ Train 的價值和好處。但如果您不滿意或遇到技術問題，您可能有資格獲得退款。請參閱我們的退款政策以了解更多細節。'
       },
       {
         question: '如何取消我的訂閱？',
@@ -453,7 +453,7 @@ export default {
         answer: '我們的智商測試最多需要 20 分鐘才能完成。每個測試必須一次完成，不能暫停。這確保了最準確的結果。在開始任何測試之前，請計劃好不間斷的時間。'
       },
       {
-        question: '我可以在多個設備上訪問 myIQ 嗎？',
+        question: '我可以在多個設備上訪問 IQ Train 嗎？',
         answer: '是的！您的訂閱適用於所有設備 – 智能手機、平板電腦和計算機。您的進度會在您登錄的所有有效月份中同步。'
       }
     ],

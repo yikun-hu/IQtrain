@@ -77,8 +77,8 @@ export default function PaymentPage() {
   // 从URL获取plan_id，如果没有则使用旧的type参数
   const planId = searchParams.get('plan_id');
   const type = (searchParams.get('type') as SubscriptionType) || 'biweekly';
-  const amount = type === 'biweekly' ? 1.98 : 28.8;
-  const monthlyPrice = 28.8;
+  const amount = type === 'biweekly' ? 1.99 : 29.9;
+  const monthlyPrice = 29.9;
 
   // 加载订阅包和支付网关配置
   useEffect(() => {

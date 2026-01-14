@@ -55,7 +55,7 @@ export default function ResultPage() {
   const { language, t } = useLanguage();
   const lang = language;
 
-  const { user, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -205,7 +205,7 @@ export default function ResultPage() {
         <div
           className="report-header"
           style={{
-            background: level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+            background: level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
           }}
         >
           <div className="header-watermark">
@@ -419,6 +419,8 @@ export default function ResultPage() {
               })}
             </h3>
 
+            <p className="certificate-recipient">{t.result.to} {profile?.full_name || user?.email || 'User'}</p>
+
             {level.certificate.paragraphs.map((p, idx) => {
               const html = applyTemplate(p, {
                 levelName: level.name,
@@ -498,7 +500,7 @@ export default function ResultPage() {
           onClick={handlePrintReport}
           style={{
             background:
-              level.colors?.headerGradient ?? 'linear-gradieniqtableT(135deg, #8A2BE2 0%, #5D0C9D 100%)',
+              level.colors?.headerGradient ?? 'linear-gradient(135deg, #8A2BE2 0%, #5D0C9D 100%)',
           }}
         >
           {t.result.printReport}
@@ -616,7 +618,7 @@ const css = `
   position:absolute;
   width:60px;
   height:3px;
-  background:linear-gradieniqtableT(90deg,#8A2BE2 0%, #5D0C9D 100%);
+  background:linear-gradient(90deg,#8A2BE2 0%, #5D0C9D 100%);
   bottom:-2px;
   left:0;
 }
@@ -640,7 +642,7 @@ const css = `
 
 .cognitive-grid{
   display:grid;
-  grid-template-columns:repeaiqtableT(4,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:20px;
   margin:30px 0;
 }
@@ -680,7 +682,7 @@ const css = `
 }
 .chart-container{
   height:200px;
-  background:linear-gradieniqtableT(to top,#f0f0ff, #fff);
+  background:linear-gradient(to top,#f0f0ff, #fff);
   border-radius:8px;
   margin:25px 0 35px;
   position:relative;
@@ -707,7 +709,7 @@ const css = `
   border-radius:15px;
   padding:40px;
   text-align:center;
-  background:linear-gradieniqtableT(to bottom,#f8f5ff, #fff);
+  background:linear-gradient(to bottom,#f8f5ff, #fff);
   margin:40px 0;
   position:relative;
   overflow:hidden;
@@ -724,6 +726,12 @@ const css = `
 .certificate-title{
   font-size:2.2rem;
   margin-top:0;
+}
+.certificate-recipient{
+  font-size:1.4rem;
+  margin:20px 0 30px 0;
+  font-weight:bold;
+  text-align:center;
 }
 .certificate-id{
   font-family:'Courier New',monospace;
@@ -820,7 +828,7 @@ const css = `
     padding:30px 20px;
   }
   .report-title{ font-size:2rem; }
-  .cognitive-grid{ grid-template-columns:repeaiqtableT(2,1fr); }
+  .cognitive-grid{ grid-template-columns:repeat(2,1fr); }
   .report-meta{ flex-direction:column; gap:20px; }
 }
 `;

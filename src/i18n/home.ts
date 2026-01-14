@@ -1,9 +1,9 @@
 const home = {
   "en-US": {
     heroKicker: "IQ Test",
-    heroTitle: "What Is Your IQ Score/Level?",
+    heroTitle: "What Is Your IQ Score?",
     heroTitlePrefix: "What Is Your",
-    heroTitleGradient: "IQ Score/Level?",
+    heroTitleGradient: "IQ Score?",
     testsThisMonthNumber: "28193",
     testsThisMonthText: "IQ tests conducted this month",
     heroSubtitle:
@@ -16,10 +16,10 @@ const home = {
     socialProofSub:
       "Trusted daily by thousands — quick to finish, easy to understand, and surprisingly detailed.",
     chartTitle: "Global IQ Distribution",
-    dragHint: "Drag the curve or use the slider",
+    dragHint: "Drag or slide",
     percentileText:
-      "The selected IQ score IQ {iq} is higher than {p}% of people.",
-    percentileLead: "IQ {iq} • Higher than {p}%",
+      "Higher than {p}% of people.",
+    percentileLead: "IQ {iq} • Higher than {p}% people",
     percentileHint: "Drag to preview",
     liveScored: "just scored {iq}",
     sliderMin: "Min {iq}",
@@ -97,12 +97,12 @@ const home = {
       "Feedback from people who completed the test. Many users mention the experience feels focused, the report is easy to read, and the percentile view helps them understand the score instantly.",
     testimonials: {
       customers: [
-        { name: "Emily Carter", comment: "Smooth flow — finished in minutes and the report actually explains what the score means.", location: "San Francisco", time: "2 days ago" },
-        { name: "Noah Anderson", comment: "Tried it out of curiosity. The percentile view makes the result easy to understand.", location: "London", time: "this week" },
-        { name: "Mina Suzuki", comment: "Challenging but not frustrating. Clean UI keeps you focused.", location: "Toronto", time: "yesterday" },
-        { name: "William Harris", comment: "More detailed than expected — strengths + practical suggestions were useful.", location: "Sydney", time: "3 days ago" },
-        { name: "Charles Bumstead", comment: "Quick and clear. I’ll retake later to compare progress.", location: "Singapore", time: "last week" },
-        { name: "Richard Davis", comment: "Great as a lightweight baseline to track over time.", location: "Berlin", time: "just now" },
+        { name: "Emily Carter", comment: "Wasn't expecting such detailed feedback. The report actually helped me understand my strengths better.", location: "San Francisco", time: "2 days ago" },
+        { name: "Noah Anderson", comment: "The test pushed me to my limits, but in a good way. Felt super accomplished when I finished.", location: "London", time: "this week" },
+        { name: "Mina Suzuki", comment: "I've tried other IQ tests before, but IQ Train feels way more accurate and scientific.", location: "Toronto", time: "yesterday" },
+        { name: "William Harris", comment: "My focus at work has gotten noticeably sharper. Colleagues have even commented on it!", location: "Sydney", time: "3 days ago" },
+        { name: "Charles Bumstead", comment: "The patterns and puzzles were tricky but super engaging. Time flew by during the test.", location: "Singapore", time: "last week" },
+        { name: "Richard Davis", comment: "I feel more confident in meetings now. Understanding my cognitive profile gave me a real boost.", location: "Berlin", time: "just now" },
       ]
     },
 
@@ -112,7 +112,7 @@ const home = {
     step1Title: "Create an Account",
     step1Desc:
       "Save your results, access your report later, and keep everything synced across devices. This also helps you track changes over time.",
-    step2Title: "Complete the Test",
+    step2Title: "Start the Test",
     step2Desc:
       "Answer the questions in a focused session (typically a few minutes). The experience is optimized to stay simple and distraction-free.",
     step3Title: "Get Your Report",
@@ -123,7 +123,7 @@ const home = {
       "Review your breakdown, revisit training modules, and compare future attempts. Use it as a lightweight baseline for improvement.",
 
     finalKicker: "Get To Know Your IQ",
-    finalTitle: "See your IQ level in minutes",
+    finalTitle: "See your IQ score in 3 minutes",
     finalSub:
       "Start now and receive your results instantly — score, percentile, and a clear summary you can revisit anytime.",
     finalCta: "Start Test"
@@ -131,7 +131,7 @@ const home = {
 
   "zh-CN": {
     heroKicker: "IQ 测试",
-    heroTitle: "你的 IQ 分数/等级是多少？",
+    heroTitle: "你的 IQ 分数是多少？",
     heroSubtitle:
       "3 分钟出结果——用结构化测评把你的作答转化为清晰的 IQ 分数、百分位排名与可执行的提升建议，不止是一个数字。",
     heroCta: "立即开始 IQ 测试",
@@ -142,10 +142,10 @@ const home = {
     socialProofSub:
       "每天都有大量用户完成测试：体验专注不打扰，结果解释清晰，报告内容比想象中更细。",
     chartTitle: "全球 IQ 分布",
-    dragHint: "拖拽曲线或使用滑动条",
+    dragHint: "拖拽或滑动",
     percentileText:
-      "选择的 IQ {iq} 超过了 {p}% 的人群。",
-    percentileLead: "IQ {iq} · 超过 {p}%",
+      "超过了 {p}% 的人群",
+    percentileLead: "IQ {iq} · 超过 {p}% 人群",
     percentileHint: "拖动预览",
     liveScored: "刚测得 {iq}",
     sliderMin: "最小 {iq}",
@@ -239,7 +239,7 @@ const home = {
     step1Title: "注册账户",
     step1Desc:
       "保存结果并随时查看报告，支持跨设备同步。也便于你后续复测时做对比，形成个人成长轨迹。",
-    step2Title: "完成测试",
+    step2Title: "开始测试",
     step2Desc:
       "专注作答，通常几分钟即可完成。体验设计强调简单不打扰，让你把注意力放在题目上。",
     step3Title: "获取报告",
@@ -250,7 +250,7 @@ const home = {
       "复盘你的优势与改进点，进入训练模块，并与后续测次对比。把它当作一个轻量但持续的提升工具。",
 
     finalKicker: "了解你的 IQ",
-    finalTitle: "几分钟就能看到你的 IQ 水平",
+    finalTitle: "三分钟就能看到你的 IQ 分数",
     finalSub:
       "现在开始，立刻获得分数、百分位与清晰解读；随时可回看，也能复测对比进步。",
     finalCta: "开始测试",

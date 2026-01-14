@@ -86,6 +86,7 @@ export default function TestPage() {
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
   const [startTime, setStartTime] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
   useEffect(() => {
     loadQuestions();
@@ -149,7 +150,7 @@ export default function TestPage() {
     }
   }, [questions]);
 
-  // 切到任意题目时：兜底确保“当前题+6选项”已在缓存（避免用户在全量预加载未完成时跳题闪一下）
+  // 切到任意题目时：兜底确保"当前题+6选项"已在缓存（避免用户在全量预加载未完成时跳题闪一下）
   useEffect(() => {
     const q = questions[currentQuestion];
     if (!q) return;
@@ -162,6 +163,12 @@ export default function TestPage() {
     preloadImage(q.option_e);
     preloadImage(q.option_f);
   }, [questions, currentQuestion]);
+
+  // 当题目切换时清除选中状态，防止移动端hover状态持续
+  useEffect(() => {
+    setSelectedOption(null);
+    setHoveredOption(null);
+  }, [currentQuestion]);
 
   const loadQuestions = async () => {
     try {
@@ -526,15 +533,23 @@ export default function TestPage() {
                       return (
                         <button
                           key={option.label}
-                          onClick={() => handleAnswer(option.label)}
+                          onClick={() => {
+                            setSelectedOption(null);
+                            setHoveredOption(null);
+                            handleAnswer(option.label);
+                          }}
+                          onMouseEnter={() => !isSelected && setHoveredOption(option.label)}
+                          onMouseLeave={() => setHoveredOption(null)}
+                          onTouchStart={() => !isSelected && setHoveredOption(option.label)}
+                          onTouchEnd={() => setHoveredOption(null)}
                           className={`relative aspect-square border-2 rounded-lg transition-all duration-200 ${isSelected || isJustSelected
                             ? 'border-secondary bg-secondary/10'
-                            : 'border-border bg-white hover:border-secondary'
+                            : hoveredOption === option.label ? 'border-secondary bg-secondary/10' : 'border-border bg-white'
                             }`}
                         >
                           <div className={`absolute top-2 left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${isSelected || isJustSelected
                             ? 'bg-secondary text-white'
-                            : 'bg-muted text-foreground'
+                            : hoveredOption === option.label ? 'bg-secondary text-white' : 'bg-muted text-foreground'
                             }`}>
                             {option.number}
                           </div>

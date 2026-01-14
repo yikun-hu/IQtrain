@@ -18,6 +18,8 @@ import collection from './collection'
 import loadingAnalysis from './loading-analysis'
 import scaleTestReport from './scale-test-report'
 import cookiePolicy from './cookie-policy'
+import refundPolicy from './refund-policy'
+import requestRefund from './request-refund'
 import header from './header'
 import iqreport from './iqreport'
 
@@ -42,6 +44,8 @@ export const translations = {
     loadingAnalysis: loadingAnalysis['en-US'],
     scaleTestReport: scaleTestReport['en-US'],
     cookiePolicy: cookiePolicy['en-US'],
+    refundPolicy: refundPolicy['en-US'],
+    requestRefund: requestRefund['en-US'],
     header: header['en-US'],
     iqreport: iqreport['en-US'],
   },
@@ -65,6 +69,8 @@ export const translations = {
     loadingAnalysis: loadingAnalysis['zh-CN'],
     scaleTestReport: scaleTestReport['zh-CN'],
     cookiePolicy: cookiePolicy['zh-CN'],
+    refundPolicy: refundPolicy['zh-CN'],
+    requestRefund: requestRefund['zh-CN'],
     header: header['zh-CN'],
     iqreport: iqreport['zh-CN'],
   },
@@ -88,6 +94,8 @@ export const translations = {
     loadingAnalysis: loadingAnalysis['de-DE'],
     scaleTestReport: scaleTestReport['de-DE'],
     cookiePolicy: cookiePolicy['de-DE'],
+    refundPolicy: refundPolicy['de-DE'],
+    requestRefund: requestRefund['de-DE'],
     header: header['de-DE'],
     iqreport: iqreport['de-DE'],
   },
@@ -111,6 +119,8 @@ export const translations = {
     loadingAnalysis: loadingAnalysis['fr-FR'],
     scaleTestReport: scaleTestReport['fr-FR'],
     cookiePolicy: cookiePolicy['fr-FR'],
+    refundPolicy: refundPolicy['fr-FR'],
+    requestRefund: requestRefund['fr-FR'],
     header: header['fr-FR'],
     iqreport: iqreport['fr-FR'],
   },
@@ -134,6 +144,8 @@ export const translations = {
     loadingAnalysis: loadingAnalysis['zh-TW'],
     scaleTestReport: scaleTestReport['zh-TW'],
     cookiePolicy: cookiePolicy['zh-TW'],
+    refundPolicy: refundPolicy['zh-TW'],
+    requestRefund: requestRefund['zh-TW'],
     header: header['zh-TW'],
     iqreport: iqreport['zh-TW'],
   },

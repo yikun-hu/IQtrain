@@ -16,6 +16,7 @@ export default {
 
     unsubscribe: '退订',
     subscribe: '订阅',
+    view_subscription: '查看订阅',
 
     privacy_policy: '隐私政策',
     terms_of_service: '用户协议',
@@ -38,6 +39,7 @@ export default {
     success: '成功',
     unsubscribe_success: '已成功取消订阅',
     unsubscribe_success_en: 'Subscription cancelled successfully',
+    pricing: '价格',
   },
   "en-US": {
     logout_failed: 'Logout failed:',
@@ -57,6 +59,7 @@ export default {
 
     unsubscribe: 'Unsubscribe',
     subscribe: 'Subscribe',
+    view_subscription: 'View Subscription',
 
     privacy_policy: 'Privacy Policy',
     terms_of_service: 'Terms of Service',
@@ -79,6 +82,7 @@ export default {
     success: 'Success',
     unsubscribe_success: 'Subscription cancelled successfully',
     unsubscribe_success_en: 'Subscription cancelled successfully',
+    pricing: 'Pricing',
   },
   "de-DE": {
     logout_failed: 'Abmeldung fehlgeschlagen:',
@@ -97,6 +101,7 @@ export default {
 
     unsubscribe: 'Abbestellen',
     subscribe: 'Abonnieren',
+    view_subscription: 'Abonnement anzeigen',
 
     privacy_policy: 'Datenschutzrichtlinie',
     terms_of_service: 'Nutzungsbedingungen',
@@ -118,6 +123,7 @@ export default {
     success: 'Erfolg',
     unsubscribe_success: 'Abonnement erfolgreich gekündigt',
     unsubscribe_success_en: 'Subscription cancelled successfully',
+    pricing: 'Prix',
   },
   "fr-FR": {
     logout_failed: 'Échec de la déconnexion:',
@@ -136,6 +142,7 @@ export default {
 
     unsubscribe: 'Se désabonner',
     subscribe: 'S\'abonner',
+    view_subscription: 'Afficher l\'abonnement',
 
     privacy_policy: 'Politique de confidentialité',
     terms_of_service: 'Conditions d\'utilisation',
@@ -157,6 +164,7 @@ export default {
     success: 'Succès',
     unsubscribe_success: 'Abonnement annulé avec succès',
     unsubscribe_success_en: 'Subscription cancelled successfully',
+    pricing: 'Prix',
   },
   "zh-TW": {
     logout_failed: '登出失敗:',
@@ -175,6 +183,7 @@ export default {
 
     unsubscribe: '退訂',
     subscribe: '訂閱',
+    view_subscription: '查看訂閱',
 
     privacy_policy: '隱私政策',
     terms_of_service: '使用者協議',
@@ -197,5 +206,6 @@ export default {
     success: '成功',
     unsubscribe_success: '已成功取消訂閱',
     unsubscribe_success_en: 'Subscription cancelled successfully',
+    pricing: '價格',
   },
 };

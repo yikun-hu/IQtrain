@@ -693,3 +693,99 @@ export function calculatePercentile(score: number, maxScore: number): number {
   if (percentage >= 15) return 20;
   return 10;
 }
+
+// ==================== 退款申请相关 ====================
+
+// 提交退款申请
+export async function submitRefundRequest(data: {
+  email: string;
+  reason?: string;
+  amount?: number;
+  payment_type?: 'one_time' | 'subscription';
+}) {
+  // 获取当前用户（如果已登录）
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  const { data: refundRequest, error } = await supabase
+    .from('refund_requests')
+    .insert({
+      email: data.email,
+      user_id: user?.id || null,
+      reason: data.reason || null,
+      amount: data.amount || null,
+      payment_type: data.payment_type || null,
+      status: 'pending',
+    })
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return refundRequest;
+}
+
+// 获取用户的退款申请列表
+export async function getUserRefundRequests(email: string) {
+  const { data, error } = await supabase
+    .from('refund_requests')
+    .select('*')
+    .eq('email', email)
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+}
+
+// 获取单个退款申请
+export async function getRefundRequest(id: string) {
+  const { data, error } = await supabase
+    .from('refund_requests')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  
+  if (error) throw error;
+  return data;
+}
+
+// 管理员：获取所有退款申请
+export async function getAllRefundRequests(status?: 'pending' | 'approved' | 'rejected') {
+  let query = supabase
+    .from('refund_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (status) {
+    query = query.eq('status', status);
+  }
+  
+  const { data, error } = await query;
+  
+  if (error) throw error;
+  return data;
+}
+
+// 管理员：更新退款申请状态
+export async function updateRefundRequestStatus(
+  id: string,
+  status: 'pending' | 'approved' | 'rejected',
+  adminNotes?: string
+) {
+  const updates: any = {
+    status,
+    processed_at: new Date().toISOString(),
+  };
+  
+  if (adminNotes) {
+    updates.admin_notes = adminNotes;
+  }
+  
+  const { data, error } = await supabase
+    .from('refund_requests')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  
+  if (error) throw error;
+  return data;
+}

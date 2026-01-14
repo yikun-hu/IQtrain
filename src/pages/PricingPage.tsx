@@ -93,7 +93,7 @@ export default function PricingPage() {
         </h1>
 
         {/* 用户当前订阅信息 */}
-        {hasActiveSubscription && (
+        {hasActiveSubscription || false && (
           <div className="max-w-3xl mx-auto mb-12 bg-card p-6 rounded-lg border border-primary shadow-lg">
             <h2 className="text-xl font-bold mb-4">
               {t.pricing.currentSubscription}
@@ -145,7 +145,7 @@ export default function PricingPage() {
           <>
             {/* 定价卡片 */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
-              {hasActiveSubscription ? null : plans.map((plan, index) => {
+              {hasActiveSubscription && false ? null : plans.map((plan, index) => {
                 // Determine plan type based on recurring duration and unit
                 const planType = plan.recurring_unit === 'MONTH' ? 'monthly' : 'biweekly';
                 const planTranslation = t.pricing.plans[planType as keyof typeof t.pricing.plans];

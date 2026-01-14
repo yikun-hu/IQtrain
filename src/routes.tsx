@@ -15,6 +15,8 @@ import CookiePolicyPage from './pages/CookiePolicyPage';
 import ScaleTestPage from './pages/ScaleTestPage';
 import ScaleTestReportPage from './pages/ScaleTestReportPage';
 import type { ReactNode } from 'react';
+import RefundPolicyPage from './pages/RefundPolicyPage';
+import RequestRefundPage from './pages/RequestRefundPage';
 
 interface RouteConfig {
     name: string;
@@ -25,7 +27,7 @@ interface RouteConfig {
 
 const routes: RouteConfig[] = [
     {
-        name: 'Home',
+        name: 'IQ Test Online | Official Mensa-Style Intelligence Test',
         path: '/',
         element: <HomePage />,
     },
@@ -35,7 +37,7 @@ const routes: RouteConfig[] = [
         element: <LoginPage />,
     },
     {
-        name: 'IQ Test',
+        name: 'Start IQ Test',
         path: '/test',
         element: <TestPage />,
     },
@@ -45,17 +47,17 @@ const routes: RouteConfig[] = [
         element: <LoadingAnalysisPage />,
     },
     {
-        name: 'Collection',
+        name: 'Collect Information',
         path: '/collection',
         element: <CollectionPage />,
     },
     {
-        name: 'Results',
+        name: 'IQ Results',
         path: '/results',
         element: <ResultsPage />,
     },
     {
-        name: 'Results',
+        name: 'IQ Results',
         path: '/result',
         element: <ResultPage />,
     },
@@ -93,6 +95,16 @@ const routes: RouteConfig[] = [
         name: 'Cookie Policy',
         path: '/cookie-policy',
         element: <CookiePolicyPage />,
+    },
+    {
+        name: 'Refund Policy',
+        path: '/refund-policy',
+        element: <RefundPolicyPage />,
+    },
+    {
+        name: 'Request Refund',
+        path: '/request-refund',
+        element: <RequestRefundPage />,
     },
     {
         name: 'Scale Test',

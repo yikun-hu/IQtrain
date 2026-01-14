@@ -323,16 +323,16 @@ export default function HomePage() {
 
 
   const steps = [
-    { icon: <UserPlus className="h-5 w-5" />, title: t.step1Title, desc: t.step1Desc },
     { icon: <Timer className="h-5 w-5" />, title: t.step2Title, desc: t.step2Desc },
     { icon: <BadgeCheck className="h-5 w-5" />, title: t.step3Title, desc: t.step3Desc },
+    { icon: <UserPlus className="h-5 w-5" />, title: t.step1Title, desc: t.step1Desc },
     { icon: <BarChart3 className="h-5 w-5" />, title: t.step4Title, desc: t.step4Desc },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <style>{`
-        @keyframes myiq-marquee {
+        @keyframes iqtrain-marquee {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
@@ -378,10 +378,10 @@ export default function HomePage() {
               {/* Social proof */}
               <div className="mt-5 flex items-center gap-10">
                 <div className="flex -space-x-3">
-                  {[12, 32, 45, 56].map((n, idx) => (
+                  {[1,2,3,5].map((n, idx) => (
                     <img
                       key={idx}
-                      src={`https://i.pravatar.cc/80?img=${n}`}
+                      src={`/images/avatars/${n}.jpg`}
                       alt="user"
                       className="h-9 w-9 rounded-full border-2 border-background object-cover"
                     />
@@ -410,7 +410,7 @@ export default function HomePage() {
                   <div>
                     <CardTitle className="text-base font-semibold">{t.chartTitle}</CardTitle>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {t.percentileText.replace('{p}', percentile.toFixed(1)).replace('{iq}', String(iq))}
+                      {t.percentileLead.replace('{p}', percentile.toFixed(1)).replace('{iq}', String(iq))}
                     </p>
                   </div>
 
@@ -445,14 +445,14 @@ export default function HomePage() {
                     role="presentation"
                   >
                     <defs>
-                      <linearGradient id="myiqFill" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="iqtrainFill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.22" />
                         <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
                       </linearGradient>
                     </defs>
 
                     {/* plot area */}
-                    <path d={areaD} fill="url(#myiqFill)" />
+                    <path d={areaD} fill="url(#iqtrainFill)" />
                     <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="3" />
 
                     {/* Ticks */}
@@ -523,9 +523,9 @@ export default function HomePage() {
                   {/* Slider */}
                   <div className="mt-3">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>{t.sliderMin.replace('{iq}', String(iqMin))}</span>
+                      <span>{}</span>
                       <span>{t.dragHint}</span>
-                      <span>{t.sliderMax.replace('{iq}', String(iqMax))}</span>
+                      <span>{}</span>
                     </div>
                     <input
                       type="range"
@@ -555,10 +555,10 @@ export default function HomePage() {
         </div>
 
         {/* Countries marquee (bigger flags, 2-line text, more spacing, no per-item border, fix overflow) */}
-        <div className="border-t bg-background/60">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-medium text-foreground">{t.countryStripTitle}</p>
+        <div className="bg-background/60">
+          <div className="container mx-auto px-4 py-3 mt-12">
+            <div className="flex items-center justify-center gap-4">
+              <p className="text-xl font-bold text-foreground">{t.countryStripTitle}</p>
               {/* <p className="hidden text-sm text-muted-foreground md:block">{t.countryStripHint}</p> */}
             </div>
 
@@ -566,7 +566,7 @@ export default function HomePage() {
               <div className="relative">
                 <div
                   className="flex w-[200%] items-center gap-8 py-2"
-                  style={{ animation: 'myiq-marquee 28s linear infinite' }}
+                  style={{ animation: 'iqtrain-marquee 28s linear infinite' }}
                 >
                   {[...countries, ...countries].map((c, idx) => (
                     <div key={`${c.code}-${idx}`} className="mx-1 flex items-center gap-3">

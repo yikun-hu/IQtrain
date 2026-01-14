@@ -8,6 +8,8 @@ export type SubscriptionType = 'one_time' | 'monthly' | 'biweekly';
 export type TestDimension = 'memory' | 'speed' | 'reaction' | 'concentration' | 'logic';
 export type GameCategory = 'puzzles' | 'number_games' | 'memory_games' | 'logic_games';
 export type TestType = 'iq' | 'career' | 'eq' | 'anxiety' | 'personality';
+export type RefundStatus = 'pending' | 'approved' | 'rejected';
+export type PaymentType = 'one_time' | 'subscription';
 
 export interface Profile {
   id: string;
@@ -249,4 +251,19 @@ export interface ScaleTestConfig {
 export interface ScaleTestAnswer {
   question_id: string;
   score: number; // 1-5分
+}
+
+// 退款申请
+export interface RefundRequest {
+  id: string;
+  email: string;
+  user_id?: string;
+  status: RefundStatus;
+  reason?: string;
+  amount?: number;
+  payment_type?: PaymentType;
+  created_at: string;
+  updated_at: string;
+  processed_at?: string;
+  admin_notes?: string;
 }
