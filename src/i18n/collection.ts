@@ -37,7 +37,12 @@ export default {
       fasterThanValue: '92% 的测试者',
       strongestSkill: '最强能力',
     },
-
+    ageGroup11: "12岁以下",
+    ageGroup12: "12-18岁",
+    ageGroup18: "18-24岁",
+    ageGroup25: "25-44岁",
+    ageGroup45: "45-64岁",
+    ageGroup65: "65岁以上",
   },
   "en-US": {
     description: 'Please fill in your basic information to get a personalized IQ report',
@@ -77,7 +82,12 @@ export default {
       fasterThanValue: '92% of test takers',
       strongestSkill: 'STRONGEST SKILL',
     },
-
+    ageGroup11: "Under 12",
+    ageGroup12: "12-18",
+    ageGroup18: "18-24",
+    ageGroup25: "25-44",
+    ageGroup45: "45-64",
+    ageGroup65: "65+",
   },
   "de-DE": {
     description: 'Bitte füllen Sie Ihre grundlegenden Informationen aus, um einen personalisierten IQ-Bericht zu erhalten',
@@ -117,7 +127,12 @@ export default {
       fasterThanValue: '92% der Testteilnehmer',
       strongestSkill: 'STÄRKSTE FÄHIGKEIT',
     },
-
+    ageGroup11: "Unter 12 Jahren",
+    ageGroup12: "12-18 Jahren",
+    ageGroup18: "18-24 Jahren",
+    ageGroup25: "25-44 Jahren",
+    ageGroup45: "45-64 Jahren",
+    ageGroup65: "65 Jahren und älter",
   },
   "fr-FR": {
     description: 'Veuillez remplir vos informations de base pour obtenir un rapport IQ personnalisé',
@@ -157,7 +172,12 @@ export default {
       fasterThanValue: '92 % des testeurs',
       strongestSkill: 'COMPÉTENCE LA PLUS FORTE',
     },
-
+    ageGroup11: "Moins de 12 ans",
+    ageGroup12: "12-18 ans",
+    ageGroup18: "18-24 ans",
+    ageGroup25: "25-44 ans",
+    ageGroup45: "45-64 ans",
+    ageGroup65: "Plus de 65 ans",
   },
   "zh-TW": {
     description: '請填寫您的基本資訊以獲取個性化的IQ報告',
@@ -197,6 +217,11 @@ export default {
       fasterThanValue: '92% 的測試者',
       strongestSkill: '最強能力',
     },
-
+    ageGroup11: "11歲以下",
+    ageGroup12: "12-18歲",
+    ageGroup18: "18-24歲",
+    ageGroup25: "25-44歲",
+    ageGroup45: "45-64歲",
+    ageGroup65: "65歲以上",
   },
 }

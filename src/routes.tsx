@@ -27,7 +27,7 @@ interface RouteConfig {
 
 const routes: RouteConfig[] = [
     {
-        name: 'IQ Test Online | Official Mensa-Style Intelligence Test',
+        name: 'IQ Test & Train Online | Based on the Official Raven’s Test',
         path: '/',
         element: <HomePage />,
     },

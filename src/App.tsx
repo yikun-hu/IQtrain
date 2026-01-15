@@ -32,7 +32,7 @@ const AppWithRouting: React.FC = () => {
     });
 
     if (currentRoute) {
-      document.title = `IQ Train - ${currentRoute.name}`;
+      document.title = `${currentRoute.name} | IQ Train`;
     } else {
       document.title = 'IQ Train';
     }
