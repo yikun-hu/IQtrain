@@ -1,7 +1,6 @@
 import React from "react";
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200">

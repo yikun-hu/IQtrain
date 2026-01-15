@@ -6,13 +6,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { signOut, cancelSubscription } from '@/db/api';
 import {
   User,
-  FileCheck,
-  FileText,
   LogOut,
   Globe,
   LayoutDashboard,
   Mail,
-  Bell,
   Gamepad2,
   ClipboardList,
   Shield,
@@ -37,7 +34,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
 import { Language } from '@/types/types';
 
 export default function Header() {
@@ -46,7 +42,6 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('training');
   const [showUnsubscribeDialog, setShowUnsubscribeDialog] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -97,8 +92,6 @@ export default function Header() {
     setActiveTab(tab);
   };
 
-  const isDashboard = location.pathname.startsWith('/dashboard');
-  const showNav = location.pathname.startsWith('/result') || location.pathname.startsWith('/scale');
   const alwaysShowNav = user;
 
   useEffect(() => {

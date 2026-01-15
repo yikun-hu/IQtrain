@@ -11,7 +11,7 @@ import { submitRefundRequest } from '@/db/api';
 import { ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function RequestRefundPage() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [reason, setReason] = useState('');

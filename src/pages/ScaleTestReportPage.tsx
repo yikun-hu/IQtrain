@@ -14,9 +14,6 @@ import {
 import type { ScaleScoringRule, ScaleTestConfig } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
 
-
-type Lang = 'zh-CN' | 'en-US';
-
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }

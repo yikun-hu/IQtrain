@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function PricingPage() {
   const { language, t } = useLanguage();
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -79,11 +79,6 @@ export default function PricingPage() {
   // Handle subscription button click
   const handleSubscribe = (planId: string) => {
     navigate(`/payment?plan_id=${planId}`);
-  };
-
-  const handlePlanSelect = (planType: 'biweekly' | 'monthly') => {
-    // Navigate to payment page, passing plan type
-    navigate('/payment', { state: { planType } });
   };
 
   return (

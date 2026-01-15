@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLatestTestResult } from '@/db/api';
-import type { Language, TestResult } from '@/types/types';
+import type { TestResult } from '@/types/types';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 import { iqReportMeta } from '@/components/result/iqreport-meta';
 
-type I18nText = Record<string, string | undefined>;
-
 // ---------- helpers ----------
-function iqtableT(map: I18nText | undefined, lang: Language, fallback = ''): string {
-  if (!map) return fallback;
-  return (map[lang] ?? map['en-US'] ?? fallback) as string;
-}
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -52,8 +46,7 @@ function formatDateTime(d: Date) {
 
 // ---------- component ----------
 export default function ResultPage() {
-  const { language, t } = useLanguage();
-  const lang = language;
+  const { t } = useLanguage();
 
   const { user, profile, loading: authLoading } = useAuth();
   const { toast } = useToast();

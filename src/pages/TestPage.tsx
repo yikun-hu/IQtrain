@@ -85,7 +85,6 @@ export default function TestPage() {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
-  const [startTime, setStartTime] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
@@ -169,30 +168,6 @@ export default function TestPage() {
     setHoveredOption(null);
   }, [currentQuestion]);
 
-  const loadQuestions = async () => {
-    try {
-      const data = await getAllQuestions();
-      if (data.length === 0) {
-        toast({
-          title: t.common.error,
-          description: t.test.errors.noQuestions,
-          variant: 'destructive',
-        });
-        navigate('/');
-        return;
-      }
-      setQuestions(data);
-    } catch (error) {
-      console.error('加载题目失败:', error);
-      toast({
-        title: t.common.error,
-        description: t.test.errors.loadFailed,
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleStartTest = async () => {
     // 开始加载动画并加载题目
@@ -214,7 +189,6 @@ export default function TestPage() {
 
       // 加载成功后开始测试
       setTestStarted(true);
-      setStartTime(Date.now());
     } catch (error) {
       console.error('加载题目失败:', error);
       toast({

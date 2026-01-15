@@ -663,7 +663,6 @@ export default function HomePage() {
           <div className="mt-8">
             <div className="grid gap-4 md:grid-cols-3">
               {visibleTestimonials.map((r, idx) => {
-                const initial = (r.name || '?').trim().slice(0, 1).toUpperCase();
                 return (
                   <Card key={idx} className="shadow-sm">
                     <CardContent className="pt-0">

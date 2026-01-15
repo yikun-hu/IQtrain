@@ -7,8 +7,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { ITranslatedField } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { getAllGames, getAllTests, getTestResults } from '@/db/api';
-import type { Game, Test } from '@/types/types';
+import { getAllGames, getTestResults } from '@/db/api';
+import type { Game } from '@/types/types';
 import { Loader2, FileText } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -30,7 +30,6 @@ export default function DashboardPage() {
 
   // Training相关状态
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
-  const [allGames, setAllGames] = useState<Game[]>([]);
   const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
 
   // Test相关状态
@@ -124,9 +123,8 @@ export default function DashboardPage() {
     setLoading(true);
     try {
       // 加载游戏数据 - 优化：只调用一次 getAllGames，然后在客户端随机选择推荐游戏
-      const [games, tests, testResults] = await Promise.all([
+      const [games, testResults] = await Promise.all([
         getAllGames(),
-        getAllTests(),
         getTestResults(user.id),
       ]);
 
@@ -140,7 +138,6 @@ export default function DashboardPage() {
       const normalizedGames = games;
 
       setRecommendedGames(normalizedRecommended);
-      setAllGames(normalizedGames);
 
       // 按类别分组游戏
       const grouped = normalizedGames.reduce((acc, game) => {

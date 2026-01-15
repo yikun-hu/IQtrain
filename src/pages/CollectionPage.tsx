@@ -5,19 +5,11 @@ import { Card, CardContent, CardHeader, CardDescription } from '@/components/ui/
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { ChevronRight, Shield } from 'lucide-react';
-import { Clock, Zap, Brain, PartyPopper, FileText, BarChart3, PieChart } from 'lucide-react';
-import { Language } from '@/types/types';
+import { Clock, Zap, Brain } from 'lucide-react';
 
 export default function CollectionPage() {
   const { language, t } = useLanguage();
@@ -114,19 +106,6 @@ export default function CollectionPage() {
   }, [language, navigate, toast, hasCompleteProfile, isSubscribed, profile, setFullName, setAge, setGender, setEmail, getAgeGroupFromAge]);
 
   const tCollection = t.collection;
-
-  const formatEvaluatedDate = () => {
-    try {
-      const d = new Date();
-      return d.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-      });
-    } catch {
-      return 'Today';
-    }
-  };
 
   // 获取测试完成时间
   const durationSecRaw = Number(localStorage.getItem('testTimeTaken') || '');

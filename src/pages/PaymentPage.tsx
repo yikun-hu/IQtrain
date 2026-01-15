@@ -61,7 +61,6 @@ export default function PaymentPage() {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [purchaseBanners] = useState(() => generatePurchaseBanners(t));
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
-  const [gatewayConfig, setGatewayConfig] = useState<PaymentGatewayConfig | null>(null);
   const [loadingPlan, setLoadingPlan] = useState(true);
 
   // OTP verification state
@@ -343,7 +342,6 @@ export default function PaymentPage() {
       }
 
       if (userId) {
-        const orderNo = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         console.log(paymentDetails);
         const orderData = {
           // order_no: orderNo,
@@ -758,7 +756,7 @@ export default function PaymentPage() {
                   <PayPalButtons
                     disabled={loadingPlan || showOtpForm}
                     style={{ layout: 'horizontal', tagline: false }}
-                    createSubscription={async (data, actions) => {
+                    createSubscription={async (_data, actions) => {
                       try {
                         return actions.subscription.create({
                           plan_id: selectedPlan?.paypal_plan_id || '',
@@ -769,7 +767,7 @@ export default function PaymentPage() {
                         return Promise.reject(error);
                       }
                     }}
-                    onApprove={async (data, actions) => {
+                    onApprove={async (data, _actions) => {
                       setProcessing(true);
                       try {
                         localStorage.setItem(
