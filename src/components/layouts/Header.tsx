@@ -116,7 +116,9 @@ export default function Header() {
     }
   }, [location, searchParams]);
 
-  const hasSubscription = profile?.subscription_type === 'monthly' && profile?.subscription_expires_at;
+  const hasValidSubscription = profile?.has_paid &&
+    (!profile?.subscription_expires_at ||
+      new Date(profile.subscription_expires_at) > new Date());
   const isAdmin = profile?.role === 'admin';
 
   return (
@@ -213,9 +215,9 @@ export default function Header() {
                       <span>{t.header.dashboard}</span>
                     </DropdownMenuItem>
 
-                    {hasSubscription ? null : <DropdownMenuSeparator />}
+                    {hasValidSubscription ? null : <DropdownMenuSeparator />}
 
-                    {hasSubscription ? null : (
+                    {hasValidSubscription ? null : (
                       <DropdownMenuItem onClick={() => navigate('/pricing')}>
                         <CreditCard className="mr-2 h-4 w-4" />
                         <span>{t.header.pricing}</span>

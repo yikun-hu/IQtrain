@@ -281,29 +281,34 @@ export default function AdminPage() {
                             </TableRow>
                           ))
                         ) : users.length > 0 ? (
-                          users.map((user) => (
-                            <TableRow key={user.id}>
-                              <TableCell className="font-medium">{user.email}</TableCell>
-                              <TableCell>{user.full_name || '-'}</TableCell>
-                              <TableCell>
-                                <span className={user.has_paid ? 'text-green-600' : 'text-muted-foreground'}>
-                                  {user.has_paid ? tAdmin.userList.paid : tAdmin.userList.notPaid}
-                                </span>
-                              </TableCell>
-                              <TableCell>
-                                {user.subscription_type === 'biweekly' && tAdmin.userList.oneTime}
-                                {user.subscription_type === 'monthly' && tAdmin.userList.monthly}
-                                {!user.subscription_type && tAdmin.userList.none}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {user.has_paid ? formatAmount(1.98) : '-'}
-                              </TableCell>
-                              <TableCell>
-                                {user.subscription_expires_at ? formatDateTime(user.subscription_expires_at) : '-'}
-                              </TableCell>
-                              <TableCell>{formatDateTime(user.created_at)}</TableCell>
-                            </TableRow>
-                          ))
+                          users.map((user) => {
+                            const userIsSubscribed = user?.has_paid &&
+                              (!user?.subscription_expires_at ||
+                                new Date(user.subscription_expires_at) > new Date());
+                            return (
+                              <TableRow key={user.id}>
+                                <TableCell className="font-medium">{user.email}</TableCell>
+                                <TableCell>{user.full_name || '-'}</TableCell>
+                                <TableCell>
+                                  <span className={userIsSubscribed ? 'text-green-600' : 'text-muted-foreground'}>
+                                    {userIsSubscribed ? tAdmin.userList.paid : tAdmin.userList.notPaid}
+                                  </span>
+                                </TableCell>
+                                <TableCell>
+                                  {user.subscription_type === 'biweekly' && tAdmin.userList.oneTime}
+                                  {user.subscription_type === 'monthly' && tAdmin.userList.monthly}
+                                  {!user.subscription_type && tAdmin.userList.none}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  {userIsSubscribed ? formatAmount(1.98) : '-'}
+                                </TableCell>
+                                <TableCell>
+                                  {user.subscription_expires_at ? formatDateTime(user.subscription_expires_at) : '-'}
+                                </TableCell>
+                                <TableCell>{formatDateTime(user.created_at)}</TableCell>
+                              </TableRow>
+                            )
+                          })
                         ) : (
                           <TableRow>
                             <TableCell colSpan={7} className="text-center text-muted-foreground">
@@ -385,20 +390,24 @@ export default function AdminPage() {
                             </TableCell>
                           </TableRow>
                         ) : (
-                          users.map((user) => (
+                          users.map((user) => {
+                            const userIsSubscribed = user?.has_paid &&
+                              (!user?.subscription_expires_at ||
+                                new Date(user.subscription_expires_at) > new Date());
+                            return (
                             <TableRow key={user.id}>
                               <TableCell className="font-medium">{user.email}</TableCell>
                               <TableCell>{user.full_name || '-'}</TableCell>
                               <TableCell>
                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${user.role === 'admin'
-                                    ? 'bg-purple-100 text-purple-800'
-                                    : 'bg-gray-100 text-gray-800'
+                                  ? 'bg-purple-100 text-purple-800'
+                                  : 'bg-gray-100 text-gray-800'
                                   }`}>
                                   {user.role}
                                 </span>
                               </TableCell>
                               <TableCell>
-                                {user.has_paid ? (
+                                {userIsSubscribed ? (
                                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     {user.subscription_type === 'monthly' ? tAdmin.userList.monthly : tAdmin.userList.oneTime}
                                   </span>
@@ -410,7 +419,7 @@ export default function AdminPage() {
                                 {formatDateTime(user.created_at)}
                               </TableCell>
                             </TableRow>
-                          ))
+                          )})
                         )}
                       </TableBody>
                     </Table>

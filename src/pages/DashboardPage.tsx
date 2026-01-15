@@ -40,7 +40,9 @@ export default function DashboardPage() {
   const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
 
   // 检查用户是否有有效订阅
-  const hasValidSubscription = profile?.subscription_type === 'monthly' && profile?.subscription_expires_at;
+  const hasValidSubscription = profile?.has_paid &&
+    (!profile?.subscription_expires_at ||
+      new Date(profile.subscription_expires_at) > new Date());
 
   // 打开订阅提示模态框
   const openSubscriptionModal = () => {
@@ -69,6 +71,16 @@ export default function DashboardPage() {
     // 跳转到测试页面
     navigate(testPath);
   };
+
+  const handleStartGame = (game: Game) => {
+    // 检查用户是否有有效订阅
+    if (!hasValidSubscription) {
+      openSubscriptionModal();
+      return;
+    }
+
+    window.open(game.url);
+  }
 
   // 处理查看报告按钮点击事件
   const handleViewReport = (reportPath: string) => {
@@ -196,7 +208,7 @@ export default function DashboardPage() {
                   <Card
                     key={game.id}
                     className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
-                    onClick={() => window.open(game.url, '_blank')}
+                    onClick={() => handleStartGame(game)}
                   >
                     <CardHeader className="p-0">
                       {game.thumbnail_url && (

@@ -26,7 +26,9 @@ export default function PricingPage() {
 
   // Check if user has an active subscription
   const hasActiveSubscription = profile?.has_paid &&
-    profile?.subscription_type
+    (!profile?.subscription_expires_at ||
+      new Date(profile.subscription_expires_at) > new Date());
+
   //   && 
   //  profile?.subscription_expires_at && 
   //  new Date(profile.subscription_expires_at) > new Date();

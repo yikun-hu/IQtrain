@@ -34,7 +34,6 @@ export default function CollectionPage() {
 
   // Check if user is already a subscribed user
   const isSubscribed = profile?.has_paid &&
-    profile?.subscription_type &&
     (!profile?.subscription_expires_at ||
       new Date(profile.subscription_expires_at) > new Date());
 

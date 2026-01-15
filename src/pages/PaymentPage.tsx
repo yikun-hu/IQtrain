@@ -303,11 +303,6 @@ export default function PaymentPage() {
             full_name: userInfo?.fullName,
             age: userInfo?.age,
             gender: userInfo?.gender,
-            // role: 'user',
-            // has_paid: true,
-            // subscription_type: type,
-            // subscription_expires_at:
-            //   type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null,
           })
           .select()
           .single();
@@ -321,10 +316,6 @@ export default function PaymentPage() {
           full_name: userInfo.fullName || undefined,
           age: userInfo.age,
           gender: userInfo.gender || undefined,
-          // has_paid: true,
-          // subscription_type: type,
-          // subscription_expires_at:
-          //   type === 'monthly' ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : undefined,
         });
       }
 
