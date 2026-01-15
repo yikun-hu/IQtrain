@@ -4,7 +4,6 @@ import TestPage from './pages/TestPage';
 import LoadingAnalysisPage from './pages/LoadingAnalysisPage';
 import CollectionPage from './pages/CollectionPage';
 import ResultPage from './pages/ResultPage';
-import ResultsPage from './pages/ResultsPage';
 import DashboardPage from './pages/DashboardPage';
 import PaymentPage from './pages/PaymentPage';
 import PricingPage from './pages/PricingPage';
@@ -50,11 +49,6 @@ const routes: RouteConfig[] = [
         name: 'Collect Information',
         path: '/collection',
         element: <CollectionPage />,
-    },
-    {
-        name: 'IQ Results',
-        path: '/results',
-        element: <ResultsPage />,
     },
     {
         name: 'IQ Results',
