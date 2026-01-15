@@ -62,7 +62,7 @@ export default {
     view_subscription: 'View Subscription',
 
     privacy_policy: 'Privacy Policy',
-    terms_of_service: 'Terms of Service',
+    terms_of_service: 'Terms and Conditions',
     cookie_policy: 'Cookie Policy',
 
     logout: 'Logout',

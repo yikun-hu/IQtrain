@@ -87,7 +87,7 @@ const routes: RouteConfig[] = [
         element: <PrivacyPolicyPage />,
     },
     {
-        name: 'Terms of Service',
+        name: 'Terms and Conditions',
         path: '/terms',
         element: <TermsPage />,
     },

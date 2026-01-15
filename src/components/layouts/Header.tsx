@@ -126,12 +126,12 @@ export default function Header() {
           <div className="flex items-center justify-between">
             {/* 左侧Logo */}
             <Link to="/" className="text-2xl font-bold hover:opacity-90 transition-opacity">
-              IQ Train
+              <img src="/images/logo/iqtrain-logo1-white.png" alt="IQ Train" className="h-12" />
             </Link>
 
             {/* 中间导航 - 登录后始终显示 */}
             {alwaysShowNav && (
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-8 hidden md:flex">
                 <button
                   onClick={() => handleTabChange('training')}
                   className={`flex flex-col items-center gap-1 px-4 py-2 font-semibold transition-all ${activeTab === 'training' ? 'text-white' : 'text-white/70 hover:text-white/90'

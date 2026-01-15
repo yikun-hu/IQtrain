@@ -1,521 +1,451 @@
 export default {
   "en-US": {
-    title: 'Cookie Policy',
+    title: 'Privacy Policy',
     lastUpdated: 'Last Updated: December 13, 2025',
     sections: [
       {
-        title: '1. What Are Cookies',
-        content: `Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better experience by remembering your preferences and understanding how you use our Service.`
+        title: '1. Information We Collect',
+        content: `When you use the Service, we may collect the following types of information:
+
+• Personal Information: such as name, email address, age, gender, and account information
+• Test and Assessment Data: your answers, scores, performance metrics, and training records from IQ tests, cognitive assessments, and other evaluations
+• Payment Information: payment transaction details processed via third-party platforms (e.g., PayPal); we do not store full credit card information
+• Usage Data: how you interact with the Service, including training activities, game performance, page views, and visit frequency
+• Technical Data: IP address, browser type, operating system, device information, cookies, and similar tracking technologies`
       },
       {
-        title: '2. Types of Cookies We Use',
-        content: `We use the following types of cookies:
+        title: '2. How We Use Your Information',
+        content: `We use your information for the following purposes:
 
-Essential Cookies:
-• Required for the website to function properly
-• Enable core functionality such as security, authentication, and session management
-• Cannot be disabled as they are necessary for the Service to work
-
-Functional Cookies:
-• Remember your preferences and settings
-• Store language preferences
-• Maintain your login session
-• Remember your test progress
-
-Performance and Analytics Cookies:
-• Help us understand how visitors interact with our website
-• Collect anonymous information about page visits and user behavior
-• Allow us to improve our Service based on usage patterns
-• Measure the effectiveness of our training programs
-
-These cookies do not collect personally identifiable information.`
+• To provide, maintain, and improve our Service, including testing, assessments, and brain training content
+• To process payments, manage subscriptions, and handle billing matters
+• To personalize your experience and provide tailored content or recommendations
+• To analyze usage, improve test accuracy, and optimize training effectiveness
+• To communicate with you regarding your account, test results, service updates, and security alerts
+• To protect the Service and prevent fraud or illegal activity
+• To comply with applicable laws and regulatory requirements`
       },
       {
-        title: '3. How We Use Cookies',
-        content: `We use cookies for the following purposes:
+        title: '3. Information Sharing and Disclosure',
+        content: `We do not sell your personal information. We only share information under the following circumstances:
 
-Authentication and Security:
-• Verify your identity when you log in
-• Protect your account from unauthorized access
-• Detect and prevent fraudulent activity
-
-User Experience:
-• Remember your language preference
-• Save your test progress
-• Maintain your session across pages
-• Provide personalized recommendations
-
-Analytics and Improvement:
-• Understand how users interact with our platform
-• Identify areas for improvement
-• Measure the effectiveness of our features
-• Optimize performance and loading times`
+• Service Providers: third-party providers who assist in delivering services, including database hosting (e.g., Supabase), payment processing (e.g., PayPal), analytics, and cloud storage
+• Legal Requirements: when required by law or to protect our or others’ rights, property, or safety
+• Business Transfers: in connection with mergers, acquisitions, or asset sales
+• User Consent: when you explicitly authorize us to share information for additional services or features`
       },
       {
-        title: '4. Third-Party Cookies',
-        content: `We may use third-party services that set cookies on your device:
+        title: '4. Data Security',
+        content: `We implement industry-standard measures to protect your information:
 
-• PayPal: For secure payment processing
-• Analytics Services: To understand user behavior and improve our Service
+• Encryption for data transmission and storage
+• Account security measures, including email verification or two-factor authentication
+• Regular security audits and system updates
+• Strict access controls and monitoring
+• Secure payment processing via third-party platforms
 
-These third parties have their own privacy policies and cookie policies. We recommend reviewing their policies to understand how they use cookies.`
+Although we take reasonable precautions, no internet or electronic storage method is 100% secure. You understand and accept the inherent risk in using the Service.`
       },
       {
-        title: '5. Managing Cookies',
-        content: `You have several options for managing cookies:
+        title: '5. Your Rights and Choices',
+        content: `You have the following rights regarding your personal information:
 
-Browser Settings:
-• Most browsers allow you to control cookies through their settings
-• You can set your browser to refuse all cookies or to alert you when a cookie is being sent
-• You can delete cookies that have already been set
+• Access: request a copy of your personal data
+• Correction: update or correct inaccurate or incomplete information
+• Deletion: request deletion of your account and associated data
+• Opt-Out: unsubscribe from marketing emails or communications
+• Data Portability: request a portable copy of your data
 
-Note: Disabling essential cookies may affect the functionality of our Service and prevent you from using certain features.
-
-Cookie Preferences:
-• You can manage your cookie preferences through your account settings
-• You can opt out of non-essential cookies while still using our Service`
+You may exercise these rights via your account settings or by contacting us at privacy@iqtrain.com. We will respond within the timeframe allowed by applicable law.`
       },
       {
-        title: '6. Cookie Duration',
-        content: `We use both session cookies and persistent cookies:
-
-Session Cookies:
-• Temporary cookies that expire when you close your browser
-• Used for authentication and session management
-
-Persistent Cookies:
-• Remain on your device for a set period or until you delete them
-• Used to remember your preferences and settings
-• Typically expire after 30 days to 1 year`
+        title: '6. Cookies and Tracking Technologies',
+        content: `We use cookies, pixels, and similar tracking technologies to enhance the Service, analyze usage, and provide personalized recommendations. You can manage or disable cookies through your browser settings, though some features may be affected.`
       },
       {
-        title: '7. Do Not Track Signals',
-        content: `Some browsers have a "Do Not Track" feature that signals to websites that you do not want to be tracked. Currently, there is no industry standard for how to respond to these signals. We do not currently respond to Do Not Track signals.`
+        title: "7. Children's Privacy",
+        content: `The Service is intended for users 13 years or older. We do not knowingly collect information from children under 13. If you believe we have inadvertently collected information from a child under 13, please contact us immediately so we can delete it.`
       },
       {
-        title: '8. Updates to This Cookie Policy',
-        content: `We may update this Cookie Policy from time to time to reflect changes in our practices or for legal reasons. We will notify you of any material changes by posting the updated policy on our website.`
+        title: '8. International Data Transfers',
+        content: `Your information may be transferred to and processed in countries other than your country of residence. We take appropriate legal and technical measures to ensure your information is protected in accordance with this Policy and applicable data protection standards.`
       },
       {
-        title: '9. Contact Us',
-        content: `If you have any questions about our use of cookies, please contact us at:
-Email: privacy@iqtrain.com`
+        title: '9. Third-Party Links and Services',
+        content: `The Service may contain links to third-party websites or services. We are not responsible for the privacy practices of these third parties. Please review their privacy policies before using their services.`
+      },
+      {
+        title: '10. Data Retention',
+        content: `We retain your personal information only as long as necessary to fulfill the purposes described in this Policy or as required by law. After this period, we securely delete or anonymize your data.`
+      },
+      {
+        title: '11. Changes to This Policy',
+        content: `We may update this Privacy Policy from time to time. Material changes will be posted on this page with an updated "Last Updated" date. Continued use of the Service constitutes acceptance of the revised Policy.`
+      },
+      {
+        title: '12. Contact Us',
+        content: `If you have any questions about this Privacy Policy or wish to exercise your privacy rights, please contact us at:
+Email: privacy@iqtrain.ai`
       }
     ]
   },
   "zh-CN": {
-    title: 'Cookie政策',
-    lastUpdated: '最后更新：2025年12月13日',
+    title: '隐私政策',
+    lastUpdated: '最后更新日期：2025年12月13日',
     sections: [
       {
-        title: '1. 什么是Cookie',
-        content: `Cookie是当您访问我们的网站时放置在您设备上的小型文本文件。它们通过记住您的偏好并了解您如何使用我们的服务，帮助我们为您提供更好的体验。`
+        title: '1. 我们收集的信息',
+        content: `当您使用本服务时，我们可能收集以下类型的信息：
+
+• 个人信息：包括姓名、电子邮箱、年龄、性别及账户信息
+• 测试与评估数据：您在 IQ 测试、认知评估及其他测评中的答案、分数、表现指标、训练记录
+• 支付信息：通过第三方支付平台（如 PayPal）处理的支付交易详情，我们不存储完整信用卡信息
+• 使用数据：您与服务的互动行为，包括训练活动、游戏表现、页面浏览和访问频率
+• 技术数据：IP 地址、浏览器类型、操作系统、设备信息、Cookie 及类似跟踪技术`
       },
       {
-        title: '2. 我们使用的Cookie类型',
-        content: `我们使用以下类型的Cookie：
+        title: '2. 我们如何使用您的信息',
+        content: `我们将您的信息用于以下目的：
 
-必要Cookie：
-• 网站正常运行所必需
-• 启用核心功能，如安全性、身份验证和会话管理
-• 无法禁用，因为它们是服务运行所必需的
-
-功能Cookie：
-• 记住您的偏好和设置
-• 存储语言偏好
-• 维护您的登录会话
-• 记住您的测试进度
-
-性能和分析Cookie：
-• 帮助我们了解访问者如何与我们的网站互动
-• 收集有关页面访问和用户行为的匿名信息
-• 允许我们根据使用模式改进我们的服务
-• 衡量我们训练计划的有效性
-
-这些Cookie不收集个人身份信息。`
+• 提供、维护和改进我们的服务，包括测试、评估和大脑训练内容
+• 处理支付、管理订阅及相关账单事务
+• 个性化服务体验，提供定制化内容和推荐
+• 分析服务使用情况、优化测试准确性和训练效果
+• 与您沟通账户信息、测试结果、服务更新及安全提示
+• 保护平台安全、防止欺诈及非法活动
+• 遵守法律法规及监管要求`
       },
       {
-        title: '3. 我们如何使用Cookie',
-        content: `我们将Cookie用于以下目的：
+        title: '3. 信息共享与披露',
+        content: `我们不会出售您的个人信息。信息共享仅在以下情况下进行：
 
-身份验证和安全：
-• 在您登录时验证您的身份
-• 保护您的账户免受未经授权的访问
-• 检测和防止欺诈活动
-
-用户体验：
-• 记住您的语言偏好
-• 保存您的测试进度
-• 在页面间维护您的会话
-• 提供个性化推荐
-
-分析和改进：
-• 了解用户如何与我们的平台互动
-• 识别需要改进的领域
-• 衡量我们功能的有效性
-• 优化性能和加载时间`
+• 服务提供商：我们使用第三方服务提供必要支持，包括数据库托管（如 Supabase）、支付处理（如 PayPal）、分析服务和云存储
+• 法律要求：在法律法规要求或为保护我们或他人的权利、财产或安全时
+• 业务转让：如公司合并、收购或资产出售时可能涉及信息转移
+• 用户授权：经您明确同意的情况下，为提供额外服务或功能而共享信息`
       },
       {
-        title: '4. 第三方Cookie',
-        content: `我们可能使用在您设备上设置Cookie的第三方服务：
+        title: '4. 数据安全',
+        content: `我们采取行业标准的安全措施保护您的信息：
 
-• PayPal：用于安全支付处理
-• 分析服务：了解用户行为并改进我们的服务
+• 数据传输和存储加密
+• 邮箱验证码或双重身份验证账户安全认证
+• 定期安全审计与系统更新
+• 严格访问控制与监控
+• 通过第三方支付平台进行安全支付处理
 
-这些第三方有自己的隐私政策和Cookie政策。我们建议您查看他们的政策以了解他们如何使用Cookie。`
+尽管我们尽力保护信息安全，但互联网传输或电子存储方法并非 100% 安全，您理解并同意使用本服务存在一定风险。`
       },
       {
-        title: '5. 管理Cookie',
-        content: `您有多种管理Cookie的选项：
+        title: '5. 您的权利和选择',
+        content: `您对个人信息享有以下权利：
 
-浏览器设置：
-• 大多数浏览器允许您通过其设置控制Cookie
-• 您可以设置浏览器拒绝所有Cookie或在发送Cookie时提醒您
-• 您可以删除已设置的Cookie
+• 访问：请求获取您个人数据的副本
+• 更正：更新或纠正不准确的信息
+• 删除：请求删除账户及相关信息
+• 选择退出：取消接收营销邮件或通讯
+• 数据可移植性：请求以可移植格式获取您的数据
 
-注意：禁用必要Cookie可能会影响我们服务的功能，并阻止您使用某些功能。
-
-Cookie偏好：
-• 您可以通过账户设置管理您的Cookie偏好
-• 您可以选择退出非必要Cookie，同时仍然使用我们的服务`
+您可通过账户设置或发送邮件至 privacy@iqtrain.com 行使这些权利。我们将在法律允许范围内尽快响应。`
       },
       {
-        title: '6. Cookie持续时间',
-        content: `我们使用会话Cookie和持久Cookie：
-
-会话Cookie：
-• 临时Cookie，在您关闭浏览器时过期
-• 用于身份验证和会话管理
-
-持久Cookie：
-• 在您的设备上保留一段时间或直到您删除它们
-• 用于记住您的偏好和设置
-• 通常在30天到1年后过期`
+        title: '6. Cookie 和跟踪技术',
+        content: `我们使用 Cookie、像素和其他跟踪技术来提升服务体验、分析访问数据和提供个性化推荐。您可以通过浏览器设置管理或禁用 Cookie，但可能影响部分功能的使用。`
       },
       {
-        title: '7. 请勿跟踪信号',
-        content: `某些浏览器具有"请勿跟踪"功能，向网站发出您不希望被跟踪的信号。目前，对于如何响应这些信号还没有行业标准。我们目前不响应请勿跟踪信号。`
+        title: '7. 儿童隐私',
+        content: `本服务适用于 13 岁及以上用户。我们不会故意收集 13 岁以下儿童的信息。如果您认为我们收集了 13 岁以下儿童的信息，请立即联系我们，我们将采取措施删除相关数据。`
       },
       {
-        title: '8. 本Cookie政策的更新',
-        content: `我们可能会不时更新本Cookie政策，以反映我们实践的变化或出于法律原因。我们将通过在网站上发布更新的政策来通知您任何重大变更。`
+        title: '8. 国际数据传输',
+        content: `您的信息可能会被传输到您居住国以外的国家并在那里处理。我们将采取适当的安全和法律措施确保信息受到保护，包括符合国际数据保护标准。`
       },
       {
-        title: '9. 联系我们',
-        content: `如果您对我们使用Cookie有任何疑问，请通过以下方式联系我们：
-电子邮箱：privacy@iqtrain.com`
+        title: '9. 第三方链接与服务',
+        content: `本服务可能包含第三方网站或服务的链接。我们对第三方的隐私实践不承担责任。使用这些第三方服务前，请阅读其隐私政策。`
+      },
+      {
+        title: '10. 数据保留',
+        content: `我们仅在实现收集目的所需时间内保留您的个人信息，或在法律法规要求的期限内保留。超过必要期限后，我们将安全删除或匿名化处理数据。`
+      },
+      {
+        title: '11. 本政策变更',
+        content: `我们可能不时更新本隐私政策。重大变更将在本页面发布并更新“最后更新”日期。继续使用服务即表示您接受更新后的政策。`
+      },
+      {
+        title: '12. 联系我们',
+        content: `如对本隐私政策有任何疑问或需要行使隐私权，请通过以下方式联系我们：
+Email: privacy@iqtrain.ai`
       }
     ]
   },
   "de-DE": {
-    title: 'Cookie-Richtlinie',
-    lastUpdated: 'Letzte Aktualisierung: 13. Dezember 2025',
+    title: 'Datenschutzrichtlinie',
+    lastUpdated: 'Zuletzt aktualisiert: 13. Dezember 2025',
     sections: [
       {
-        title: '1. Was sind Cookies',
-        content: `Cookies sind kleine Textdateien, die auf Ihrem Gerät abgelegt werden, wenn Sie unsere Website besuchen. Sie helfen uns, Ihnen ein besseres Erlebnis zu bieten, indem sie Ihre Präferenzen speichern und verstehen, wie Sie unseren Dienst nutzen.`
+        title: '1. Informationen, die wir sammeln',
+        content: `Wenn Sie den Dienst nutzen, können wir die folgenden Arten von Informationen sammeln:
+
+• Persönliche Informationen: wie Name, E-Mail-Adresse, Alter, Geschlecht und Kontoinformationen
+• Test- und Bewertungsdaten: Ihre Antworten, Punktzahlen, Leistungskennzahlen und Trainingsaufzeichnungen aus IQ-Tests, kognitiven Bewertungen und anderen Bewertungen
+• Zahlungsinformationen: Zahlungstransaktionsdetails, die über Drittanbieterplattformen (z. B. PayPal) verarbeitet werden; wir speichern keine vollständigen Kreditkarteninformationen
+• Nutzungsdaten: wie Sie mit dem Dienst interagieren, einschließlich Trainingsaktivitäten, Spielleistungen, Seitenaufrufen und Besuchshäufigkeit
+• Technische Daten: IP-Adresse, Browsertyp, Betriebssystem, Geräteinformationen, Cookies und ähnliche Tracking-Technologien`
       },
       {
-        title: '2. Arten von Cookies, die wir verwenden',
-        content: `Wir verwenden die folgenden Arten von Cookies:
+        title: '2. Wie wir Ihre Informationen verwenden',
+        content: `Wir verwenden Ihre Informationen zu folgenden Zwecken:
 
-Notwendige Cookies:
-• Erforderlich, damit die Website ordnungsgemäß funktioniert
-• Ermöglichen grundlegende Funktionen wie Sicherheit, Authentifizierung und Sitzungsverwaltung
-• Können nicht deaktiviert werden, da sie für das Funktionieren des Dienstes erforderlich sind
-
-Funktionale Cookies:
-• Merken Sie sich Ihre Präferenzen und Einstellungen
-• Speichern Sie Sprachpräferenzen
-• Halten Sie Ihre Anmeldesitzung aufrecht
-• Merken Sie sich Ihren Testfortschritt
-
-Leistungs- und Analyse-Cookies:
-• Helfen uns zu verstehen, wie Besucher mit unserer Website interagieren
-• Sammeln anonyme Informationen über Seitenbesuche und Benutzerverhalten
-• Ermöglichen es uns, unseren Dienst basierend auf Nutzungsmustern zu verbessern
-• Messen die Effektivität unserer Schulungsprogramme
-
-Diese Cookies sammeln keine personenbezogenen Daten.`
+• Um unseren Dienst bereitzustellen, zu warten und zu verbessern, einschließlich Tests, Bewertungen und Inhalte zum Gehirntraining
+• Um Zahlungen zu verarbeiten, Abonnements zu verwalten und Rechnungsangelegenheiten zu regeln
+• Um Ihr Erlebnis zu personalisieren und maßgeschneiderte Inhalte oder Empfehlungen bereitzustellen
+• Um die Nutzung zu analysieren, die Testgenauigkeit zu verbessern und die Trainingseffektivität zu optimieren
+• Um mit Ihnen bezüglich Ihres Kontos, Ihrer Testergebnisse, Dienstaktualisierungen und Sicherheitswarnungen zu kommunizieren
+• Um den Dienst zu schützen und Betrug oder illegale Aktivitäten zu verhindern
+• Um geltenden Gesetzen und regulatorischen Anforderungen zu entsprechen`
       },
       {
-        title: '3. Wie wir Cookies verwenden',
-        content: `Wir verwenden Cookies für die folgenden Zwecke:
+        title: '3. Informationsweitergabe und -offenlegung',
+        content: `Wir verkaufen Ihre persönlichen Informationen nicht. Wir teilen Informationen nur unter den folgenden Umständen:
 
-Authentifizierung und Sicherheit:
-• Überprüfen Sie Ihre Identität, wenn Sie sich anmelden
-• Schützen Sie Ihr Konto vor unbefugtem Zugriff
-• Erkennen und verhindern Sie betrügerische Aktivitäten
-
-Benutzererfahrung:
-• Merken Sie sich Ihre Sprachpräferenz
-• Speichern Sie Ihren Testfortschritt
-• Halten Sie Ihre Sitzung über Seiten hinweg aufrecht
-• Bieten Sie personalisierte Empfehlungen
-
-Analyse und Verbesserung:
-• Verstehen, wie Benutzer mit unserer Plattform interagieren
-• Bereiche zur Verbesserung identifizieren
-• Messen Sie die Effektivität unserer Funktionen
-• Optimieren Sie die Leistung und Ladezeiten`
+• Dienstanbieter: Drittanbieter, die bei der Bereitstellung von Dienstleistungen helfen, einschließlich Datenbankhosting (z. B. Supabase), Zahlungsabwicklung (z. B. PayPal), Analytik und Cloud-Speicher
+• Rechtliche Anforderungen: wenn dies gesetzlich vorgeschrieben ist oder um unsere oder die Rechte, das Eigentum oder die Sicherheit anderer zu schützen
+• Unternehmensübertragungen: im Zusammenhang mit Fusionen, Übernahmen oder Vermögensverkäufen
+• Benutzerzustimmung: wenn Sie uns ausdrücklich autorisieren, Informationen für zusätzliche Dienstleistungen oder Funktionen zu teilen`
       },
       {
-        title: '4. Cookies von Drittanbietern',
-        content: `Wir können Drittanbieterdienste verwenden, die Cookies auf Ihrem Gerät setzen:
+        title: '4. Datensicherheit',
+        content: `Wir implementieren branchenübliche Maßnahmen zum Schutz Ihrer Informationen:
 
-• PayPal: Für sichere Zahlungsabwicklung
-• Analyse-Dienste: Um das Benutzerverhalten zu verstehen und unseren Dienst zu verbessern
+• Verschlüsselung für die Datenübertragung und -speicherung
+• Sicherheitsmaßnahmen für Konten, einschließlich E-Mail-Verifizierung oder Zwei-Faktor-Authentifizierung
+• Regelmäßige Sicherheitsüberprüfungen und Systemaktualisierungen
+• Strenge Zugriffskontrollen und Überwachung
+• Sichere Zahlungsabwicklung über Drittanbieterplattformen
 
-Diese Drittanbieter haben ihre eigenen Datenschutzrichtlinien und Cookie-Richtlinien. Wir empfehlen, ihre Richtlinien zu überprüfen, um zu verstehen, wie sie Cookies verwenden.`
+Obwohl wir angemessene Vorsichtsmaßnahmen treffen, ist keine Internet- oder elektronische Speichermethode 100 % sicher. Sie verstehen und akzeptieren das inhärente Risiko bei der Nutzung des Dienstes.`
       },
       {
-        title: '5. Cookies verwalten',
-        content: `Sie haben mehrere Optionen zur Verwaltung von Cookies:
+        title: '5. Ihre Rechte und Wahlmöglichkeiten',
+        content: `Sie haben die folgenden Rechte in Bezug auf Ihre persönlichen Informationen:
 
-Browser-Einstellungen:
-• Die meisten Browser ermöglichen es Ihnen, Cookies über ihre Einstellungen zu steuern
-• Sie können Ihren Browser so einstellen, dass er alle Cookies ablehnt oder Sie warnt, wenn ein Cookie gesendet wird
-• Sie können Cookies löschen, die bereits gesetzt wurden
+• Zugriff: Fordern Sie eine Kopie Ihrer persönlichen Daten an
+• Berichtigung: Aktualisieren oder korrigieren Sie ungenaue oder unvollständige Informationen
+• Löschung: Fordern Sie die Löschung Ihres Kontos und der zugehörigen Daten an
+• Abmeldung: Abbestellen von Marketing-E-Mails oder -Kommunikationen
+• Datenübertragbarkeit: Fordern Sie eine portable Kopie Ihrer Daten an
 
-Hinweis: Das Deaktivieren von notwendigen Cookies kann die Funktionalität unseres Dienstes beeinträchtigen und Sie daran hindern, bestimmte Funktionen zu nutzen.
-
-Cookie-Präferenzen:
-• Sie können Ihre Cookie-Präferenzen über Ihre Kontoeinstellungen verwalten
-• Sie können sich von nicht notwendigen Cookies abmelden, während Sie weiterhin unseren Dienst nutzen`
+Sie können diese Rechte über Ihre Kontoeinstellungen oder indem Sie uns unter privacy@iqtrain.com kontaktieren, ausüben. Wir werden innerhalb des von den geltenden Gesetzen erlaubten Zeitrahmens antworten.`
       },
       {
-        title: '6. Cookie-Dauer',
-        content: `Wir verwenden sowohl Sitzungscookies als auch persistente Cookies:
-
-Sitzungscookies:
-• Temporäre Cookies, die ablaufen, wenn Sie Ihren Browser schließen
-• Werden für Authentifizierung und Sitzungsverwaltung verwendet
-
-Persistente Cookies:
-• Bleiben für einen festgelegten Zeitraum auf Ihrem Gerät oder bis Sie sie löschen
-• Werden verwendet, um Ihre Präferenzen und Einstellungen zu speichern
-• Verfallen normalerweise nach 30 Tagen bis 1 Jahr`
+        title: '6. Cookies und Tracking-Technologien',
+        content: `Wir verwenden Cookies, Pixel und ähnliche Tracking-Technologien, um den Dienst zu verbessern, die Nutzung zu analysieren und personalisierte Empfehlungen bereitzustellen. Sie können Cookies über Ihre Browsereinstellungen verwalten oder deaktivieren, obwohl einige Funktionen betroffen sein können.`
       },
       {
-        title: '7. Do Not Track-Signale',
-        content: `Einige Browser verfügen über eine "Do Not Track"-Funktion, die Websites signalisiert, dass Sie nicht verfolgt werden möchten. Derzeit gibt es keinen Branchenstandard dafür, wie auf diese Signale reagiert werden soll. Wir reagieren derzeit nicht auf Do Not Track-Signale.`
+        title: "7. Datenschutz von Kindern",
+        content: `Der Dienst ist für Benutzer ab 13 Jahren gedacht. Wir sammeln nicht wissentlich Informationen von Kindern unter 13 Jahren. Wenn Sie glauben, dass wir versehentlich Informationen von einem Kind unter 13 Jahren gesammelt haben, kontaktieren Sie uns bitte umgehend, damit wir diese löschen können.`
       },
       {
-        title: '8. Aktualisierungen dieser Cookie-Richtlinie',
-        content: `Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in unseren Praktiken oder aus rechtlichen Gründen zu berücksichtigen. Wir werden Sie über wesentliche Änderungen informieren, indem wir die aktualisierte Richtlinie auf unserer Website veröffentlichen.`
+        title: '8. Internationale Datenübertragungen',
+        content: `Ihre Informationen können in Länder außerhalb Ihres Wohnsitzlandes übertragen und dort verarbeitet werden. Wir ergreifen geeignete rechtliche und technische Maßnahmen, um sicherzustellen, dass Ihre Informationen gemäß dieser Richtlinie und den geltenden Datenschutzstandards geschützt sind.`
       },
       {
-        title: '9. Kontaktieren Sie uns',
-        content: `Wenn Sie Fragen zu unserer Verwendung von Cookies haben, kontaktieren Sie uns bitte unter:
-E-Mail: privacy@iqtrain.com`
+        title: '9. Links und Dienste von Drittanbietern',
+        content: `Der Dienst kann Links zu Websites oder Diensten von Drittanbietern enthalten. Wir sind nicht verantwortlich für die Datenschutzpraktiken dieser Dritten. Bitte überprüfen Sie deren Datenschutzrichtlinien, bevor Sie deren Dienste nutzen.`
+      },
+      {
+        title: '10. Datenaufbewahrung',
+        content: `Wir bewahren Ihre persönlichen Informationen nur so lange auf, wie es erforderlich ist, um die in dieser Richtlinie beschriebenen Zwecke zu erfüllen oder wie gesetzlich vorgeschrieben. Nach diesem Zeitraum löschen oder anonymisieren wir Ihre Daten sicher.`
+      },
+      {
+        title: '11. Änderungen dieser Richtlinie',
+        content: `Wir können diese Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. Wesentliche Änderungen werden auf dieser Seite mit einem aktualisierten "Zuletzt aktualisiert"-Datum veröffentlicht. Die fortgesetzte Nutzung des Dienstes stellt die Akzeptanz der überarbeiteten Richtlinie dar.`
+      },
+      {
+        title: '12. Kontaktieren Sie uns',
+        content: `Wenn Sie Fragen zu dieser Datenschutzrichtlinie haben oder Ihre Datenschutzrechte ausüben möchten, kontaktieren Sie uns bitte unter:
+E-Mail: privacy@iqtrain.ai`
       }
     ]
   },
   "fr-FR": {
-    title: 'Politique de Cookies',
+    title: 'Politique de confidentialité',
     lastUpdated: 'Dernière mise à jour : 13 décembre 2025',
     sections: [
       {
-        title: '1. Qu\'est-ce que les Cookies',
-        content: `Les cookies sont de petits fichiers texte qui sont placés sur votre appareil lorsque vous visitez notre site Web. Ils nous aident à vous offrir une meilleure expérience en mémorisant vos préférences et en comprenant comment vous utilisez notre service.`
+        title: '1. Informations que nous collectons',
+        content: `Lorsque vous utilisez le Service, nous pouvons collecter les types d'informations suivants :
+
+• Informations personnelles : telles que le nom, l'adresse e-mail, l'âge, le sexe et les informations de compte
+• Données de test et d'évaluation : vos réponses, scores, indicateurs de performance et dossiers d'entraînement provenant de tests de QI, d'évaluations cognitives et d'autres évaluations
+• Informations de paiement : détails des transactions de paiement traitées via des plateformes tierces (par exemple, PayPal) ; nous ne stockons pas les informations complètes de carte de crédit
+• Données d'utilisation : comment vous interagissez avec le Service, y compris les activités d'entraînement, les performances de jeu, les pages vues et la fréquence des visites
+• Données techniques : adresse IP, type de navigateur, système d'exploitation, informations sur l'appareil, cookies et technologies de suivi similaires`
       },
       {
-        title: '2. Types de Cookies que Nous Utilisons',
-        content: `Nous utilisons les types de cookies suivants :
+        title: '2. Comment nous utilisons vos informations',
+        content: `Nous utilisons vos informations aux fins suivantes :
 
-Cookies Essentiels :
-• Nécessaires au bon fonctionnement du site Web
-• Permettent des fonctionnalités de base telles que la sécurité, l'authentification et la gestion des sessions
-• Ne peuvent pas être désactivés car ils sont nécessaires au fonctionnement du service
-
-Cookies Fonctionnels :
-• Mémorisent vos préférences et paramètres
-• Stockent les préférences linguistiques
-• Maintiennent votre session de connexion
-• Mémorisent vos progrès de test
-
-Cookies de Performance et d'Analyse :
-• Nous aident à comprendre comment les visiteurs interagissent avec notre site Web
-• Collectent des informations anonymes sur les visites de pages et le comportement des utilisateurs
-• Nous permettent d'améliorer notre service en fonction des modèles d'utilisation
-• Mesurent l'efficacité de nos programmes de formation
-
-Ces cookies ne collectent pas d'informations personnellement identifiables.`
+• Pour fournir, maintenir et améliorer notre Service, y compris les tests, évaluations et contenus d'entraînement cérébral
+• Pour traiter les paiements, gérer les abonnements et traiter les questions de facturation
+• Pour personnaliser votre expérience et fournir un contenu ou des recommandations sur mesure
+• Pour analyser l'utilisation, améliorer la précision des tests et optimiser l'efficacité de l'entraînement
+• Pour communiquer avec vous concernant votre compte, vos résultats de test, les mises à jour de service et les alertes de sécurité
+• Pour protéger le Service et prévenir la fraude ou les activités illégales
+• Pour se conformer aux lois et réglementations applicables`
       },
       {
-        title: '3. Comment Nous Utilisons les Cookies',
-        content: `Nous utilisons des cookies pour les raisons suivantes :
+        title: '3. Partage et divulgation d\'informations',
+        content: `Nous ne vendons pas vos informations personnelles. Nous ne partageons des informations que dans les circonstances suivantes :
 
-Authentification et Sécurité :
-• Vérifiez votre identité lorsque vous vous connectez
-• Protégez votre compte contre tout accès non autorisé
-• Détectez et prévenez les activités frauduleuses
-
-Expérience Utilisateur :
-• Mémorisez votre préférence linguistique
-• Enregistrez vos progrès de test
-• Maintenez votre session à travers les pages
-• Fournissez des recommandations personnalisées
-
-Analyse et Amélioration :
-• Comprendre comment les utilisateurs interagissent avec notre plateforme
-• Identifier les domaines à améliorer
-• Mesurer l'efficacité de nos fonctionnalités
-• Optimiser les performances et les temps de chargement`
+• Fournisseurs de services : fournisseurs tiers qui aident à fournir des services, y compris l'hébergement de bases de données (par exemple, Supabase), le traitement des paiements (par exemple, PayPal), l'analyse et le stockage en cloud
+• Exigences légales : lorsque la loi l'exige ou pour protéger nos droits, ceux des autres, la propriété ou la sécurité
+• Transferts d'entreprise : en lien avec des fusions, acquisitions ou ventes d'actifs
+• Consentement de l'utilisateur : lorsque vous nous autorisez explicitement à partager des informations pour des services ou fonctionnalités supplémentaires`
       },
       {
-        title: '4. Cookies de Tiers',
-        content: `Nous pouvons utiliser des services tiers qui définissent des cookies sur votre appareil :
+        title: '4. Sécurité des données',
+        content: `Nous mettons en œuvre des mesures standard de l'industrie pour protéger vos informations :
 
-• PayPal : Pour le traitement sécurisé des paiements
-• Services d'Analyse : Pour comprendre le comportement des utilisateurs et améliorer notre service
+• Chiffrement pour la transmission et le stockage des données
+• Mesures de sécurité des comptes, y compris la vérification par e-mail ou l'authentification à deux facteurs
+• Audits de sécurité réguliers et mises à jour du système
+• Contrôles d'accès stricts et surveillance
+• Traitement sécurisé des paiements via des plateformes tierces
 
-Ces tiers ont leurs propres politiques de confidentialité et politiques de cookies. Nous vous recommandons de consulter leurs politiques pour comprendre comment ils utilisent les cookies.`
+Bien que nous prenions des précautions raisonnables, aucune méthode de stockage électronique ou Internet n'est 100 % sécurisée. Vous comprenez et acceptez le risque inhérent à l'utilisation du Service.`
       },
       {
-        title: '5. Gestion des Cookies',
-        content: `Vous avez plusieurs options pour gérer les cookies :
+        title: '5. Vos droits et choix',
+        content: `Vous avez les droits suivants concernant vos informations personnelles :
 
-Paramètres du Navigateur :
-• La plupart des navigateurs vous permettent de contrôler les cookies via leurs paramètres
-• Vous pouvez configurer votre navigateur pour refuser tous les cookies ou pour vous alerter lorsqu'un cookie est envoyé
-• Vous pouvez supprimer les cookies qui ont déjà été définis
+• Accès : demander une copie de vos données personnelles
+• Correction : mettre à jour ou corriger des informations inexactes ou incomplètes
+• Suppression : demander la suppression de votre compte et des données associées
+• Désinscription : se désinscrire des e-mails ou communications marketing
+• Portabilité des données : demander une copie portable de vos données
 
-Remarque : Désactiver les cookies essentiels peut affecter la fonctionnalité de notre service et vous empêcher d'utiliser certaines fonctionnalités.
-
-Préférences de Cookies :
-• Vous pouvez gérer vos préférences de cookies via les paramètres de votre compte
-• Vous pouvez vous désinscrire des cookies non essentiels tout en continuant à utiliser notre service`
+Vous pouvez exercer ces droits via les paramètres de votre compte ou en nous contactant à privacy@iqtrain.com. Nous répondrons dans le délai autorisé par la loi applicable.`
       },
       {
-        title: '6. Durée des Cookies',
-        content: `Nous utilisons à la fois des cookies de session et des cookies persistants :
-
-Cookies de Session :
-• Cookies temporaires qui expirent lorsque vous fermez votre navigateur
-• Utilisés pour l'authentification et la gestion des sessions
-
-Cookies Persistants :
-• Restent sur votre appareil pendant une période définie ou jusqu'à ce que vous les supprimiez
-• Utilisés pour mémoriser vos préférences et paramètres
-• Expirent généralement après 30 jours à 1 an`
+        title: '6. Cookies et technologies de suivi',
+        content: `Nous utilisons des cookies, des pixels et des technologies de suivi similaires pour améliorer le Service, analyser l'utilisation et fournir des recommandations personnalisées. Vous pouvez gérer ou désactiver les cookies via les paramètres de votre navigateur, bien que certaines fonctionnalités puissent être affectées.`
       },
       {
-        title: '7. Signaux Ne Pas Suivre',
-        content: `Certains navigateurs disposent d'une fonction "Ne Pas Suivre" qui signale aux sites Web que vous ne souhaitez pas être suivi. Actuellement, il n'existe pas de norme industrielle sur la manière de répondre à ces signaux. Nous ne répondons actuellement pas aux signaux Ne Pas Suivre.`
+        title: "7. Confidentialité des enfants",
+        content: `Le Service est destiné aux utilisateurs âgés de 13 ans ou plus. Nous ne collectons pas sciemment d'informations auprès d'enfants de moins de 13 ans. Si vous pensez que nous avons accidentellement collecté des informations d'un enfant de moins de 13 ans, veuillez nous contacter immédiatement afin que nous puissions les supprimer.`
       },
       {
-        title: '8. Mises à Jour de Cette Politique de Cookies',
-        content: `Nous pouvons mettre à jour cette politique de cookies de temps à autre pour refléter les changements dans nos pratiques ou pour des raisons légales. Nous vous informerons de tout changement matériel en publiant la politique mise à jour sur notre site Web.`
+        title: '8. Transferts internationaux de données',
+        content: `Vos informations peuvent être transférées et traitées dans des pays autres que votre pays de résidence. Nous prenons des mesures juridiques et techniques appropriées pour garantir que vos informations sont protégées conformément à cette Politique et aux normes de protection des données applicables.`
       },
       {
-        title: '9. Contactez-Nous',
-        content: `Si vous avez des questions concernant notre utilisation des cookies, veuillez nous contacter à :
-Email : privacy@iqtrain.com`
+        title: '9. Liens et services tiers',
+        content: `Le Service peut contenir des liens vers des sites Web ou des services tiers. Nous ne sommes pas responsables des pratiques de confidentialité de ces tiers. Veuillez consulter leurs politiques de confidentialité avant d'utiliser leurs services.`
+      },
+      {
+        title: '10. Conservation des données',
+        content: `Nous conservons vos informations personnelles uniquement aussi longtemps que nécessaire pour remplir les objectifs décrits dans cette Politique ou comme l'exige la loi. Après cette période, nous supprimons ou anonymisons vos données de manière sécurisée.`
+      },
+      {
+        title: '11. Modifications de cette politique',
+        content: `Nous pouvons mettre à jour cette Politique de confidentialité de temps à autre. Les modifications matérielles seront publiées sur cette page avec une date de "Dernière mise à jour" mise à jour. L'utilisation continue du Service constitue une acceptation de la Politique révisée.`
+      },
+      {
+        title: '12. Contactez-nous',
+        content: `Si vous avez des questions concernant cette Politique de confidentialité ou si vous souhaitez exercer vos droits en matière de confidentialité, veuillez nous contacter à :
+Email : privacy@iqtrain.ai`
       }
     ]
   },
   "zh-TW": {
-    title: 'Cookie政策',
-    lastUpdated: '最後更新：2025年12月13日',
+    title: '隱私政策',
+    lastUpdated: '最後更新日期：2025年12月13日',
     sections: [
       {
-        title: '1. 什麼是Cookie',
-        content: `Cookie是當您訪問我們的網站時放置在您設備上的小型文本文件。它們通過記住您的偏好並了解您如何使用我們的服務，幫助我們為您提供更好的體驗。`
+        title: '1. 我們收集的信息',
+        content: `當您使用本服務時，我們可能收集以下類型的信息：
+
+• 個人信息：包括姓名、電子郵件地址、年齡、性別及帳戶信息
+• 測試與評估數據：您在 IQ 測試、認知評估及其他評估中的答案、分數、表現指標和訓練記錄
+• 付款信息：通過第三方平台（例如 PayPal）處理的付款交易詳情；我們不存儲完整的信用卡信息
+• 使用數據：您與服務的互動行為，包括訓練活動、遊戲表現、頁面瀏覽和訪問頻率
+• 技術數據：IP 地址、瀏覽器類型、操作系統、設備信息、Cookie 及類似的跟蹤技術`
       },
       {
-        title: '2. 我們使用的Cookie類型',
-        content: `我們使用以下類型的Cookie：
+        title: '2. 我們如何使用您的信息',
+        content: `我們將您的信息用於以下目的：
 
-必要Cookie：
-• 網站正常運行所必需
-• 啟用核心功能，如安全性、身份驗證和會話管理
-• 無法禁用，因為它們是服務運行所必需的
-
-功能Cookie：
-• 記住您的偏好和設置
-• 存儲語言偏好
-• 維護您的登錄會話
-• 記住您的測試進度
-
-性能和分析Cookie：
-• 幫助我們了解訪問者如何與我們的網站互動
-• 收集有關頁面訪問和用戶行為的匿名信息
-• 允許我們根據使用模式改進我們的服務
-• 衡量我們訓練計劃的有效性
-
-這些Cookie不收集個人身份信息。`
+• 提供、維護和改進我們的服務，包括測試、評估和大腦訓練內容
+• 處理付款、管理訂閱及相關帳單事宜
+• 個性化服務體驗，提供定制化內容和推薦
+• 分析服務使用情況、提高測試準確性和優化訓練效果
+• 與您溝通帳戶信息、測試結果、服務更新及安全提示
+• 保護服務，防止欺詐或非法活動
+• 遵守適用的法律和監管要求`
       },
       {
-        title: '3. 我們如何使用Cookie',
-        content: `我們將Cookie用於以下目的：
+        title: '3. 信息共享與披露',
+        content: `我們不會出售您的個人信息。信息共享僅在以下情況下進行：
 
-身份驗證和安全：
-• 在您登錄時驗證您的身份
-• 保護您的賬戶免受未經授權的訪問
-• 檢測和防止欺詐活動
-
-用戶體驗：
-• 記住您的語言偏好
-• 保存您的測試進度
-• 在頁面間維護您的會話
-• 提供個性化推薦
-
-分析和改進：
-• 了解用戶如何與我們的平台互動
-• 識別需要改進的領域
-• 衡量我們功能的有效性
-• 優化性能和加載時間`
+• 服務提供商：我們使用第三方服務提供必要支持，包括數據庫托管（例如 Supabase）、付款處理（例如 PayPal）、分析服務和雲存儲
+• 法律要求：在法律要求或為保護我們或他人的權利、財產或安全時
+• 業務轉讓：如公司合併、收購或資產出售時可能涉及信息轉移
+• 用戶授權：經您明確同意的情況下，為提供額外服務或功能而共享信息`
       },
       {
-        title: '4. 第三方Cookie',
-        content: `我們可能使用在您設備上設置Cookie的第三方服務：
+        title: '4. 數據安全',
+        content: `我們採取行業標準的安全措施保護您的信息：
 
-• PayPal：用於安全支付處理
-• 分析服務：了解用戶行為並改進我們的服務
+• 數據傳輸和存儲加密
+• 郵箱驗證碼或雙重身份驗證帳戶安全認證
+• 定期安全審計與系統更新
+• 嚴格的訪問控制與監控
+• 通過第三方支付平台進行安全支付處理
 
-這些第三方有自己的隱私政策和Cookie政策。我們建議您查看他們的政策以了解他們如何使用Cookie。`
+儘管我們盡力保護信息安全，但互聯網傳輸或電子存儲方法並非 100% 安全，您理解並同意使用本服務存在一定風險。`
       },
       {
-        title: '5. 管理Cookie',
-        content: `您有多種管理Cookie的選項：
+        title: '5. 您的權利和選擇',
+        content: `您對個人信息享有以下權利：
 
-瀏覽器設置：
-• 大多數瀏覽器允許您通過其設置控制Cookie
-• 您可以設置瀏覽器拒絕所有Cookie或在發送Cookie時提醒您
-• 您可以刪除已設置的Cookie
+• 訪問：請求獲取您個人數據的副本
+• 更正：更新或更正不準確的信息
+• 刪除：請求刪除帳戶及相關數據
+• 選擇退出：取消接收營銷郵件或通訊
+• 數據可攜性：請求以可攜格式獲取您的數據
 
-注意：禁用必要Cookie可能會影響我們服務的功能，並阻止您使用某些功能。
-
-Cookie偏好：
-• 您可以通過賬戶設置管理您的Cookie偏好
-• 您可以選擇退出非必要Cookie，同時仍然使用我們的服務`
+您可通過帳戶設置或發送郵件至 privacy@iqtrain.com 行使這些權利。我們將在法律允許的範圍內盡快回應。`
       },
       {
-        title: '6. Cookie持續時間',
-        content: `我們使用會話Cookie和持久Cookie：
-
-會話Cookie：
-• 臨時Cookie，在您關閉瀏覽器時過期
-• 用於身份驗證和會話管理
-
-持久Cookie：
-• 在您的設備上保留一段時間或直到您刪除它們
-• 用於記住您的偏好和設置
-• 通常在30天到1年後過期`
+        title: '6. Cookie 和跟蹤技術',
+        content: `我們使用 Cookie、像素和其他跟蹤技術來提升服務體驗、分析訪問數據和提供個性化推薦。您可以通過瀏覽器設置管理或禁用 Cookie，但可能影響部分功能的使用。`
       },
       {
-        title: '7. 請勿追蹤信號',
-        content: `某些瀏覽器具有"請勿追蹤"功能，向網站發出您不希望被追蹤的信號。目前，對於如何響應這些信號還沒有行業標準。我們目前不響應請勿追蹤信號。`
+        title: '7. 兒童隱私',
+        content: `本服務適用於 13 歲及以上用戶。我們不會故意收集 13 歲以下兒童的信息。如果您認為我們收集了 13 歲以下兒童的信息，請立即聯繫我們，我們將採取措施刪除相關數據。`
       },
       {
-        title: '8. 本Cookie政策的更新',
-        content: `我們可能會不時更新本Cookie政策，以反映我們實踐的變化或出於法律原因。我們將通過在網站上發布更新的政策來通知您任何重大變更。`
+        title: '8. 國際數據傳輸',
+        content: `您的信息可能會被傳輸到您居住國以外的國家並在那裡處理。我們將採取適當的安全和法律措施確保信息受到保護，包括符合國際數據保護標準。`
       },
       {
-        title: '9. 聯繫我們',
-        content: `如果您對我們使用Cookie有任何疑問，請通過以下方式聯繫我們：
-電子郵件：privacy@iqtrain.com`
+        title: '9. 第三方鏈接與服務',
+        content: `本服務可能包含第三方網站或服務的鏈接。我們對第三方的隱私實踐不承擔責任。使用這些第三方服務前，請閱讀其隱私政策。`
+      },
+      {
+        title: '10. 數據保留',
+        content: `我們僅在實現收集目的所需時間內保留您的個人信息，或在法律要求的期限內保留。超過必要期限後，我們將安全刪除或匿名化處理數據。`
+      },
+      {
+        title: '11. 本政策變更',
+        content: `我們可能不時更新本隱私政策。重大變更將在本頁面發布並更新“最後更新”日期。繼續使用服務即表示您接受更新後的政策。`
+      },
+      {
+        title: '12. 聯繫我們',
+        content: `如對本隱私政策有任何疑問或需要行使隱私權，請通過以下方式聯繫我們：
+Email: privacy@iqtrain.ai`
       }
     ]
   }

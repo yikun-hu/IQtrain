@@ -183,18 +183,19 @@ export default function ScaleTestPage() {
                   { value: 4, label: t.scaleTest.agree },
                   { value: 5, label: t.scaleTest.stronglyAgree },
                 ].map((option) => (
-                  <div
+                  <Label
                     key={option.value}
+                    htmlFor={`option-${option.value}`}
                     className="flex items-center space-x-3 p-4 rounded-lg border-2 border-border hover:border-primary hover:bg-accent/50 transition-all cursor-pointer"
                   >
-                    <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                    <Label
-                      htmlFor={`option-${option.value}`}
-                      className="flex-1 cursor-pointer text-base font-medium"
-                    >
+                    <RadioGroupItem
+                      value={option.value.toString()}
+                      id={`option-${option.value}`}
+                    />
+                    <span className="flex-1 text-base font-medium">
                       {option.label}
-                    </Label>
-                  </div>
+                    </span>
+                  </Label>
                 ))}
               </div>
             </RadioGroup>

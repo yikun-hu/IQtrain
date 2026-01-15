@@ -79,7 +79,7 @@ def main():
     for ts_file in I18N_DIR.glob("*.ts"):
         if ts_file.name in EXCLUDE_FILES:
             continue
-        if "request-refund.ts" in ts_file.name:
+        if "home.ts" in ts_file.name:
             # continue
             process_file(ts_file)
 

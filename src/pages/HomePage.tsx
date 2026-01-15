@@ -362,7 +362,7 @@ export default function HomePage() {
                 >
                   {t.heroCta}
                 </Button>
-                <Button
+                {/* <Button
                   variant="outline"
                   size="lg"
                   onClick={() => {
@@ -372,7 +372,7 @@ export default function HomePage() {
                   className="bg-background hover:bg-background/90 border border-border text-foreground"
                 >
                   {t.heroSecondaryCta}
-                </Button>
+                </Button> */}
               </div>
 
               {/* Social proof */}

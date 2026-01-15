@@ -54,7 +54,7 @@ export function Footer() {
             <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               {t.common.terms}
             </Link>
-            <Link to="/refund-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <Link to="/terms#section-4" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               {t.common.refund_policy}
             </Link>
             <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">

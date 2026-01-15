@@ -19,7 +19,7 @@ export default {
     language: 'Language',
     rightsReserved: 'All rights reserved.',
     privacy: 'Privacy Policy',
-    terms: 'Terms of Service',
+    terms: 'Terms and Conditions',
     subtitle: "Get Results in 3 Minutes",
     refund_policy: 'Refund Policy',
   },

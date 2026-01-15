@@ -1,8 +1,22 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function TermsPage() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  // scroll to the anchor element when the page loads
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.getElementById(hash.slice(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, []);
 
   const currentContent = t.terms;
 
@@ -20,13 +34,17 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-8">
             {currentContent.sections.map((section, index) => (
-              <div key={index} className="space-y-3">
+              <div key={index} id={`section-${index}`} className="space-y-3">
                 <h2 className="text-xl font-semibold text-gray-900">
                   {section.title}
                 </h2>
                 <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                   {section.content}
                 </p>
+                {index == 5 &&
+                  <p className="text-gray-700 whitespace-pre-line leading-relaxed">
+                    <a className="text-blue-600 hover:underline" href="#" onClick={() => navigate('/request-refund')}>{t.requestRefund.title}</a>
+                  </p>}
               </div>
             ))}
           </CardContent>
