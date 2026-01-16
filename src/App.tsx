@@ -20,6 +20,33 @@ const AppWithRouting: React.FC = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Find the route that matches the current location
+    const currentRoute = routes.find(route => {
+      if (route.path === location.pathname) {
+        return true;
+      }
+      // Handle dynamic routes with parameters like /scale-test/:testType
+      if (route.path.includes(':')) {
+        const routePathParts = route.path.split('/');
+        const currentPathParts = location.pathname.split('/');
+        
+        if (routePathParts.length === currentPathParts.length) {
+          return routePathParts.every((part, index) => 
+            part.startsWith(':') || part === currentPathParts[index]
+          );
+        }
+      }
+      return false;
+    });
+
+    if (currentRoute) {
+      document.title = `${currentRoute.name} | IQ Train`;
+    } else {
+      document.title = 'IQ Train';
+    }
+  }, [location, routes]);
+  
   // 切换路由时先“预置打开”，一旦真实页面渲染会关闭（见下方 RouteWrapper）
   useEffect(() => {
     setLoading(true);

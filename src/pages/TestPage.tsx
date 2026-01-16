@@ -228,8 +228,9 @@ export default function TestPage() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        // 只有当所有问题都已回答时才显示完成模态框
-        if (allQuestionsAnswered()) {
+        // 检查所有问题是否已回答 - 直接使用 newAnswers 而不是依赖状态更新
+        const isAllAnswered = questions.every(question => newAnswers[question.question_number] !== undefined);
+        if (isAllAnswered) {
           setShowCompletionModal(true);
         }
       }
