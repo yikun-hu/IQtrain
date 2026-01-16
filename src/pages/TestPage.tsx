@@ -168,6 +168,10 @@ export default function TestPage() {
     setHoveredOption(null);
   }, [currentQuestion]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
 
   const handleStartTest = async () => {
     // 开始加载动画并加载题目

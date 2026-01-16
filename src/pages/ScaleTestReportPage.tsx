@@ -164,6 +164,10 @@ export default function ScaleTestReportPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resultId, user, language]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   const loadReport = async () => {
     if (!resultId) return;
     try {
