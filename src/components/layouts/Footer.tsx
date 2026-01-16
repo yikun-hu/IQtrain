@@ -32,30 +32,6 @@ export function Footer() {
             <p className="mt-3 text-sm leading-relaxed text-white/70 max-w-sm">
               {t.common?.subtitle ?? tf.subtitleFallback}
             </p>
-
-            <div className="mt-5 flex items-center gap-4 text-white/80">
-              <a
-                href="#"
-                aria-label={tf.socialCommunity}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition"
-              >
-                <MessageCircle className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 hover:bg-white/10 transition"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-            </div>
           </div>
 
           {/* Columns */}
