@@ -301,6 +301,17 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  useEffect(() => {
+
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.getElementById(hash.slice(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [window.location.hash])
+
 
   // -------------------------
   // Sections data
@@ -347,7 +358,7 @@ export default function HomePage() {
               {/* <p className="text-sm font-medium text-muted-foreground">{t.heroKicker}</p> */}
               <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-5xl">
                 <span className="text-foreground">{t.heroTitlePrefix}</span>{' '}
-                <span className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                <span id="country-iq" className="bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
                   {t.heroTitleGradient}
                 </span>
               </h1>
@@ -378,7 +389,7 @@ export default function HomePage() {
               {/* Social proof */}
               <div className="mt-5 flex items-center gap-10">
                 <div className="flex -space-x-3">
-                  {[1,2,3,5].map((n, idx) => (
+                  {[1, 2, 3, 5].map((n, idx) => (
                     <img
                       key={idx}
                       src={`/images/avatars/${n}.jpg`}
@@ -523,9 +534,9 @@ export default function HomePage() {
                   {/* Slider */}
                   <div className="mt-3">
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>{}</span>
+                      <span>{ }</span>
                       <span>{t.dragHint}</span>
-                      <span>{}</span>
+                      <span>{ }</span>
                     </div>
                     <input
                       type="range"
@@ -653,7 +664,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 md:py-14">
+      <section id="testimonials" className="py-12 md:py-14">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{t.testimonialTitle}</h2>

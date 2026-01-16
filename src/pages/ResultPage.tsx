@@ -145,7 +145,7 @@ export default function ResultPage() {
   });
 
   const accuracyValue =
-    (typeof result.score === 'number' ? result.score : undefined) ??
+    // (typeof result.score === 'number' ? result.score : undefined) ??
     // @ts-expect-error
     TABLE.computedDefaults.accuracyByLevelId[level.id] ??
     0;
