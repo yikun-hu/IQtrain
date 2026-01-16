@@ -2,9 +2,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function TermsPage() {
   const { t } = useLanguage();
+  const { profile } = useAuth();
   const navigate = useNavigate();
 
   // scroll to the anchor element when the page loads
@@ -19,6 +21,9 @@ export default function TermsPage() {
   }, []);
 
   const currentContent = t.terms;
+  const hasValidSubscription = profile?.has_paid &&
+    (!profile?.subscription_expires_at ||
+      new Date(profile.subscription_expires_at) > new Date());
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -41,7 +46,7 @@ export default function TermsPage() {
                 <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                   {section.content}
                 </p>
-                {index == 5 &&
+                {hasValidSubscription && index == 5 &&
                   <p className="text-gray-700 whitespace-pre-line leading-relaxed">
                     <a className="text-blue-600 hover:underline" href="#" onClick={() => navigate('/request-refund')}>{t.requestRefund.title}</a>
                   </p>}

@@ -641,7 +641,11 @@ const home = {
     finalTitle: "三分鐘就能看到你的 IQ 分數",
     finalSub:
       "現在開始，立刻獲得分數、百分位與清晰解讀；隨時可回看，也能復測對比進步。",
-    finalCta: "開始測試"
+    finalCta: "開始測試",
+    heroTitlePrefix: "你的",
+    heroTitleGradient: "IQ 分數/等級是多少？",
+    testsThisMonthNumber: "28193",
+    testsThisMonthText: "本月已完成 IQ 測試",
   }
 };
 
