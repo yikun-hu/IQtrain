@@ -1,6 +1,13 @@
 import { supabase } from './supabase';
 import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult, SubscriptionPlan, PaymentGatewayConfig, Language } from '@/types/types';
 
+// == Ping ==
+export async function ping() {
+  const { data, error } = await supabase.from('ping').select('*').maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 // ==================== 用户相关 ====================
 
 export async function getCurrentUser() {

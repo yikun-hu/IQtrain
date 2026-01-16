@@ -21,9 +21,9 @@
       ...userConfig,
       plugins: [
         makeTagger(),
-        injectedGuiListenerPlugin({
-          path: 'https://resource-static.cdn.bcebos.com/common/v2/injected.js'
-        }),
+        // injectedGuiListenerPlugin({
+        //   path: 'https://resource-static.cdn.bcebos.com/common/v2/injected.js'
+        // }),
         injectOnErrorPlugin(),
         ...(userConfig?.plugins || []),
         

@@ -29,7 +29,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { supabase } from '@/db/supabase';
-import { PayPalButtons } from '@paypal/react-paypal-js';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 // ✅ 新增：Dialog 组件（shadcn/ui）
 import {
@@ -419,446 +419,448 @@ export default function PaymentPage() {
   const currentBanner = purchaseBanners[currentBannerIndex];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* ✅ OTP 模态框（不会替换整个页面） */}
-      <Dialog open={showOtpForm} onOpenChange={handleOtpOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {t.payment.otp.verifyEmail}
-            </DialogTitle>
-            <DialogDescription>
-              {t.payment.otp.enterCode}
-            </DialogDescription>
-          </DialogHeader>
+    <PayPalScriptProvider options={{ clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID, vault: true }}>
+      <div className="min-h-screen bg-gray-50">
+        {/* ✅ OTP 模态框（不会替换整个页面） */}
+        <Dialog open={showOtpForm} onOpenChange={handleOtpOpenChange}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {t.payment.otp.verifyEmail}
+              </DialogTitle>
+              <DialogDescription>
+                {t.payment.otp.enterCode}
+              </DialogDescription>
+            </DialogHeader>
 
-          {otpStep === 'email' ? (
-            <form onSubmit={handleSendOTPCode} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="otp-email" className="text-gray-700 font-medium">
-                  {t.payment.otp.emailAddress}
-                </Label>
-                <Input
-                  id="otp-email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={otpEmail}
-                  onChange={(e) => setOtpEmail(e.target.value)}
-                  className="h-11"
-                  required
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button type="submit" className="flex-1 h-11" disabled={otpLoading}>
-                  {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {t.payment.otp.sendCode}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11"
-                  onClick={() => handleOtpOpenChange(false)}
-                >
-                  {t.payment.otp.cancel}
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOTPCode} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="otp-code" className="text-gray-700 font-medium">
-                  {t.payment.otp.verificationCode}
-                </Label>
-                <Input
-                  id="otp-code"
-                  type="text"
-                  placeholder="000000"
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  maxLength={6}
-                  className="h-11 text-center text-2xl tracking-widest"
-                  required
-                />
-                <p className="text-sm text-gray-500">
-                  {t.payment.otp.codeSent}
-                  {otpEmail}
-                </p>
-              </div>
-
-              <Button type="submit" className="w-full h-11" disabled={otpLoading}>
-                {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {t.payment.otp.verify}
-              </Button>
-
-              <div className="flex gap-3">
-                <Button type="button" variant="outline" className="flex-1 h-11" onClick={() => setOtpStep('email')}>
-                  {t.payment.otp.changeEmail}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1 h-11"
-                  onClick={() => handleOtpOpenChange(false)}
-                >
-                  {t.payment.otp.cancel}
-                </Button>
-              </div>
-            </form>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* 支付处理模态框 */}
-      <Dialog open={showPaymentProcessingModal} onOpenChange={() => { }} aria-describedby="payment-processing-description">
-        <DialogContent className="sm:max-w-md z-[500]">
-          <DialogHeader>
-            <DialogTitle>
-              {t.payment.success}
-            </DialogTitle>
-            <DialogDescription id="payment-processing-description">
-              {t.payment.paymentSuccess.orderProcessing}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col items-center justify-center py-8">
-            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-            <p className="text-sm text-muted-foreground">
-              {t.payment.paymentSuccess.preparingResults}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* 购买横幅 */}
-      <div className="bg-gradient-to-b from-orange-50 to-white py-3 overflow-hidden border-b border-orange-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center text-sm animate-fade-in">
-            <span className="font-semibold text-orange-800">
-              {currentBanner.name}
-            </span>{' '}
-            <span className="text-orange-700">
-              {t.payment.purchaseBanner.justPurchased}
-            </span>{' '}
-            <span className="font-bold text-orange-600">
-              {t.payment.purchaseBanner.iqScore}
-              {currentBanner.iq}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Hero区域 */}
-      <div className="bg-gradient-to-b from-orange-50 to-white py-16">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-8">
-            <div className="inline-block bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              {t.payment.hero.limitedOffer}
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
-              {t.payment.hero.unlockProfile}
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              {t.payment.hero.description}
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{t.payment.hero.instantAccess}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{t.payment.hero.scientificallyValidated}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-orange-500" />
-                <span className="font-semibold text-gray-700">{t.payment.hero.securePayment}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 主要内容区域 */}
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="bg-gray-50 border border-orange-200 rounded-lg py-3 mb-8">
-          <div className="text-center">
-            <p className="text-sm font-semibold text-orange-600">
-              {t.payment.countdown.specialOfferEnds}
-              <span className="font-bold ml-2 text-orange-700">{formatTime(timeLeft)}</span>
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* 左侧 */}
-          <Card className="shadow-lg h-full">
-            <CardContent className="pt-6 h-full flex flex-col">
-              <h2 className="text-2xl font-bold mb-6">
-                {t.payment.unlock.title}
-              </h2>
-              <div className="space-y-6 flex-1">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <BarChart3 className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      {t.payment.unlock.fullIQScore}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t.payment.unlock.fullIQDescription}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Award className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      {t.payment.unlock.printableCertificate}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t.payment.unlock.certificateDescription}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <FileText className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      {t.payment.unlock.trainingDashboard}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t.payment.unlock.dashboardDescription}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">
-                      {t.payment.unlock.futureTestAccess}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {t.payment.unlock.testAccessDescription}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 右侧：支付卡片 */}
-          <Card className="shadow-xl border-2 border-orange-200 h-full">
-            <CardContent className="pt-6 h-full flex flex-col">
-              <h2 className="text-2xl font-bold mb-6 text-center">
-                {t.payment.paymentCard.getTrial}
-              </h2>
-
-              <div className="space-y-4 mb-6 flex-1">
-                {loadingPlan ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  </div>
-                ) : selectedPlan ? (
-                  <>
-                    {selectedPlan.description[language].map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <p className="text-sm text-gray-700">{feature}</p>
-                      </div>
-                    ))}
-                    {selectedPlan.trial_price > 0 && (
-                      <div className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <p className="text-sm text-gray-700">
-                          {t.payment.paymentCard.planTrialDescription
-                            .replace('{trialDuration}', String(selectedPlan.trial_duration))
-                            .replace('{trialUnit}', getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration))
-                            .replace('${trialPrice}', selectedPlan.trial_price.toFixed(2))
-                            .replace('${recurringPrice}', selectedPlan.recurring_price.toFixed(2))
-                            .replace('{recurringDuration}', String(selectedPlan.recurring_duration))
-                            .replace('{recurringUnit}', getTimeUnitLabel(
-                              selectedPlan.recurring_unit,
-                              selectedPlan.recurring_duration,
-                            ))}
-                        </p>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">
-                        {t.payment.paymentCard.getIQScore}
-                      </p>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">
-                        {t.payment.paymentCard.understandStrengths}
-                      </p>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">
-                        {t.payment.paymentCard.weeklyTraining}
-                      </p>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-gray-700">
-                        <p className="text-sm text-gray-700">
-                          {t.payment.paymentCard.startTrialWithPrice
-                            .replace('${amount}', amount.toFixed(2))
-                            .replace('${monthlyPrice}', monthlyPrice.toFixed(2))}
-                        </p>
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="mt-auto">
-                <div className="bg-gray-100 rounded-lg p-4 mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">
-                      {t.payment.paymentCard.todaySpecial}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg line-through text-gray-400">
-                        ${selectedPlan ? (selectedPlan.trial_price * 10).toFixed(2) : '19.80'}
-                      </span>
-                      <span className="text-3xl font-bold text-primary">
-                        ${selectedPlan ? selectedPlan.trial_price.toFixed(2) : amount.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Clock className="h-4 w-4" />
-                    <span>{t.payment.countdown.limitedTimeOffer}</span>
-                  </div>
-                </div>
-
-                <div className={showOtpForm ? 'opacity-50 pointer-events-none' : ''}>
-                  <PayPalButtons
-                    disabled={loadingPlan || showOtpForm}
-                    style={{ layout: 'horizontal', tagline: false }}
-                    createSubscription={async (_data, actions) => {
-                      try {
-                        return actions.subscription.create({
-                          plan_id: selectedPlan?.paypal_plan_id || '',
-                          custom_id: `TEMP-${Date.now()}`,
-                        });
-                      } catch (error) {
-                        console.error('Error creating subscription:', error);
-                        return Promise.reject(error);
-                      }
-                    }}
-                    onApprove={async (data, _actions) => {
-                      setProcessing(true);
-                      try {
-                        localStorage.setItem(
-                          'paymentDetails',
-                          JSON.stringify({
-                            subscriptionId: data.subscriptionID,
-                            orderId: data.orderID || data.subscriptionID,
-                            planId: selectedPlan?.id,
-                            amount: selectedPlan?.trial_price,
-                          }),
-                        );
-
-                        if (user) {
-                          await processPaymentSuccess();
-                        } else {
-                          const userInfoStr = localStorage.getItem('userInfo');
-                          if (userInfoStr) {
-                            const userInfo = JSON.parse(userInfoStr);
-                            setOtpEmail(userInfo.email);
-                          }
-                          // ✅ 打开模态框，不再整页跳转
-                          setShowOtpForm(true);
-                        }
-                      } catch (error) {
-                        console.error('Payment processing failed:', error);
-                        toast({
-                          title: t.common.error,
-                          description: t.payment.errors.paymentProcess,
-                          variant: 'destructive',
-                        });
-                      } finally {
-                        setProcessing(false);
-                      }
-                    }}
+            {otpStep === 'email' ? (
+              <form onSubmit={handleSendOTPCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="otp-email" className="text-gray-700 font-medium">
+                    {t.payment.otp.emailAddress}
+                  </Label>
+                  <Input
+                    id="otp-email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={otpEmail}
+                    onChange={(e) => setOtpEmail(e.target.value)}
+                    className="h-11"
+                    required
                   />
                 </div>
 
-                <p className="text-xs text-center text-gray-500">
-                  {t.payment.paymentCard.securePayment}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                <div className="flex gap-3">
+                  <Button type="submit" className="flex-1 h-11" disabled={otpLoading}>
+                    {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t.payment.otp.sendCode}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-11"
+                    onClick={() => handleOtpOpenChange(false)}
+                  >
+                    {t.payment.otp.cancel}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOTPCode} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="otp-code" className="text-gray-700 font-medium">
+                    {t.payment.otp.verificationCode}
+                  </Label>
+                  <Input
+                    id="otp-code"
+                    type="text"
+                    placeholder="000000"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                    className="h-11 text-center text-2xl tracking-widest"
+                    required
+                  />
+                  <p className="text-sm text-gray-500">
+                    {t.payment.otp.codeSent}
+                    {otpEmail}
+                  </p>
+                </div>
 
-        {/* 用户真实反馈 */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            {t.payment.testimonials.title}
-          </h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {t.payment.testimonials.users.map((testimonial, index) => (
-              <Card key={index}>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Users className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">{testimonial.name}</p>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <span key={star} className="text-yellow-500">★</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{testimonial.feedback}</p>
-                </CardContent>
-              </Card>
-            ))}
+                <Button type="submit" className="w-full h-11" disabled={otpLoading}>
+                  {otpLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {t.payment.otp.verify}
+                </Button>
+
+                <div className="flex gap-3">
+                  <Button type="button" variant="outline" className="flex-1 h-11" onClick={() => setOtpStep('email')}>
+                    {t.payment.otp.changeEmail}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 h-11"
+                    onClick={() => handleOtpOpenChange(false)}
+                  >
+                    {t.payment.otp.cancel}
+                  </Button>
+                </div>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* 支付处理模态框 */}
+        <Dialog open={showPaymentProcessingModal} onOpenChange={() => { }} aria-describedby="payment-processing-description">
+          <DialogContent className="sm:max-w-md z-[500]">
+            <DialogHeader>
+              <DialogTitle>
+                {t.payment.success}
+              </DialogTitle>
+              <DialogDescription id="payment-processing-description">
+                {t.payment.paymentSuccess.orderProcessing}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col items-center justify-center py-8">
+              <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+              <p className="text-sm text-muted-foreground">
+                {t.payment.paymentSuccess.preparingResults}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* 购买横幅 */}
+        <div className="bg-gradient-to-b from-orange-50 to-white py-3 overflow-hidden border-b border-orange-100">
+          <div className="container mx-auto px-4">
+            <div className="text-center text-sm animate-fade-in">
+              <span className="font-semibold text-orange-800">
+                {currentBanner.name}
+              </span>{' '}
+              <span className="text-orange-700">
+                {t.payment.purchaseBanner.justPurchased}
+              </span>{' '}
+              <span className="font-bold text-orange-600">
+                {t.payment.purchaseBanner.iqScore}
+                {currentBanner.iq}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* 常见问题 */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold mb-8">
-            {t.payment.faq.title}
-          </h2>
-          <div className="space-y-4">
-            {t.payment.faq.questions.map((faq, index) => (
-              <Card key={index}>
-                <CardContent className="pt-6">
-                  <h3 className="font-semibold mb-2">{faq.q}</h3>
-                  <p className="text-sm text-muted-foreground">{faq.a}</p>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Hero区域 */}
+        <div className="bg-gradient-to-b from-orange-50 to-white py-16">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <div className="text-center mb-8">
+              <div className="inline-block bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                {t.payment.hero.limitedOffer}
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
+                {t.payment.hero.unlockProfile}
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                {t.payment.hero.description}
+              </p>
+              <div className="flex flex-wrap justify-center gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-orange-500" />
+                  <span className="font-semibold text-gray-700">{t.payment.hero.instantAccess}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-orange-500" />
+                  <span className="font-semibold text-gray-700">{t.payment.hero.scientificallyValidated}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-orange-500" />
+                  <span className="font-semibold text-gray-700">{t.payment.hero.securePayment}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 主要内容区域 */}
+        <div className="container mx-auto px-4 py-12 max-w-6xl">
+          <div className="bg-gray-50 border border-orange-200 rounded-lg py-3 mb-8">
+            <div className="text-center">
+              <p className="text-sm font-semibold text-orange-600">
+                {t.payment.countdown.specialOfferEnds}
+                <span className="font-bold ml-2 text-orange-700">{formatTime(timeLeft)}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {/* 左侧 */}
+            <Card className="shadow-lg h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
+                <h2 className="text-2xl font-bold mb-6">
+                  {t.payment.unlock.title}
+                </h2>
+                <div className="space-y-6 flex-1">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <BarChart3 className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">
+                        {t.payment.unlock.fullIQScore}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t.payment.unlock.fullIQDescription}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Award className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">
+                        {t.payment.unlock.printableCertificate}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t.payment.unlock.certificateDescription}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <FileText className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">
+                        {t.payment.unlock.trainingDashboard}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t.payment.unlock.dashboardDescription}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">
+                        {t.payment.unlock.futureTestAccess}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {t.payment.unlock.testAccessDescription}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 右侧：支付卡片 */}
+            <Card className="shadow-xl border-2 border-orange-200 h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
+                <h2 className="text-2xl font-bold mb-6 text-center">
+                  {t.payment.paymentCard.getTrial}
+                </h2>
+
+                <div className="space-y-4 mb-6 flex-1">
+                  {loadingPlan ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                  ) : selectedPlan ? (
+                    <>
+                      {selectedPlan.description[language].map((feature, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-gray-700">{feature}</p>
+                        </div>
+                      ))}
+                      {selectedPlan.trial_price > 0 && (
+                        <div className="flex items-start gap-3">
+                          <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-gray-700">
+                            {t.payment.paymentCard.planTrialDescription
+                              .replace('{trialDuration}', String(selectedPlan.trial_duration))
+                              .replace('{trialUnit}', getTimeUnitLabel(selectedPlan.trial_unit, selectedPlan.trial_duration))
+                              .replace('${trialPrice}', selectedPlan.trial_price.toFixed(2))
+                              .replace('${recurringPrice}', selectedPlan.recurring_price.toFixed(2))
+                              .replace('{recurringDuration}', String(selectedPlan.recurring_duration))
+                              .replace('{recurringUnit}', getTimeUnitLabel(
+                                selectedPlan.recurring_unit,
+                                selectedPlan.recurring_duration,
+                              ))}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">
+                          {t.payment.paymentCard.getIQScore}
+                        </p>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">
+                          {t.payment.paymentCard.understandStrengths}
+                        </p>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">
+                          {t.payment.paymentCard.weeklyTraining}
+                        </p>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-gray-700">
+                          <p className="text-sm text-gray-700">
+                            {t.payment.paymentCard.startTrialWithPrice
+                              .replace('${amount}', amount.toFixed(2))
+                              .replace('${monthlyPrice}', monthlyPrice.toFixed(2))}
+                          </p>
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="mt-auto">
+                  <div className="bg-gray-100 rounded-lg p-4 mb-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">
+                        {t.payment.paymentCard.todaySpecial}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg line-through text-gray-400">
+                          ${selectedPlan ? (selectedPlan.trial_price * 10).toFixed(2) : '19.80'}
+                        </span>
+                        <span className="text-3xl font-bold text-primary">
+                          ${selectedPlan ? selectedPlan.trial_price.toFixed(2) : amount.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Clock className="h-4 w-4" />
+                      <span>{t.payment.countdown.limitedTimeOffer}</span>
+                    </div>
+                  </div>
+
+                  <div className={showOtpForm ? 'opacity-50 pointer-events-none' : ''}>
+                    <PayPalButtons
+                      disabled={loadingPlan || showOtpForm}
+                      style={{ layout: 'horizontal', tagline: false }}
+                      createSubscription={async (_data, actions) => {
+                        try {
+                          return actions.subscription.create({
+                            plan_id: selectedPlan?.paypal_plan_id || '',
+                            custom_id: `TEMP-${Date.now()}`,
+                          });
+                        } catch (error) {
+                          console.error('Error creating subscription:', error);
+                          return Promise.reject(error);
+                        }
+                      }}
+                      onApprove={async (data, _actions) => {
+                        setProcessing(true);
+                        try {
+                          localStorage.setItem(
+                            'paymentDetails',
+                            JSON.stringify({
+                              subscriptionId: data.subscriptionID,
+                              orderId: data.orderID || data.subscriptionID,
+                              planId: selectedPlan?.id,
+                              amount: selectedPlan?.trial_price,
+                            }),
+                          );
+
+                          if (user) {
+                            await processPaymentSuccess();
+                          } else {
+                            const userInfoStr = localStorage.getItem('userInfo');
+                            if (userInfoStr) {
+                              const userInfo = JSON.parse(userInfoStr);
+                              setOtpEmail(userInfo.email);
+                            }
+                            // ✅ 打开模态框，不再整页跳转
+                            setShowOtpForm(true);
+                          }
+                        } catch (error) {
+                          console.error('Payment processing failed:', error);
+                          toast({
+                            title: t.common.error,
+                            description: t.payment.errors.paymentProcess,
+                            variant: 'destructive',
+                          });
+                        } finally {
+                          setProcessing(false);
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <p className="text-xs text-center text-gray-500">
+                    {t.payment.paymentCard.securePayment}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 用户真实反馈 */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              {t.payment.testimonials.title}
+            </h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {t.payment.testimonials.users.map((testimonial, index) => (
+                <Card key={index}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Users className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{testimonial.name}</p>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span key={star} className="text-yellow-500">★</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{testimonial.feedback}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* 常见问题 */}
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold mb-8">
+              {t.payment.faq.title}
+            </h2>
+            <div className="space-y-4">
+              {t.payment.faq.questions.map((faq, index) => (
+                <Card key={index}>
+                  <CardContent className="pt-6">
+                    <h3 className="font-semibold mb-2">{faq.q}</h3>
+                    <p className="text-sm text-muted-foreground">{faq.a}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </PayPalScriptProvider>
   );
 }
