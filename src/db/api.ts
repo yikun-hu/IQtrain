@@ -1,608 +1,448 @@
-import { supabase } from './supabase';
-import type { Profile, IQQuestion, TestResult, Order, TrainingRecord, TestDimension, Game, Test, TestQuestion, UserTestResult, SubscriptionPlan, PaymentGatewayConfig, Language } from '@/types/types';
+import type {
+  Profile,
+  IQQuestion,
+  TestResult,
+  Order,
+  TrainingRecord,
+  Test,
+  SubscriptionPlan,
+  PaymentGatewayConfig,
+  Language,
+  ScaleTestQuestion,
+  ScaleScoringRule,
+  ScaleTestConfig,
+  ScaleTestType,
+} from "@/types/types";
+
+/**
+ * Base fetch helper
+ */
+type ApiError = Error & { status?: number; data?: any };
+
+async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers: Record<string, string> = {
+    ...(init.headers as any),
+  };
+
+  // auto json for body objects
+  const hasBody = init.body != null;
+  const isForm = hasBody && (init.body instanceof FormData);
+
+  if (!isForm) {
+    headers["Content-Type"] = headers["Content-Type"] || "application/json";
+  }
+
+  const res = await fetch(path, {
+    ...init,
+    headers,
+    credentials: "include",
+  });
+
+  // try parse json; if html returned, this will fail -> we fallback to text
+  const text = await res.text();
+  let data: any = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
+  }
+
+  if (!res.ok) {
+    const err: ApiError = new Error(
+      (data && typeof data === "object" && data.error) ? data.error : `HTTP ${res.status}`
+    );
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
+
+  return data as T;
+}
+
+function qs(params: Record<string, any>) {
+  const sp = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) {
+    if (v === undefined || v === null || v === "") continue;
+    sp.set(k, String(v));
+  }
+  const s = sp.toString();
+  return s ? `?${s}` : "";
+}
 
 // ==================== 用户相关 ====================
 
 export async function getCurrentUser() {
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return user;
+  const r = await apiFetch<{ user: any }>("/api/auth/me", { method: "GET" });
+  return r.user;
 }
 
-export async function getProfile(userId: string) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Profile | null;
+export async function getProfile(_userId: string) {
+  const r = await apiFetch<{ profile: Profile | null }>("/api/profile", { method: "GET" });
+  return r.profile ?? null;
 }
 
-export async function updateProfile(userId: string, updates: Partial<Profile>) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Profile | null;
+export async function updateProfile(_userId: string, updates: Partial<Profile>) {
+  const r = await apiFetch<{ profile: Profile | null }>("/api/profile", {
+    method: "PATCH",
+    body: JSON.stringify(updates),
+  });
+  return r.profile ?? null;
 }
 
 // 取消订阅
-export async function cancelSubscription(userId: string) {
-  const { data, error } = await supabase.functions.invoke('unsubscribe', {
-    body: { userId },
-  })
-  
-  if (error) throw error;
-  return data as Profile | null;
+export async function cancelSubscription(_userId: string) {
+  // 后端基于 session 识别用户，这里不需要 userId
+  const r = await apiFetch<{ order: any; profile: any }>("/api/subscription/cancel", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+  return r.profile as Profile | null;
 }
 
 // ==================== IQ测试题目相关 ====================
 
 export async function getAllQuestions() {
-  const { data, error } = await supabase
-    .from('iq_questions')
-    .select('*')
-    .order('question_number');
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as IQQuestion[] : [];
+  const r = await apiFetch<IQQuestion[]>("/api/iq-questions", { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 export async function getQuestionByNumber(questionNumber: number) {
-  const { data, error } = await supabase
-    .from('iq_questions')
-    .select('*')
-    .eq('question_number', questionNumber)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as IQQuestion | null;
+  const r = await apiFetch<IQQuestion | null>(`/api/iq-questions/${questionNumber}`, { method: "GET" });
+  return r ?? null;
 }
 
 // ==================== 测试结果相关 ====================
 
-export async function saveTestResult(result: Omit<TestResult, 'id' | 'created_at' | 'completed_at'>) {
-  const { data, error } = await supabase
-    .from('test_results')
-    .insert(result)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as TestResult | null;
+export async function saveTestResult(
+  result: Omit<TestResult, "id" | "created_at" | "completed_at">
+) {
+  // 后端会覆盖/补齐 created_at/completed_at
+  const r = await apiFetch<TestResult | null>("/api/test-results", {
+    method: "POST",
+    body: JSON.stringify(result),
+  });
+  return r ?? null;
 }
 
-export async function getTestResults(userId: string, testType: string = 'iq') {
-  const { data, error } = await supabase
-    .from('test_results')
-    .select('*')
-    // .eq('test_type', testType)
-    .eq('user_id', userId)
-    .order('completed_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as TestResult[] : [];
+export async function getTestResults(_userId: string, testType: string = "iq") {
+  // 你原本注释掉了 test_type 过滤；这里提供参数可用
+  const r = await apiFetch<TestResult[]>(
+    `/api/test-results${qs({ test_type: testType || undefined })}`,
+    { method: "GET" }
+  );
+  return Array.isArray(r) ? r : [];
 }
 
-export async function getLatestTestResult(userId: string, testType: string = 'iq') {
-  const { data, error } = await supabase
-    .from('test_results')
-    .select('*')
-    .eq('user_id', userId)
-    .eq('test_type', testType)
-    .order('completed_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as TestResult | null;
+export async function getLatestTestResult(_userId: string, testType: string = "iq") {
+  const r = await apiFetch<TestResult | null>(
+    `/api/test-results/latest${qs({ test_type: testType })}`,
+    { method: "GET" }
+  );
+  return r ?? null;
 }
 
 // ==================== 订单相关 ====================
+
 export async function createVerifiedOrder(userId: string, paypalOrderId: string, subscriptionPlanId: string) {
-  const { data, error } = await supabase.functions.invoke('createVerifiedOrder', {
-    body: {
-      user_id: userId,
-      paypal_order_id: paypalOrderId,
-      subscription_plan_id: subscriptionPlanId,
+  // userId 对后端没用，但保留签名
+  const r = await apiFetch<{ order: Order; profile: Profile }>(
+    "/api/paypal/create-verified-order",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        user_id: userId, // 兼容字段，后端会忽略并使用 session 的 user
+        paypal_order_id: paypalOrderId,
+        subscription_plan_id: Number(subscriptionPlanId),
+      }),
     }
-  })
-  
-  if (error) throw error;
-  return data as Order | null;
+  );
+  return (r as any).order as Order | null;
 }
 
-export async function createOrder(order: Omit<Order, 'id' | 'created_at' | 'updated_at'>) {
-  const { data, error } = await supabase
-    .from('orders')
-    .insert(order)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Order | null;
+export async function createOrder(order: Omit<Order, "id" | "created_at" | "updated_at">) {
+  const r = await apiFetch<Order | null>("/api/orders", {
+    method: "POST",
+    body: JSON.stringify(order),
+  });
+  return r ?? null;
 }
 
 export async function getOrder(orderId: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .eq('id', orderId)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Order | null;
+  const r = await apiFetch<Order | null>(`/api/orders/${Number(orderId)}`, { method: "GET" });
+  return r ?? null;
 }
 
 export async function getOrderByOrderNo(orderNo: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .eq('order_no', orderNo)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Order | null;
+  const r = await apiFetch<Order | null>(`/api/orders/by-order-no/${encodeURIComponent(orderNo)}`, {
+    method: "GET",
+  });
+  return r ?? null;
 }
 
-export async function getUserOrders(userId: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as Order[] : [];
+export async function getUserOrders(_userId: string) {
+  const r = await apiFetch<Order[]>("/api/orders", { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
-export async function updateOrderStatus(orderId: string, status: Order['status'], paypalData?: { paypal_order_id?: string; paypal_payment_id?: string }) {
-  const updates: any = { status };
-  if (paypalData) {
-    Object.assign(updates, paypalData);
-  }
-  
-  const { data, error } = await supabase
-    .from('orders')
-    .update(updates)
-    .eq('id', orderId)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as Order | null;
+export async function updateOrderStatus(
+  orderId: string,
+  status: Order["status"],
+  paypalData?: { paypal_order_id?: string; paypal_payment_id?: string }
+) {
+  const r = await apiFetch<Order | null>(`/api/orders/${Number(orderId)}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      status,
+      ...(paypalData || {}),
+    }),
+  });
+  return r ?? null;
 }
 
 // ==================== 训练记录相关 ====================
 
-export async function saveTrainingRecord(record: Omit<TrainingRecord, 'id' | 'created_at' | 'completed_at'>) {
-  const { data, error } = await supabase
-    .from('training_records')
-    .insert(record)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as TrainingRecord | null;
+export async function saveTrainingRecord(record: Omit<TrainingRecord, "id" | "created_at" | "completed_at">) {
+  await apiFetch<{ ok: true }>("/api/training-records", {
+    method: "POST",
+    body: JSON.stringify(record),
+  });
+
+  // 旧版返回插入行；新后端这里返回 ok。为了兼容类型：返回 null
+  // 如果你希望返回插入行，我可以同时把后端改成返回 representation。
+  return null as any as TrainingRecord | null;
 }
 
-export async function getUserTrainingRecords(userId: string, limit?: number) {
-  let query = supabase
-    .from('training_records')
-    .select('*')
-    .eq('user_id', userId)
-    .order('completed_at', { ascending: false });
-  
-  if (limit) {
-    query = query.limit(limit);
-  }
-  
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as TrainingRecord[] : [];
+export async function getUserTrainingRecords(_userId: string, limit?: number) {
+  const r = await apiFetch<TrainingRecord[]>(`/api/training-records${qs({ limit })}`, { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 // ==================== 认证相关 ====================
 
 export async function signInWithOTP(email: string, language: Language) {
-  const { data, error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: window.location.origin,
-      data: {
-        test: 'hello',
-        language
-      }
-    },
+  // supabase 返回 data；这里返回 {ok:true}
+  const r = await apiFetch<{ ok: true }>("/api/auth/sign-in-otp", {
+    method: "POST",
+    body: JSON.stringify({ email, language }),
   });
-  
-  if (error) throw error;
-  return data;
+  return r;
 }
 
 export async function verifyOTP(email: string, token: string) {
-  const { data, error } = await supabase.auth.verifyOtp({
-    email,
-    token,
-    type: 'email',
+  const r = await apiFetch<{ user: any }>("/api/auth/verify-otp", {
+    method: "POST",
+    body: JSON.stringify({ email, token }),
   });
-  
-  if (error) throw error;
-  return data;
+  return r;
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  const r = await apiFetch<{ ok: true }>("/api/auth/sign-out", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+  return r;
 }
 
 // ==================== 游戏相关 ====================
 
 // 获取所有游戏
 export async function getAllGames() {
-  const { data, error } = await supabase
-    .from('games')
-    .select('*')
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  
-  // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象
-  const normalizeGame = (game: any): Game => {
-    // 解析 JSON 字符串为 ITranslatedField 对象
-    const parseTranslatedField = (value: any): any => {
-      // 如果已经是对象，直接返回
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        return value;
-      }
+  const data = await apiFetch<any[]>("/api/games", { method: "GET" });
 
-      // 如果是 JSON 字符串，解析它
-      if (typeof value === 'string' && value.trim().startsWith('{')) {
+  // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象（兼容你原逻辑）
+  const normalizeGame = (game: any) => {
+    const parseTranslatedField = (value: any): any => {
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) return value;
+
+      if (typeof value === "string" && value.trim().startsWith("{")) {
         try {
           return JSON.parse(value);
-        } catch (e) {
-          console.warn('Failed to parse JSON string:', value, e);
-          // 解析失败，返回默认值
-          return { 'en-US': value, 'zh-CN': value };
+        } catch {
+          return { "en-US": value, "zh-CN": value };
         }
       }
 
-      // 如果是普通字符串，转换为对象格式
-      if (typeof value === 'string') {
-        return { 'en-US': value, 'zh-CN': value };
-      }
-
-      // 如果是 null 或 undefined，返回空对象
-      return { 'en-US': '', 'zh-CN': '' };
+      if (typeof value === "string") return { "en-US": value, "zh-CN": value };
+      return { "en-US": "", "zh-CN": "" };
     };
-    
+
     return {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
     };
   };
-  
-  return Array.isArray(data) ? data.map(normalizeGame) as Game[] : [];
+
+  return Array.isArray(data) ? (data.map(normalizeGame) as any[]) : [];
 }
 
 // 按类别获取游戏
 export async function getGamesByCategory(category: string) {
-  const { data, error } = await supabase
-    .from('games')
-    .select('*')
-    .eq('category', category)
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as Game[] : [];
+  const data = await apiFetch<any[]>(`/api/games/category/${encodeURIComponent(category)}`, { method: "GET" });
+  return Array.isArray(data) ? (data as any[]) : [];
 }
 
 // 随机获取指定数量的游戏
 export async function getRandomGames(count: number = 3) {
-  const { data, error } = await supabase
-    .from('games')
-    .select('*')
-    .limit(100); // 先获取所有游戏
-  
-  if (error) throw error;
+  const data = await apiFetch<any[]>(`/api/games/random${qs({ count })}`, { method: "GET" });
 
-  // 规范化游戏数据：将 JSON 字符串解析为 ITranslatedField 对象
-  const normalizeGame = (game: any): Game => {
-    // 解析 JSON 字符串为 ITranslatedField 对象
+  const normalizeGame = (game: any) => {
     const parseTranslatedField = (value: any): any => {
-      // 如果已经是对象，直接返回
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        return value;
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) return value;
+      if (typeof value === "string" && value.trim().startsWith("{")) {
+        try { return JSON.parse(value); } catch { return { "en-US": value, "zh-CN": value }; }
       }
-
-      // 如果是 JSON 字符串，解析它
-      if (typeof value === 'string' && value.trim().startsWith('{')) {
-        try {
-          return JSON.parse(value);
-        } catch (e) {
-          console.warn('Failed to parse JSON string:', value, e);
-          // 解析失败，返回默认值
-          return { 'en-US': value, 'zh-CN': value };
-        }
-      }
-
-      // 如果是普通字符串，转换为对象格式
-      if (typeof value === 'string') {
-        return { 'en-US': value, 'zh-CN': value };
-      }
-
-      // 如果是 null 或 undefined，返回空对象
-      return { 'en-US': '', 'zh-CN': '' };
+      if (typeof value === "string") return { "en-US": value, "zh-CN": value };
+      return { "en-US": "", "zh-CN": "" };
     };
-    
     return {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
     };
   };
-  
-  // 规范化并随机打乱
+
   const normalized = Array.isArray(data) ? data.map(normalizeGame) : [];
-  const shuffled = [...normalized].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count) as Game[];
+  return normalized as any[];
 }
 
 // ==================== 测试相关 ====================
 
 // 获取所有测试类型
 export async function getAllTests() {
-  const { data, error } = await supabase
-    .from('tests')
-    .select('*')
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as Test[] : [];
+  const r = await apiFetch<Test[]>("/api/tests", { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 // ==================== 管理员统计相关 ====================
 
 // 获取统计总览
 export async function getAdminOverview() {
-  // 获取总用户数
-  const { count: totalUsers, error: totalUsersError } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true });
-  
-  if (totalUsersError) throw totalUsersError;
-
-  // 获取付费用户数和金额
-  const { data: paidData, error: paidError } = await supabase
-    .from('profiles')
-    .select('has_paid')
-    .eq('has_paid', true);
-  
-  if (paidError) throw paidError;
-  
-  const paidUsers = paidData?.length || 0;
-  const paidAmount = paidUsers * 1.98; // 一次性付费金额
-
-  // 获取订阅用户数和金额
-  const { data: subscriptionData, error: subscriptionError } = await supabase
-    .from('profiles')
-    .select('subscription_type, subscription_expires_at')
-    .eq('subscription_type', 'recurring')
-    .not('subscription_expires_at', 'is', null);
-  
-  if (subscriptionError) throw subscriptionError;
-  
-  const subscriptionUsers = subscriptionData?.length || 0;
-  const subscriptionAmount = subscriptionUsers * 29.99; // 月度订阅金额
-
-  return {
-    total_users: totalUsers || 0,
-    paid_users: paidUsers,
-    paid_amount: paidAmount,
-    subscription_users: subscriptionUsers,
-    subscription_amount: subscriptionAmount,
-  };
+  const r = await apiFetch<any>("/api/admin/overview", { method: "GET" });
+  return r;
 }
 
 // 获取每日统计数据
 export async function getDailyStats(limit: number = 30) {
-  const { data, error } = await supabase
-    .from('daily_stats')
-    .select('*')
-    .order('stat_date', { ascending: false })
-    .limit(limit);
-  
-  if (error) throw error;
-  return data || [];
+  const r = await apiFetch<any[]>(`/api/admin/daily-stats${qs({ limit })}`, { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 // 获取用户列表（分页）
 export async function getUserList(page: number = 1, pageSize: number = 20) {
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
-
-  const { data, error, count } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(from, to);
-  
-  if (error) throw error;
-  
-  return {
-    users: data || [],
-    total: count || 0,
-    page,
-    pageSize,
-    totalPages: Math.ceil((count || 0) / pageSize),
-  };
+  const r = await apiFetch<any>(
+    `/api/admin/users${qs({ page, pageSize })}`,
+    { method: "GET" }
+  );
+  return r;
 }
 
 // ==================== 订阅包管理 ====================
 
-// 获取所有订阅包
+// 获取所有订阅包（admin）
 export async function getAllSubscriptionPlans() {
-  const { data, error } = await supabase
-    .from('subscription_plans')
-    .select('*')
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as SubscriptionPlan[] : [];
+  const r = await apiFetch<SubscriptionPlan[]>("/api/admin/subscription-plans", { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 // 获取激活的订阅包
 export async function getActiveSubscriptionPlans() {
-  const { data, error } = await supabase
-    .from('subscription_plans')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return Array.isArray(data) ? data as SubscriptionPlan[] : [];
+  const r = await apiFetch<SubscriptionPlan[]>("/api/subscription-plans/active", { method: "GET" });
+  return Array.isArray(r) ? r : [];
 }
 
 // 获取单个订阅包
 export async function getSubscriptionPlan(id: string) {
-  const { data, error } = await supabase
-    .from('subscription_plans')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as SubscriptionPlan | null;
+  const r = await apiFetch<SubscriptionPlan | null>(`/api/subscription-plans/${Number(id)}`, { method: "GET" });
+  return r ?? null;
 }
 
-// 创建订阅包
-export async function createSubscriptionPlan(plan: Omit<SubscriptionPlan, 'id' | 'created_at' | 'updated_at'>) {
-  const { data, error } = await supabase
-    .from('subscription_plans')
-    .insert(plan)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as SubscriptionPlan | null;
+// 创建订阅包（admin）
+export async function createSubscriptionPlan(plan: Omit<SubscriptionPlan, "id" | "created_at" | "updated_at">) {
+  const r = await apiFetch<SubscriptionPlan | null>("/api/admin/subscription-plans", {
+    method: "POST",
+    body: JSON.stringify(plan),
+  });
+  return r ?? null;
 }
 
-// 更新订阅包
+// 更新订阅包（admin）
 export async function updateSubscriptionPlan(id: string, updates: Partial<SubscriptionPlan>) {
-  const { data, error } = await supabase
-    .from('subscription_plans')
-    .update({ ...updates, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as SubscriptionPlan | null;
+  const r = await apiFetch<SubscriptionPlan | null>(`/api/admin/subscription-plans/${Number(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(updates),
+  });
+  return r ?? null;
 }
 
-// 删除订阅包
+// 删除订阅包（admin）
 export async function deleteSubscriptionPlan(id: string) {
-  const { error } = await supabase
-    .from('subscription_plans')
-    .delete()
-    .eq('id', id);
-  
-  if (error) throw error;
+  await apiFetch<{ ok: true }>(`/api/admin/subscription-plans/${Number(id)}`, {
+    method: "DELETE",
+  });
 }
 
 // ==================== 支付网关配置管理 ====================
 
-// 获取支付网关配置
+// 获取支付网关配置（public safe）
 export async function getPaymentGatewayConfig() {
-  const { data, error } = await supabase
-    .from('payment_gateway_config')
-    .select('*')
-    .eq('is_active', true)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as PaymentGatewayConfig | null;
+  const r = await apiFetch<PaymentGatewayConfig | null>("/api/payment-gateway-config", { method: "GET" });
+  return r ?? null;
 }
 
-// 更新支付网关配置
+// 更新支付网关配置（admin）
 export async function updatePaymentGatewayConfig(id: string, updates: Partial<PaymentGatewayConfig>) {
-  const { data, error } = await supabase
-    .from('payment_gateway_config')
-    .update({ ...updates, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as PaymentGatewayConfig | null;
+  const r = await apiFetch<PaymentGatewayConfig | null>(
+    `/api/admin/payment-gateway-config/${Number(id)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }
+  );
+  return r ?? null;
 }
 
 // ==================== 量表测试相关 ====================
 
-import type { ScaleTestQuestion, ScaleScoringRule, ScaleTestConfig, ScaleTestType } from '@/types/types';
-
 // 获取量表测试题目
 export async function getScaleTestQuestions(testType: ScaleTestType) {
-  const { data, error } = await supabase
-    .from('scale_test_questions')
-    .select('*')
-    .eq('test_type', testType)
-    .order('display_order', { ascending: true });
-  
-  if (error) throw error;
-  return (data || []) as ScaleTestQuestion[];
+  const r = await apiFetch<ScaleTestQuestion[]>(
+    `/api/scale-test/questions${qs({ test_type: testType })}`,
+    { method: "GET" }
+  );
+  return Array.isArray(r) ? r : [];
 }
 
 // 获取量表评分规则
 export async function getScaleScoringRules(testType: ScaleTestType) {
-  const { data, error } = await supabase
-    .from('scale_scoring_rules')
-    .select('*')
-    // .eq('language', language)
-    .eq('test_type', testType)
-    .order('level', { ascending: true });
-  
-  if (error) throw error;
-  return (data || []) as ScaleScoringRule[];
+  const r = await apiFetch<ScaleScoringRule[]>(
+    `/api/scale-test/scoring-rules${qs({ test_type: testType })}`,
+    { method: "GET" }
+  );
+  return Array.isArray(r) ? r : [];
 }
 
 // 根据分数获取对应的评分规则
 export async function getScaleScoringRuleByScore(testType: ScaleTestType, score: number) {
-  const { data, error } = await supabase
-    .from('scale_scoring_rules')
-    .select('*')
-    // .eq('language', language)
-    .eq('test_type', testType)
-    .lte('score_min', score)
-    .gte('score_max', score)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as ScaleScoringRule | null;
+  const r = await apiFetch<ScaleScoringRule | null>(
+    `/api/scale-test/scoring-rule-by-score${qs({ test_type: testType, score })}`,
+    { method: "GET" }
+  );
+  return r ?? null;
 }
 
 // 获取测试配置
 export async function getScaleTestConfig(testType: ScaleTestType) {
-  const { data, error } = await supabase
-    .from('scale_test_configs')
-    .select('*')
-    // .eq('language', language)
-    .eq('test_type', testType)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data as ScaleTestConfig | null;
+  const r = await apiFetch<ScaleTestConfig | null>(
+    `/api/scale-test/config${qs({ test_type: testType })}`,
+    { method: "GET" }
+  );
+  return r ?? null;
 }
 
 // 保存量表测试结果（使用test_results表）
+// 你原本前端直接 insert 到 test_results；现在走统一接口 /api/test-results
 export async function saveScaleTestResult(
   userId: string,
   testType: ScaleTestType,
@@ -611,54 +451,40 @@ export async function saveScaleTestResult(
   level: number,
   percentile: number
 ) {
-  const { data, error } = await supabase
-    .from('test_results')
-    .insert({
-      user_id: userId,
-      test_type: testType,
-      answers,
-      score: totalScore,
-      iq_score: totalScore, // 复用iq_score字段存储总分
-      dimension_scores: { level, percentile }, // 存储等级和百分位
-      time_taken: 0,
-      completed_at: new Date().toISOString(),
-    })
-    .select()
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data;
+  const payload = {
+    user_id: userId, // 后端忽略，使用 session user
+    test_type: testType,
+    answers,
+    score: totalScore,
+    iq_score: totalScore,
+    dimension_scores: { level, percentile },
+    time_taken: 0,
+    completed_at: new Date().toISOString(),
+  };
+
+  const r = await apiFetch<any>("/api/test-results", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return r;
 }
 
 // 获取用户的量表测试结果
 export async function getUserScaleTestResults(userId: string, testType?: ScaleTestType) {
-  let query = supabase
-    .from('test_results')
-    .select('*')
-    .eq('user_id', userId)
-    .not('test_type', 'is', null)
-    .order('completed_at', { ascending: false });
-  
-  if (testType) {
-    query = query.eq('test_type', testType);
-  }
-  
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  return data || [];
+  const r = await apiFetch<any[]>(
+    `/api/test-results${qs({ test_type: testType })}`,
+    { method: "GET" }
+  );
+  return r || [];
 }
 
 // 获取单个量表测试结果
+// （后端目前没提供按 id 取单条的接口；这里给你两种选择：
+// 1) 先拉列表再 find；2) 我可以补一个 /api/test-results/:id）
 export async function getScaleTestResultById(resultId: string) {
-  const { data, error } = await supabase
-    .from('test_results')
-    .select('*')
-    .eq('id', resultId)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data;
+  const all = await apiFetch<any[]>("/api/test-results", { method: "GET" });
+  const idNum = Number(resultId);
+  return (Array.isArray(all) ? all.find(x => Number(x.id) === idNum) : null) ?? null;
 }
 
 // 计算量表测试分数
@@ -667,25 +493,23 @@ export function calculateScaleTestScore(
   questions: ScaleTestQuestion[]
 ): number {
   let totalScore = 0;
-  
-  questions.forEach((question) => {
+
+  questions.forEach((question: any) => {
     const answer = answers[question.question_id];
     if (answer !== undefined) {
-      // 如果是反向计分题，需要反转分数 (1->5, 2->4, 3->3, 4->2, 5->1)
-      const score = question.reverse_scored ? (6 - answer) : answer;
+      const reverse = Boolean(question.reverse_scored) || question.reverse_scored === 1;
+      const score = reverse ? (6 - answer) : answer;
       totalScore += score;
     }
   });
-  
+
   return totalScore;
 }
 
-// 计算百分位（简化版本，实际应该基于历史数据）
+// 计算百分位（简化版本）
 export function calculatePercentile(score: number, maxScore: number): number {
-  // 简化计算：假设正态分布，平均分为60%
   const percentage = (score / maxScore) * 100;
-  
-  // 映射到百分位
+
   if (percentage >= 95) return 98;
   if (percentage >= 85) return 90;
   if (percentage >= 75) return 80;
@@ -705,91 +529,48 @@ export async function submitRefundRequest(data: {
   email: string;
   reason?: string;
   amount?: number;
-  payment_type?: 'one_time' | 'subscription';
+  payment_type?: "one_time" | "subscription";
 }) {
-  // 获取当前用户（如果已登录）
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  const { data: refundRequest, error } = await supabase
-    .from('refund_requests')
-    .insert({
-      email: data.email,
-      user_id: user?.id || null,
-      reason: data.reason || null,
-      amount: data.amount || null,
-      payment_type: data.payment_type || null,
-      status: 'pending',
-    })
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return refundRequest;
+  const r = await apiFetch<any>("/api/refund-requests", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  return r;
 }
 
 // 获取用户的退款申请列表
-export async function getUserRefundRequests(email: string) {
-  const { data, error } = await supabase
-    .from('refund_requests')
-    .select('*')
-    .eq('email', email)
-    .order('created_at', { ascending: false });
-  
-  if (error) throw error;
-  return data;
+// supabase 版按 email 查；现在后端按 session email 查更安全，这里仍保留签名
+export async function getUserRefundRequests(_email: string) {
+  const r = await apiFetch<any[]>("/api/refund-requests", { method: "GET" });
+  return r;
 }
 
-// 获取单个退款申请
+// 获取单个退款申请（后端没单条接口：先拉全量后 find）
+// 如果你想要我补单条接口，我也可以直接给你后端路由
 export async function getRefundRequest(id: string) {
-  const { data, error } = await supabase
-    .from('refund_requests')
-    .select('*')
-    .eq('id', id)
-    .maybeSingle();
-  
-  if (error) throw error;
-  return data;
+  const all = await apiFetch<any[]>("/api/refund-requests", { method: "GET" });
+  const idNum = Number(id);
+  return (Array.isArray(all) ? all.find(x => Number(x.id) === idNum) : null) ?? null;
 }
 
 // 管理员：获取所有退款申请
-export async function getAllRefundRequests(status?: 'pending' | 'approved' | 'rejected') {
-  let query = supabase
-    .from('refund_requests')
-    .select('*')
-    .order('created_at', { ascending: false });
-  
-  if (status) {
-    query = query.eq('status', status);
-  }
-  
-  const { data, error } = await query;
-  
-  if (error) throw error;
-  return data;
+export async function getAllRefundRequests(status?: "pending" | "approved" | "rejected") {
+  const r = await apiFetch<any[]>(
+    `/api/admin/refund-requests${qs({ status })}`,
+    { method: "GET" }
+  );
+  return r;
 }
 
 // 管理员：更新退款申请状态
 export async function updateRefundRequestStatus(
   id: string,
-  status: 'pending' | 'approved' | 'rejected',
+  status: "pending" | "approved" | "rejected",
   adminNotes?: string
 ) {
-  const updates: any = {
-    status,
-    processed_at: new Date().toISOString(),
-  };
-  
-  if (adminNotes) {
-    updates.admin_notes = adminNotes;
-  }
-  
-  const { data, error } = await supabase
-    .from('refund_requests')
-    .update(updates)
-    .eq('id', id)
-    .select()
-    .single();
-  
-  if (error) throw error;
-  return data;
+  const r = await apiFetch<any>(`/api/admin/refund-requests/${Number(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ status, admin_notes: adminNotes }),
+  });
+  return r;
 }

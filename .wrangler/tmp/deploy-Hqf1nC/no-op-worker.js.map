@@ -1,8 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../../../../root/.cache/pnpm/dlx/67e6af27cc99e423e45ac9faf8d38572d9b6c82648f41cd8edbb7b92b4835ab4/19bc39cd8b5-3d3435/node_modules/.pnpm/wrangler@4.59.2/node_modules/wrangler/templates/no-op-worker.js"],
-  "sourceRoot": "/opt/iqtrain/IQtrain/.wrangler/tmp/deploy-Hqf1nC",
-  "sourcesContent": ["export default {\n\tfetch() {\n\t\treturn new Response(\"Not found\", {\n\t\t\tstatus: 404,\n\t\t\theaders: {\n\t\t\t\t\"Content-Type\": \"text/html\",\n\t\t\t},\n\t\t});\n\t},\n};\n"],
-  "mappings": ";AAAA,IAAO,uBAAQ;AAAA,EACd,QAAQ;AACP,WAAO,IAAI,SAAS,aAAa;AAAA,MAChC,QAAQ;AAAA,MACR,SAAS;AAAA,QACR,gBAAgB;AAAA,MACjB;AAAA,IACD,CAAC;AAAA,EACF;AACD;",
-  "names": []
-}

@@ -27,3 +27,5 @@ output
 history/*.json
 .vite_cache
 .env
+
+.wrangler/

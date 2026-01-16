@@ -1,8 +1,19 @@
 {
-  "name": "iqtrain-dev",
-  "compatibility_date": "2026-01-11",
-  "assets": {
-    "directory": "dist",
-    "not_found_handling": "single-page-application"
-  }
+	"name": "iqtrain-dev",
+	"compatibility_date": "2026-01-11",
+	"main": "server/src/index.ts",
+	"assets": {
+		"directory": "dist",
+		"not_found_handling": "single-page-application"
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "iqtrain-dev",
+			"database_id": "7b52d50a-b247-4113-859d-754608224a45",
+			"remote": true,
+      "migrations_dir": "server/migrations"
+		}
+	],
+	"vars": {}
 }
