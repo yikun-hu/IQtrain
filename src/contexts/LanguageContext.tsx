@@ -31,7 +31,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     // 增加服务端渲染/环境检查，防止 localStorage 报错（如果是 Next.js 等框架）
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('language') as Language;
-      return (SupportedLanguages.find((lang) => lang.value === saved)?.value || SupportedLanguages[0].value);
+      // 读取浏览器支持的语言列表
+      const navigatorLanguage = navigator.languages.find((lang) => SupportedLanguages.some((supportedLang) => supportedLang.value === lang));
+      return (SupportedLanguages.find((lang) => lang.value === saved || lang.value === navigatorLanguage)?.value || SupportedLanguages[0].value);
     }
     return SupportedLanguages[0].value;
   });

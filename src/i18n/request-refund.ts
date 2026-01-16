@@ -1,29 +1,4 @@
-const trans = {
-  "zh-CN": {
-    back: "返回",
-    title: "申请退款",
-    subtitle: "我们将在1个工作日内处理您的退款申请",
-
-    invalidEmail: "请输入有效的邮箱地址",
-    submitFailed: "提交失败，请稍后重试或联系客服",
-
-    successMsg: "退款申请已成功提交！我们将尽快处理您的申请，并通过邮件通知您处理结果。",
-
-    emailLabel: "输入您的邮箱",
-    emailHelp: "请输入您购买时使用的邮箱地址",
-
-    reasonLabel: "退款原因（可选）",
-    reasonPlaceholder: "请简要说明您申请退款的原因...",
-    reasonHelp: "提供退款原因有助于我们改进服务",
-
-    submitting: "提交中...",
-    submit: "提交申请",
-
-    viewPolicy: "查看退款政策",
-
-    supportHint: "如有任何疑问，请联系我们的客服团队："
-  },
-
+export default {
   "en-US": {
     back: "Back",
     title: "Request Refund",
@@ -49,6 +24,31 @@ const trans = {
     supportHint: "If you have any questions, please contact our support team:"
   },
 
+  "zh-CN": {
+    back: "返回",
+    title: "申请退款",
+    subtitle: "我们将在1个工作日内处理您的退款申请",
+
+    invalidEmail: "请输入有效的邮箱地址",
+    submitFailed: "提交失败，请稍后重试或联系客服",
+
+    successMsg: "退款申请已成功提交！我们将尽快处理您的申请，并通过邮件通知您处理结果。",
+
+    emailLabel: "输入您的邮箱",
+    emailHelp: "请输入您购买时使用的邮箱地址",
+
+    reasonLabel: "退款原因（可选）",
+    reasonPlaceholder: "请简要说明您申请退款的原因...",
+    reasonHelp: "提供退款原因有助于我们改进服务",
+
+    submitting: "提交中...",
+    submit: "提交申请",
+
+    viewPolicy: "查看退款政策",
+
+    supportHint: "如有任何疑问，请联系我们的客服团队："
+  },
+  
   "de-DE": {
     back: "Zurück",
     title: "Rückerstattung beantragen",
@@ -124,6 +124,3 @@ const trans = {
     supportHint: "如有任何疑問，請聯繫我們的客服團隊："
   }
 } as const;
-
-export type RequestRefundI18n = typeof trans;
-export default trans;
