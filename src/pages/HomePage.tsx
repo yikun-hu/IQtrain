@@ -357,7 +357,7 @@ export default function HomePage() {
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <Button
                   onClick={() => navigate('/test')}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
                   size="lg"
                 >
                   {t.heroCta}

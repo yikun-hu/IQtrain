@@ -359,7 +359,7 @@ export default function TestPage() {
   // 开始页面 - 横向排列3个说明
   if (!testStarted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex pt-12 py-8">
+      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 flex pt-6 py-2 sm:pt-12 sm:py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <Card className="shadow-2xl">
             <CardContent className="pt-12 pb-12">
@@ -483,7 +483,7 @@ export default function TestPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-muted flex pt-12 py-4">
+    <div className="min-h-screen bg-muted flex pt-6 py-2 sm:pt-12 sm:py-4">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="space-y-4">
           {/* 计时器和进度条 */}
@@ -501,7 +501,7 @@ export default function TestPage() {
           </div>
 
           {/* 问题卡片 - 紧凑布局 */}
-          <Card className="shadow-lg">
+          <Card className="shadow-lg py-0 sm:py-6 max-w-96 sm:max-w-[100%] justify-self-center">
             <CardContent className="pt-6 pb-6">
               <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                 {/* 左侧：问题图片 */}
@@ -548,13 +548,13 @@ export default function TestPage() {
                             : hoveredOption === option.label ? 'border-secondary bg-secondary/10' : 'border-border bg-white'
                             }`}
                         >
-                          <div className={`absolute top-2 left-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${isSelected || isJustSelected
+                          <div className={`absolute top-2 left-2 h-4 md:w-7 md:h-7 rounded-full flex items-center justify-center text-xs font-bold ${isSelected || isJustSelected
                             ? 'bg-secondary text-white'
                             : hoveredOption === option.label ? 'bg-secondary text-white' : 'bg-muted text-foreground'
                             }`}>
                             {option.number}
                           </div>
-                          <div className="flex items-center justify-center h-full px-6 pt-6">
+                          <div className="flex items-center justify-center h-full px-4 pt-3 md:px-6 md:pt-6">
                             <img
                               src={option.value}
                               alt={`Option ${option.label}`}
