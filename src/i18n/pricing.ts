@@ -53,7 +53,7 @@ export default {
       biweekly: {
         abbr: 'Bi-weekly',
         title: 'Bi-Weekly Subscription',
-        price: '€14.99',
+        price: '$14.99',
         period: ' every 2 weeks',
         features: [
           '7-day trial, then auto-renews bi-weekly',
@@ -66,7 +66,7 @@ export default {
       monthly: {
         abbr: 'Monthly',
         title: 'Monthly Plan',
-        price: '€29.99',
+        price: '$29.99',
         period: '/month',
         features: [
           'Maximum savings for long-term growth',
@@ -155,7 +155,7 @@ export default {
       biweekly: {
         abbr: '双周付',
         title: '双周订阅计划',
-        price: '€14.99',
+        price: '$14.99',
         period: '/2周',
         features: [
           '7天试用期，之后自动续订双周费计划',
@@ -168,7 +168,7 @@ export default {
       monthly: {
         abbr: '月付',
         title: '月付订阅计划',
-        price: '€29.99',
+        price: '$29.99',
         period: '/月',
         features: [
           '长期提长的最大节省',
@@ -257,7 +257,7 @@ export default {
       biweekly: {
         abbr: 'Zweiwöchentlich',
         title: 'Zweiwöchentliches Abonnement',
-        price: '€14.99',
+        price: '$14.99',
         period: ' alle 2 Wochen',
         features: [
           '7-tägige Testphase, danach automatische Verlängerung alle zwei Wochen',
@@ -270,7 +270,7 @@ export default {
       monthly: {
         abbr: 'Monatlich',
         title: 'Monatlicher Plan',
-        price: '€29.99',
+        price: '$29.99',
         period: '/Monat',
         features: [
           'Maximale Einsparungen für langfristiges Wachstum',
@@ -359,7 +359,7 @@ export default {
       biweekly: {
         abbr: 'Bimensuel',
         title: 'Abonnement Bimensuel',
-        price: '€14.99',
+        price: '$14.99',
         period: ' toutes les 2 semaines',
         features: [
           'Essai de 7 jours, puis renouvellement automatique bimensuel',
@@ -372,7 +372,7 @@ export default {
       monthly: {
         abbr: 'Mensuel',
         title: 'Plan Mensuel',
-        price: '€29.99',
+        price: '$29.99',
         period: '/mois',
         features: [
           'Économies maximales pour une croissance à long terme',
@@ -461,7 +461,7 @@ export default {
       biweekly: {
         abbr: '雙周付',
         title: '雙周訂閱計劃',
-        price: '€14.99',
+        price: '$14.99',
         period: '/2周',
         features: [
           '7天試用期，之後自動續訂雙周計劃',
@@ -474,7 +474,7 @@ export default {
       monthly: {
         abbr: '月付',
         title: '月付訂閱計劃',
-        price: '€29.99',
+        price: '$29.99',
         period: '/月',
         features: [
           '長期增長的最大節省',
