@@ -1,57 +1,78 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import Header from './components/layouts/Header';
 import { Footer } from './components/layouts/Footer';
-import { Toaster } from './components/ui/toaster';
 import routes from './routes';
 import { ping } from './db/api';
 
-const RouteFallback = () => (
-  <div className="p-6 text-muted-foreground">Loading...</div>
-);
+import { TopRouteLoadingBar } from './components/layouts/TopRouteLoadingBar';
+
+function SuspenseFallback({ onMount }: { onMount?: () => void }) {
+  useEffect(() => {
+    onMount?.();
+  }, [onMount]);
+  return <div className="min-h-[40vh]" />; // 你可以放 skeleton
+}
 
 const AppWithRouting: React.FC = () => {
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
+  // 切换路由时先“预置打开”，一旦真实页面渲染会关闭（见下方 RouteWrapper）
   useEffect(() => {
-    const currentRoute = routes.find(route => {
-      if (route.path === location.pathname) return true;
-      if (route.path.includes(':')) {
-        const routePathParts = route.path.split('/');
-        const currentPathParts = location.pathname.split('/');
-        if (routePathParts.length === currentPathParts.length) {
-          return routePathParts.every((part, index) => part.startsWith(':') || part === currentPathParts[index]);
-        }
-      }
-      return false;
-    });
-
-    document.title = currentRoute ? `${currentRoute.name} | IQ Train` : 'IQ Train';
-  }, [location]);
+    setLoading(true);
+  }, [location.pathname]);
 
   return (
     <>
       <div className="flex flex-col min-h-screen">
         <Header />
+
+        {/* Header 下面的条条 */}
+        <TopRouteLoadingBar show={loading} />
+
         <main className="flex-grow">
-          <Suspense fallback={<RouteFallback />}>
+          <Suspense
+            fallback={<SuspenseFallback onMount={() => setLoading(true)} />}
+          >
             <Routes>
               {routes.map((route, index) => (
-                <Route key={index} path={route.path} element={route.element} />
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <RouteLoaded onLoaded={() => setLoading(false)}>
+                      {route.element}
+                    </RouteLoaded>
+                  }
+                />
               ))}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </main>
+
         <Footer />
       </div>
-      <Toaster />
     </>
   );
 };
+
+// 用于：当路由组件真正渲染成功（chunk加载完成）后，关闭 loading
+function RouteLoaded({
+  children,
+  onLoaded,
+}: {
+  children: React.ReactNode;
+  onLoaded: () => void;
+}) {
+  useEffect(() => {
+    onLoaded();
+  }, [onLoaded]);
+  return <>{children}</>;
+}
 
 const App: React.FC = () => {
 
