@@ -26,4 +26,3 @@ output
 .sync
 history/*.json
 .vite_cache
-.env
