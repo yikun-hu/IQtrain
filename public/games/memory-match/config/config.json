@@ -1,0 +1,27 @@
+{
+	"AllCategories": [
+		"Stationery",
+		"Face",
+		"Heart",
+		"Music",
+		"AnimalsFace",
+		"Birds",
+		"Fishes",
+		"Bugs",
+		"Fruits",
+		"Flowers",
+		"Vegies",
+		"Foods",
+		"Sweets",
+		"Places",
+		"Vehicles",
+		"Time",
+		"Sport",
+		"Clothes",
+		"Electronics",
+		"Flags"
+	],
+	"TimeAttackStartTime": 60,
+	"InitHints": 3,
+	"3HintPrice": 50
+}

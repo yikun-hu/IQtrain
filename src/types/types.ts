@@ -85,6 +85,9 @@ export interface Game {
   url: string;
   description?: ITranslatedField;
   thumbnail_url?: string;
+  rating?: number;
+  rating_count?: number;
+  who_should_play?: ITranslatedField;
   created_at: string;
   updated_at: string;
 }

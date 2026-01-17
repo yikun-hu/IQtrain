@@ -1,0 +1,11 @@
+{
+  "display" : "fullscreen",
+  "icons" : [ {
+    "sizes" : "180x180",
+    "src" : "https://www.nuanmogame.com/Difference_Fun/6d35f9de501456a5613961d403f95e0b_icon.png"
+  } ],
+  "name" : "Difference Fun",
+  "scope" : ".",
+  "short_name" : "Difference Fun",
+  "start_url" : "./index.html?utm_source=h5sdk_shortcut"
+}

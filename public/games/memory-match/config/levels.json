@@ -1,0 +1,1232 @@
+{
+	"1": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					2,
+					3
+				],
+				"Cat": [
+					"Heart"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					2,
+					3
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			}
+		],
+		"Time": 19
+	},
+	"2": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					2,
+					3
+				],
+				"Cat": [
+					"Birds"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Flags"
+				]
+			}
+		],
+		"Time": 25
+	},
+	"3": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					2,
+					3
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Bugs"
+				]
+			}
+		],
+		"Time": 25
+	},
+	"4": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Fruits"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Flowers"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Vegies"
+				]
+			}
+		],
+		"Time": 44
+	},
+	"5": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					2,
+					3
+				],
+				"Cat": [
+					"Foods"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Sweets"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					4
+				],
+				"Cat": [
+					"Weird"
+				]
+			}
+		],
+		"Time": 44
+	},
+	"6": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					3
+				],
+				"Cat": [
+					"Vehicles"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					4
+				],
+				"Cat": [
+					"Time"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					4
+				],
+				"Cat": [
+					"Sport"
+				]
+			}
+		],
+		"Time": 55
+	},
+	"7": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					4
+				],
+				"Cat": [
+					"Clothes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					4
+				],
+				"Cat": [
+					"Music"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Electronics"
+				]
+			}
+		],
+		"Time": 65
+	},
+	"8": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Stationery"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Places"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Heart"
+				]
+			}
+		],
+		"Time": 77
+	},
+	"9": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Birds"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Flags"
+				]
+			}
+		],
+		"Time": 80
+	},
+	"10": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Bugs"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Fruits"
+				]
+			}
+		],
+		"Time": 78
+	},
+	"11": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Flowers"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Vegies"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Foods"
+				]
+			}
+		],
+		"Time": 86
+	},
+	"12": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Sweets"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Weird"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Vehicles"
+				]
+			}
+		],
+		"Time": 98
+	},
+	"13": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Time"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Sport"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Clothes"
+				]
+			}
+		],
+		"Time": 107
+	},
+	"14": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Music"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Electronics"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Stationery"
+				]
+			}
+		],
+		"Time": 120
+	},
+	"15": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Places"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Heart"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Birds"
+				]
+			}
+		],
+		"Time": 136
+	},
+	"16": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Flags"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Bugs"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Fruits"
+				]
+			}
+		],
+		"Time": 144
+	},
+	"17": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Flowers"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Vegies"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Foods"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Sweets"
+				]
+			}
+		],
+		"Time": 166
+	},
+	"18": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Weird"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Vehicles"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Time"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Sport"
+				]
+			}
+		],
+		"Time": 127
+	},
+	"19": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Clothes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Music"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Electronics"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Stationery"
+				]
+			}
+		],
+		"Time": 173
+	},
+	"20": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Places"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Heart"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Birds"
+				]
+			}
+		],
+		"Time": 139
+	},
+	"21": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Flags"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Bugs"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					5
+				],
+				"Cat": [
+					"Fruits"
+				]
+			}
+		],
+		"Time": 151
+	},
+	"22": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Flowers"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Vegies"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Foods"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Sweets"
+				]
+			}
+		],
+		"Time": 169
+	},
+	"23": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Weird"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Vehicles"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Time"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Sport"
+				]
+			}
+		],
+		"Time": 157
+	},
+	"24": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Clothes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Music"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Electronics"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Stationery"
+				]
+			}
+		],
+		"Time": 157
+	},
+	"25": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Places"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Heart"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Birds"
+				]
+			}
+		],
+		"Time": 157
+	},
+	"26": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Flags"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Bugs"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Fruits"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Flowers"
+				]
+			}
+		],
+		"Time": 229
+	},
+	"27": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Vegies"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Foods"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Sweets"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Weird"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Vehicles"
+				]
+			}
+		],
+		"Time": 228
+	},
+	"28": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Time"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Sport"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Clothes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Music"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Electronics"
+				]
+			}
+		],
+		"Time": 216
+	},
+	"29": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					3,
+					5
+				],
+				"Cat": [
+					"Stationery"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Places"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					4
+				],
+				"Cat": [
+					"Heart"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"AnimalsFace"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					5
+				],
+				"Cat": [
+					"Birds"
+				]
+			}
+		],
+		"Time": 176
+	},
+	"30": {
+		"Parts": [
+			{
+				"SCAS": true,
+				"Board": [
+					4,
+					6
+				],
+				"Cat": [
+					"Flags"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Fishes"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Bugs"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					5,
+					6
+				],
+				"Cat": [
+					"Fruits"
+				]
+			},
+			{
+				"SCAS": true,
+				"Board": [
+					6,
+					6
+				],
+				"Cat": [
+					"Flowers"
+				]
+			}
+		],
+		"Time": 271
+	}
+}

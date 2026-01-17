@@ -36,10 +36,13 @@ export default {
     needSubscriptionDesc: "You need to subscribe first to start games or tests. Subscription gives you full access to all features.",
     gameCategories: {
       puzzles: "Puzzles",
-      number_games: "Number Games",
-      memory_games: "Memory Games",
-      logic_games: "Logic Games",
-    }
+      number: "Number Games",
+      memory: "Memory Games",
+      logic: "Logic Games",
+      reaction: "Reaction Games",
+      sort: "Sort Games",
+    },
+    whoShouldPlay: "Who should play this game:"
   },
   "zh-CN": {
     todayTrainRecommend: "今日训练推荐",
@@ -78,10 +81,13 @@ export default {
     needSubscriptionDesc: "您需要先订阅才能开始游戏或测试。订阅后您将获得完整的功能访问权限。",
     gameCategories: {
       puzzles: "益智游戏",
-      number_games: "数字游戏",
-      memory_games: "记忆游戏",
-      logic_games: "逻辑游戏",
-    }
+      number: "数字游戏",
+      memory: "记忆游戏",
+      logic: "逻辑游戏",
+      reaction: "反应游戏",
+      sort: "排序游戏",
+    },
+    whoShouldPlay: "谁应该玩这款游戏:"
   },
   "de-DE": {
     todayTrainRecommend: "Heutige Trainingsempfehlung",
@@ -120,10 +126,13 @@ export default {
     needSubscriptionDesc: "Sie müssen sich zuerst abonnieren, um Spiele oder Tests zu starten. Das Abonnement gibt Ihnen vollen Zugriff auf alle Funktionen.",
     gameCategories: {
       puzzles: "Rätsel",
-      number_games: "Zahlenspiele",
-      memory_games: "Gedächtnisspiele",
-      logic_games: "Logikspiele",
-    }
+      number: "Zahlenspiele",
+      memory: "Gedächtnisspiele",
+      logic: "Logikspiele",
+      reaction: "Reaktionsspiele",
+      sort: "Sortierspiele",
+    },
+    whoShouldPlay: "Wer sollte dieses Spiel spielen:"
   },
   "fr-FR": {
     todayTrainRecommend: "Recommandation d'entraînement d'aujourd'hui",
@@ -162,10 +171,13 @@ export default {
     needSubscriptionDesc: "Vous devez d'abord vous abonner pour commencer des jeux ou des tests. L'abonnement vous donne un accès complet à toutes les fonctionnalités.",
     gameCategories: {
       puzzles: "Casse-têtes",
-      number_games: "Jeux de nombres",
-      memory_games: "Jeux de mémoire",
-      logic_games: "Jeux de logique",
-    }
+      number: "Jeux de nombres",
+      memory: "Jeux de mémoire",
+      logic: "Jeux de logique",
+      reaction: "Jeux de réaction",
+      sort: "Jeux de tri",
+    },
+    whoShouldPlay: "Qui devrait jouer à ce jeu :"
   },
   "zh-TW": {
     todayTrainRecommend: "今日訓練推薦",
@@ -204,9 +216,12 @@ export default {
     needSubscriptionDesc: "您需要先訂閱才能開始遊戲或測試。訂閱後您將獲得完整的功能訪問權限。",
     gameCategories: {
       puzzles: "益智遊戲",
-      number_games: "數字遊戲",
-      memory_games: "記憶遊戲",
-      logic_games: "邏輯遊戲",
-    }
+      number: "數字遊戲",
+      memory: "記憶遊戲",
+      logic: "邏輯遊戲",
+      reaction: "反應遊戲",
+      sort: "排序遊戲",
+    },
+    whoShouldPlay: "誰應該玩這款遊戲:"
   }
 };

@@ -9,7 +9,7 @@ import type { ITranslatedField } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { getAllGames, getTestResults } from '@/db/api';
 import type { Game } from '@/types/types';
-import { Loader2, FileText } from 'lucide-react';
+import { Loader2, FileText, Star, StarHalf, Play } from 'lucide-react';
 
 export default function DashboardPage() {
   const { language, t } = useLanguage();
@@ -31,6 +31,8 @@ export default function DashboardPage() {
   // Training相关状态
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
   const [gamesByCategory, setGamesByCategory] = useState<Record<string, Game[]>>({});
+  const [allGamesList, setAllGamesList] = useState<Game[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Test相关状态
   const [completedTests, setCompletedTests] = useState<any[]>([]);
@@ -138,6 +140,7 @@ export default function DashboardPage() {
       const normalizedGames = games;
 
       setRecommendedGames(normalizedRecommended);
+      setAllGamesList(normalizedGames);
 
       // 按类别分组游戏
       const grouped = normalizedGames.reduce((acc, game) => {
@@ -165,8 +168,43 @@ export default function DashboardPage() {
   const getTranslatedValue = (field: ITranslatedField | undefined, fallback: string = ''): string => {
     if (!field) return fallback;
     if (typeof field === 'string') return field;
-    // 优先使用当前语言，然后回退到 en-US，最后是 zh-CN
-    return field[language] || field['en-US'] || field['zh-CN'] || fallback;
+    // 如果是对象，优先使用当前语言，然后回退到 en-US，最后是 zh-CN
+    if (typeof field === 'object' && field !== null) {
+      const value = field[language] || field['en-US'] || field['zh-CN'] || fallback;
+      return typeof value === 'string' ? value : String(value || fallback);
+    }
+    return fallback;
+  };
+
+  // 渲染评分星星
+  const renderStars = (rating: number) => {
+    const full = Math.floor(rating);
+    const hasHalf = rating - full >= 0.5;
+
+    return (
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: 5 }).map((_, idx) => {
+          const i = idx + 1;
+          if (i <= full) {
+            return (
+              <div key={i} className="relative">
+                <Star className="h-4 w-4 fill-gray-300 text-gray-300" />
+                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500 absolute inset-0" />
+              </div>
+            );
+          }
+          if (hasHalf && i === full + 1) {
+            return (
+              <div key={i} className="relative">
+                <Star className="h-4 w-4 fill-gray-300 text-gray-300" />
+                <StarHalf className="h-4 w-4 fill-yellow-500 text-yellow-500 absolute inset-0" />
+              </div>
+            );
+          }
+          return <Star key={i} className="h-4 w-4 fill-gray-300 text-gray-300" />;
+        })}
+      </div>
+    );
   };
 
   // 如果认证状态或数据正在加载，显示加载界面
@@ -192,7 +230,7 @@ export default function DashboardPage() {
             <section>
               <div className="mb-6">
                 <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                    {t.dashboard.todayTrainRecommend}
+                  {t.dashboard.todayTrainRecommend}
                 </h2>
                 <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
               </div>
@@ -200,34 +238,74 @@ export default function DashboardPage() {
                 {recommendedGames.map((game) => {
                   const gameTitle = getTranslatedValue(game.title);
                   const gameDescription = getTranslatedValue(game.description);
+                  const whoShouldPlay = getTranslatedValue(game.who_should_play);
+                  const categoryName = getCategoryName(game.category);
 
                   return (
-                  <Card
-                    key={game.id}
-                    className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
-                    onClick={() => handleStartGame(game)}
-                  >
-                    <CardHeader className="p-0">
-                      {game.thumbnail_url && (
-                        <div className="relative w-full aspect-square overflow-hidden bg-muted">
-                          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                          <img
-                            src={game.thumbnail_url}
-                            alt={gameTitle}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
+                    <Card
+                      key={game.id}
+                      className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col bg-card/50 backdrop-blur-sm
+            /* 核心新增：限制卡片外部高度 */
+            max-h-[270px] /* 可根据需要调整这个数值，比如 250px/300px */
+            h-fit /* 让卡片高度自适应内容，但不超过max-h */"
+                    >
+                      <div className="flex flex-row items-stretch">
+                        {game.thumbnail_url && (
+                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mr-0">
+                            <img
+                              src={game.thumbnail_url}
+                              alt={gameTitle}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
+                        <CardContent className="px-4 pt-4 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-1 font-semibold flex-1">
+                                {gameTitle}
+                              </CardTitle>
+                              {categoryName && (
+                                <span className="text-xs px-2 py-1 rounded bg-blue-500 text-white whitespace-nowrap flex-shrink-0">
+                                  {categoryName}
+                                </span>
+                              )}
+                            </div>
+                            {game.rating !== undefined && (
+                              <div className="flex items-center gap-2">
+                                {renderStars(game.rating)}
+                                <span className="text-sm font-medium text-foreground">
+                                  {game.rating.toFixed(1)}
+                                  {game.rating_count !== undefined && game.rating_count > 0 && (
+                                    <span className="text-muted-foreground ml-1">
+                                      ({game.rating_count.toLocaleString()})
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                            <CardDescription className="text-xs line-clamp-3 text-muted-foreground leading-snug">
+                              {gameDescription}
+                            </CardDescription>
+                          </div>
+                          <button
+                            className="w-full h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-blue-500/50 cursor-pointer"
+                            onClick={() => handleStartGame(game)}
+                          >
+                            <span>{t.dashboard.playNow}</span>
+                            <Play className="h-4 w-4 fill-white text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] filter blur-[0.5px]" />
+                          </button>
+                        </CardContent>
+                      </div>
+                      {whoShouldPlay && (
+                        <div className="px-4 pb-2 pt-1.5 border-t border-border/50 relative top-[-25px]">
+                          <div className="text-xs text-muted-foreground leading-normal">
+                            <span className="font-semibold text-foreground/80">{t.dashboard.whoShouldPlay}</span>
+                            <span className="ml-1.5">{whoShouldPlay}</span>
+                          </div>
                         </div>
                       )}
-                    </CardHeader>
-                    <CardContent className="px-3 pt-0 pb-2 flex flex-col">
-                      <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors line-clamp-1 text-center -mt-3.5 font-semibold">
-                        {gameTitle}
-                      </CardTitle>
-                      <CardDescription className="text-sm line-clamp-2 text-center text-muted-foreground leading-relaxed">
-                        {gameDescription}
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
+                    </Card>
                   );
                 })}
               </div>
@@ -237,49 +315,115 @@ export default function DashboardPage() {
             <section>
               <div className="mb-6">
                 <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                    {t.dashboard.allGames}
+                  游戏
                 </h2>
                 <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
               </div>
-              {Object.entries(gamesByCategory).map(([category, games]) => (
-                <div key={category} className="mb-10">
-                  <h3 className="text-xl font-semibold mb-5 text-foreground/90 flex items-center gap-2">
-                    <span className="h-0.5 w-8 bg-primary rounded-full"></span>
-                    {String(getCategoryName(category) || category)}
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {games.map((game) => {
-                      const gameTitle = getTranslatedValue(game.title);
 
-                      return (
-                      <Card
-                        key={game.id}
-                        className="group hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/20 flex flex-col pt-0 pb-0 cursor-pointer bg-card/50 backdrop-blur-sm"
-                        onClick={() => window.open(game.url, '_blank')}
-                      >
-                        <CardHeader className="p-0">
-                          {game.thumbnail_url && (
-                            <div className="relative w-full aspect-square overflow-hidden bg-muted">
-                              <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                              <img
-                                src={game.thumbnail_url}
-                                alt={gameTitle}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                              />
+              {/* 分类筛选按钮 */}
+              <div className="flex flex-wrap gap-3 mb-6">
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedCategory === 'all'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                >
+                  {t.dashboard.allGames}
+                </button>
+                {Object.keys(gamesByCategory).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedCategory === category
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                      }`}
+                  >
+                    {getCategoryName(category)}
+                  </button>
+                ))}
+              </div>
+
+              {/* 游戏卡片网格 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(selectedCategory === 'all'
+                  ? allGamesList
+                  : gamesByCategory[selectedCategory] || []
+                ).map((game) => {
+                  const gameTitle = getTranslatedValue(game.title);
+                  const gameDescription = getTranslatedValue(game.description);
+                  const whoShouldPlay = getTranslatedValue(game.who_should_play);
+                  const categoryName = getCategoryName(game.category);
+
+                  return (
+                    <Card
+                      key={game.id}
+                      className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col bg-card/50 backdrop-blur-sm
+            /* 核心新增：限制卡片外部高度 */
+            max-h-[270px] /* 可根据需要调整这个数值，比如 250px/300px */
+            h-fit /* 让卡片高度自适应内容，但不超过max-h */"
+                    >
+                      <div className="flex flex-row items-stretch">
+                        {game.thumbnail_url && (
+                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mr-0">
+                            <img
+                              src={game.thumbnail_url}
+                              alt={gameTitle}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
+                        <CardContent className="px-4 pt-4 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-1 font-semibold flex-1">
+                                {gameTitle}
+                              </CardTitle>
+                              {categoryName && (
+                                <span className="text-xs px-2 py-1 rounded bg-blue-500 text-white whitespace-nowrap flex-shrink-0">
+                                  {categoryName}
+                                </span>
+                              )}
                             </div>
-                          )}
-                        </CardHeader>
-                        <CardContent className="px-2 pt-0 pb-2 flex flex-col">
-                          <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2 text-center -mt-4 font-medium">
-                            {gameTitle}
-                          </CardTitle>
+                            {game.rating !== undefined && (
+                              <div className="flex items-center gap-2">
+                                {renderStars(game.rating)}
+                                <span className="text-sm font-medium text-foreground">
+                                  {game.rating.toFixed(1)}
+                                  {game.rating_count !== undefined && game.rating_count > 0 && (
+                                    <span className="text-muted-foreground ml-1">
+                                      ({game.rating_count.toLocaleString()})
+                                    </span>
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                            <CardDescription className="text-xs line-clamp-3 text-muted-foreground leading-snug">
+                              {gameDescription}
+                            </CardDescription>
+                          </div>
+                          <button
+                            className="w-full h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-blue-500/50 cursor-pointer"
+                            onClick={() => window.open(game.url, '_blank')}
+                          >
+                            <span>{t.dashboard.playNow}</span>
+                            <Play className="h-4 w-4 fill-white text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] filter blur-[0.5px]" />
+                          </button>
                         </CardContent>
-                      </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
+                      </div>
+                      {whoShouldPlay && (
+                        <div className="px-4 pb-2 pt-1.5 border-t border-border/50 relative top-[-25px]">
+                          <div className="text-xs text-muted-foreground leading-normal">
+                            <span className="font-semibold text-foreground/80">{t.dashboard.whoShouldPlay}</span>
+                            <span className="ml-1.5">{whoShouldPlay}</span>
+                          </div>
+                        </div>
+                      )}
+                    </Card>
+                  );
+                })}
+              </div>
             </section>
           </TabsContent>
 

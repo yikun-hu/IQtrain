@@ -294,6 +294,7 @@ export async function getAllGames() {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
+      who_should_play: game.who_should_play ? parseTranslatedField(game.who_should_play) : undefined,
     };
   };
   
@@ -354,6 +355,7 @@ export async function getRandomGames(count: number = 3) {
       ...game,
       title: parseTranslatedField(game.title),
       description: game.description ? parseTranslatedField(game.description) : undefined,
+      who_should_play: game.who_should_play ? parseTranslatedField(game.who_should_play) : undefined,
     };
   };
   
