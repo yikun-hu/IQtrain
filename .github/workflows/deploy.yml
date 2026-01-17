@@ -23,9 +23,11 @@ jobs:
           version: 9
 
       - name: Install deps
+        working-directory: ${{ env.PROJECT_DIR }}
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        working-directory: ${{ env.PROJECT_DIR }}
         run: pnpm build
 
       - name: Deploy
