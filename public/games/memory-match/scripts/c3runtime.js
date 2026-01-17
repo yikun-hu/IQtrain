@@ -5418,7 +5418,7 @@ self.C3_ExpressionFuncs = [
 			const n0 = p._GetNode(0);
 			return () => (n0.ExpInstVar_Family() * 0.95);
 		},
-		() => "https://doondook.studio",
+		() => "https://iqtrain.ai",
 		() => "NewWindow",
 		() => "SFX & Music",
 		p => {
