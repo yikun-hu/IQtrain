@@ -1,0 +1,207 @@
+{
+  "frames": {
+    "chest_silver_opened": {
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 575,
+        "h": 578
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 575,
+        "h": 578
+      },
+      "sourceSize": {
+        "w": 575,
+        "h": 578
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "chest_gold_opened": {
+      "frame": {
+        "x": 581,
+        "y": 2,
+        "w": 576,
+        "h": 574
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 576,
+        "h": 574
+      },
+      "sourceSize": {
+        "w": 576,
+        "h": 574
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "chest_gold_closed": {
+      "frame": {
+        "x": 581,
+        "y": 582,
+        "w": 555,
+        "h": 496
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 555,
+        "h": 496
+      },
+      "sourceSize": {
+        "w": 555,
+        "h": 496
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "chest_silver_closed": {
+      "frame": {
+        "x": 2,
+        "y": 584,
+        "w": 548,
+        "h": 476
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 548,
+        "h": 476
+      },
+      "sourceSize": {
+        "w": 548,
+        "h": 476
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "lock_gold_opened": {
+      "frame": {
+        "x": 2,
+        "y": 1064,
+        "w": 145,
+        "h": 167
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 145,
+        "h": 167
+      },
+      "sourceSize": {
+        "w": 145,
+        "h": 167
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "lock_silver_opened": {
+      "frame": {
+        "x": 173,
+        "y": 1064,
+        "w": 142,
+        "h": 166
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 142,
+        "h": 166
+      },
+      "sourceSize": {
+        "w": 142,
+        "h": 166
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "lock_gold_closed": {
+      "frame": {
+        "x": 343,
+        "y": 1064,
+        "w": 127,
+        "h": 167
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 127,
+        "h": 167
+      },
+      "sourceSize": {
+        "w": 127,
+        "h": 167
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "lock_silver_closed": {
+      "frame": {
+        "x": 514,
+        "y": 1082,
+        "w": 127,
+        "h": 167
+      },
+      "rotated": true,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 127,
+        "h": 167
+      },
+      "sourceSize": {
+        "w": 127,
+        "h": 167
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "chest_bonus.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1157,
+      "h": 1211
+    },
+    "scale": 1
+  }
+}

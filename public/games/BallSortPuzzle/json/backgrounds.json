@@ -1,0 +1,78 @@
+{
+    "desert": {
+        "image": {
+            "texture": "backgrounds_desert"
+        },
+        "options": {
+            "color": "#efb962",
+            "h": 0.17
+        }
+    },
+    "forest": {
+        "image": {
+            "texture": "backgrounds_forest"
+        },
+        "options": {
+            "color": "#052233",
+            "h": 0.21
+        }
+    },
+    "forest2": {
+        "image": {
+            "texture": "backgrounds_forest2"
+        },
+        "options": {
+            "color": "#74314b",
+            "h": 0.21
+        }
+    },
+    "snow": {
+        "image": {
+            "texture": "backgrounds_snow"
+        },
+        "options": {
+            "color": "#93caf0",
+            "h": 0.2,
+            "textColor": "#2a5778"
+        }
+    },
+    "futureCity": {
+        "image": {
+            "texture": "backgrounds_futureCity"
+        },
+        "options": {
+            "color": "#000000",
+            "h": 0.35
+        }
+    },
+    "cosmos": {
+        "image": {
+            "texture": "backgrounds_cosmos"
+        },
+        "options": {
+            "type": "fit",
+            "color": "#000000",
+            "h": 1
+        }
+    },
+    "geometry": {
+        "image": {
+            "texture": "backgrounds_geometry"
+        },
+        "options": {
+            "type": "xy",
+            "color": "#000000",
+            "h": 0.2
+        }
+    },
+    "geometry2": {
+        "image": {
+            "texture": "backgrounds_geometry2"
+        },
+        "options": {
+            "type": "xy",
+            "color": "#000000",
+            "h": 0.4
+        }
+    }
+}

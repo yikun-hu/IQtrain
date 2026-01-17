@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html manifest="offline.appcache">
+<head>
+    <meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>DD Release</title>
+	
+	<!-- Standardised web app manifest -->
+	<link rel="manifest" href="appmanifest.json" />
+	
+	<!-- Allow fullscreen mode on iOS devices. (These are Apple specific meta tags.) -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<link rel="apple-touch-icon" sizes="256x256" href="icon-256.png" />
+	<meta name="HandheldFriendly" content="true" />
+	
+	<!-- Chrome for Android web app tags -->
+	<meta name="mobile-web-app-capable" content="yes" />
+	<link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
+
+    <!-- All margins and padding must be zero for the canvas to fill the screen. -->
+	<style type="text/css">
+		* {
+			padding: 0;
+			margin: 0;
+		}
+		html, body {
+			background: #000;
+			color: #fff;
+			overflow: hidden;
+			touch-action: none;
+			-ms-touch-action: none;
+		}
+		canvas {
+			touch-action: none;
+			-ms-touch-action: none;
+		}
+    </style>
+	
+
+</head> 
+ 
+<body> 
+	<div id="fb-root"></div>
+	
+	<script>
+	// Issue a warning if trying to preview an exported project on disk.
+	(function(){
+		// Check for running exported on file protocol
+		if (window.location.protocol.substr(0, 4) === "file")
+		{
+			alert("Exported games won't work until you upload them. (When running on the file:/// protocol, browsers block many features from working for security reasons.)");
+		}
+	})();
+	
+	// 立即清除Service Worker缓存（在页面加载时）
+	(function() {
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.getRegistrations().then(function(registrations) {
+				for(var i = 0; i < registrations.length; i++) {
+					registrations[i].unregister().then(function(success) {
+						if (success) {
+							console.log('Service Worker已清除');
+							// 清除缓存
+							if ('caches' in window) {
+								caches.keys().then(function(names) {
+									for (var j = 0; j < names.length; j++) {
+										caches.delete(names[j]);
+									}
+								});
+							}
+						}
+					});
+				}
+			});
+		}
+		
+		// 使用更安全的方式拦截跳转（不修改location属性本身）
+		try {
+			var originalAssign = window.location.assign;
+			var originalReplace = window.location.replace;
+			
+			if (originalAssign) {
+				window.location.assign = function(url) {
+					if (url && (url.indexOf('yourdomain.com') !== -1 || url.indexOf('yourdomain') !== -1)) {
+						console.log('已阻止跳转到:', url);
+						return;
+					}
+					return originalAssign.call(this, url);
+				};
+			}
+			
+			if (originalReplace) {
+				window.location.replace = function(url) {
+					if (url && (url.indexOf('yourdomain.com') !== -1 || url.indexOf('yourdomain') !== -1)) {
+						console.log('已阻止跳转到:', url);
+						return;
+					}
+					return originalReplace.call(this, url);
+				};
+			}
+		} catch(e) {
+			console.log('拦截location方法时出错:', e);
+		}
+	})();
+	</script>
+	
+	<!-- The canvas must be inside a div called c2canvasdiv -->
+	<div id="c2canvasdiv">
+	
+		<!-- The canvas the project will render to.  If you change its ID, don't forget to change the
+		ID the runtime looks for in the jQuery events above (ready() and cr_sizeCanvas()). -->
+		<canvas id="c2canvas" width="1080" height="1920">
+			<!-- This text is displayed if the visitor's browser does not support HTML5.
+			You can change it, but it is a good idea to link to a description of a browser
+			and provide some links to download some popular HTML5-compatible browsers. -->
+			<h1>Your browser does not appear to support HTML5.  Try upgrading your browser to the latest version.  <a href="http://www.whatbrowser.org">What is a browser?</a>
+			<br/><br/><a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br/>
+			<a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br/>
+			<a href="http://www.google.com/chrome/">Google Chrome</a><br/>
+			<a href="http://www.apple.com/safari/download/">Apple Safari</a></h1>
+		</canvas>
+		
+	</div>
+	
+	<!-- Pages load faster with scripts at the bottom -->
+	
+	<!-- Construct 2 exported games require jQuery. -->
+	<script src="jquery-2.1.1.min.js"></script>
+
+
+	
+    <!-- The runtime script.  You can rename it, but don't forget to rename the reference here as well.
+    This file will have been minified and obfuscated if you enabled "Minify script" during export. -->
+	<script src="c2runtime.js"></script>
+
+    <script>
+		// 全局变量存储运行时引用
+		var gameRuntime = null;
+		
+		// 拦截所有鼠标和触摸事件（在捕获阶段）
+		function interceptButtonClicks(e) {
+			var canvas = document.getElementById("c2canvas");
+			if (!canvas) return;
+			
+			var rect = canvas.getBoundingClientRect();
+			var scaleX = canvas.width / rect.width;
+			var scaleY = canvas.height / rect.height;
+			
+			var x, y;
+			if (e.touches && e.touches.length > 0) {
+				x = (e.touches[0].clientX - rect.left) * scaleX;
+				y = (e.touches[0].clientY - rect.top) * scaleY;
+			} else {
+				x = (e.clientX - rect.left) * scaleX;
+				y = (e.clientY - rect.top) * scaleY;
+			}
+			
+			// 检测是否点击在右下角按钮区域（游戏手柄图标）
+			// 根据1080x1920的分辨率，按钮大约在右下角区域
+			if (x > canvas.width * 0.80 && y > canvas.height * 0.88) {
+				e.preventDefault();
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				return false;
+			}
+		}
+		
+		// Start the Construct 2 project running on window load.
+		jQuery(document).ready(function ()
+		{			
+			// 在canvas创建前就设置事件拦截
+			var canvasDiv = document.getElementById("c2canvasdiv");
+			if (canvasDiv) {
+				// 在捕获阶段拦截所有事件
+				canvasDiv.addEventListener('mousedown', interceptButtonClicks, true);
+				canvasDiv.addEventListener('mouseup', interceptButtonClicks, true);
+				canvasDiv.addEventListener('click', interceptButtonClicks, true);
+				canvasDiv.addEventListener('touchstart', interceptButtonClicks, true);
+				canvasDiv.addEventListener('touchend', interceptButtonClicks, true);
+				canvasDiv.addEventListener('touchmove', interceptButtonClicks, true);
+			}
+			
+			// Create new runtime using the c2canvas
+			cr_createRuntime("c2canvas");
+			
+			// 等待运行时创建完成
+			var checkRuntime = setInterval(function() {
+				if (window.runtime || (window.cr && window.cr.runtime)) {
+					clearInterval(checkRuntime);
+					gameRuntime = window.runtime || window.cr.runtime;
+					
+					// 尝试隐藏按钮对象（多次尝试确保隐藏）
+					function hideButton() {
+						try {
+							if (gameRuntime && gameRuntime.types_by_index) {
+								// 遍历所有对象类型
+								for (var i = 0; i < gameRuntime.types_by_index.length; i++) {
+									var typeInst = gameRuntime.types_by_index[i];
+									if (typeInst && typeInst.instances) {
+										// 检查对象名称（如果可用）
+										var typeName = typeInst.name || '';
+										var lowerName = typeName.toLowerCase();
+										
+										// 查找"更多游戏"相关的按钮
+										if (lowerName.indexOf('moregames') !== -1 || 
+										    lowerName.indexOf('homemoregames') !== -1 ||
+										    lowerName.indexOf('gamepad') !== -1 ||
+										    lowerName.indexOf('more') !== -1) {
+											
+											// 隐藏所有该类型的实例
+											for (var j = 0; j < typeInst.instances.length; j++) {
+												var inst = typeInst.instances[j];
+												if (inst) {
+													// 尝试多种隐藏方法
+													if (typeof inst.setVisible === 'function') {
+														inst.setVisible(false);
+													}
+													if (inst.visible !== undefined) {
+														inst.visible = false;
+													}
+													// 禁用碰撞检测（可能阻止点击）
+													if (inst.collisionsEnabled !== undefined) {
+														inst.collisionsEnabled = false;
+													}
+													// 尝试设置透明度
+													if (inst.opacity !== undefined) {
+														inst.opacity = 0;
+													}
+													// 尝试移动到屏幕外
+													if (inst.x !== undefined && inst.y !== undefined) {
+														inst.x = -10000;
+														inst.y = -10000;
+													}
+												}
+											}
+										}
+									}
+								}
+								
+								// 也尝试通过所有实例查找位于右下角的对象并隐藏
+								if (gameRuntime.objectsByUid) {
+									var canvas = document.getElementById("c2canvas");
+									var canvasWidth = canvas ? canvas.width : 1080;
+									var canvasHeight = canvas ? canvas.height : 1920;
+									
+									for (var uid in gameRuntime.objectsByUid) {
+										var inst = gameRuntime.objectsByUid[uid];
+										if (inst && inst.x !== undefined && inst.y !== undefined) {
+											// 检查是否在右下角区域（按钮位置）
+											if (inst.x > canvasWidth * 0.75 && 
+											    inst.y > canvasHeight * 0.85) {
+												// 隐藏该对象
+												if (inst.visible !== undefined) {
+													inst.visible = false;
+												}
+												if (typeof inst.setVisible === 'function') {
+													inst.setVisible(false);
+												}
+												if (inst.opacity !== undefined) {
+													inst.opacity = 0;
+												}
+												// 移动到屏幕外
+												inst.x = -10000;
+												inst.y = -10000;
+												// 禁用碰撞
+												if (inst.collisionsEnabled !== undefined) {
+													inst.collisionsEnabled = false;
+												}
+											}
+										}
+									}
+								}
+								
+								// 强制重绘以应用隐藏
+								if (gameRuntime.redraw !== undefined) {
+									gameRuntime.redraw = true;
+								}
+							}
+						} catch(e) {
+							console.log("隐藏按钮时出错:", e);
+						}
+					}
+					
+					// 多次尝试隐藏，确保按钮被隐藏
+					setTimeout(hideButton, 1000);
+					setTimeout(hideButton, 2000);
+					setTimeout(hideButton, 3000);
+					setTimeout(hideButton, 5000);
+					
+					// 持续监控并隐藏（每2秒检查一次）
+					var hideInterval = setInterval(hideButton, 2000);
+					setTimeout(function() {
+						clearInterval(hideInterval);
+					}, 30000); // 30秒后停止监控
+				}
+			}, 100);
+			
+			// 在canvas上再次添加事件拦截（双重保险）
+			setTimeout(function() {
+				var canvas = document.getElementById("c2canvas");
+				if (canvas) {
+					// 使用捕获阶段拦截
+					canvas.addEventListener('mousedown', interceptButtonClicks, true);
+					canvas.addEventListener('mouseup', interceptButtonClicks, true);
+					canvas.addEventListener('click', interceptButtonClicks, true);
+					canvas.addEventListener('touchstart', interceptButtonClicks, true);
+					canvas.addEventListener('touchend', interceptButtonClicks, true);
+					canvas.addEventListener('touchmove', interceptButtonClicks, true);
+				}
+			}, 500);
+		});
+		
+		// Pause and resume on page becoming visible/invisible
+		function onVisibilityChanged() {
+			if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden)
+				cr_setSuspended(true);
+			else
+				cr_setSuspended(false);
+		};
+		
+		document.addEventListener("visibilitychange", onVisibilityChanged, false);
+		document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+		document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+		document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
+		
+		function OnRegisterSWError(e)
+		{
+			console.warn("Failed to register service worker: ", e);
+		};
+		
+		// Runtime calls this global method when ready to start caching (i.e. after startup).
+		// This registers the service worker which caches resources for offline support.
+		window.C2_RegisterSW = function C2_RegisterSW()
+		{
+			if (!navigator.serviceWorker)
+				return;		// no SW support, ignore call
+			
+			try {
+				// 先取消注册旧的service worker以清除缓存
+				navigator.serviceWorker.getRegistrations().then(function(registrations) {
+					for(var i = 0; i < registrations.length; i++) {
+						registrations[i].unregister();
+					}
+				});
+				
+				navigator.serviceWorker.register("sw.js", { scope: "./" })
+				.then(function (reg)
+				{
+					console.log("Registered service worker on " + reg.scope);
+				})
+				.catch(OnRegisterSWError);
+			}
+			catch (e)
+			{
+				OnRegisterSWError(e);
+			}
+		};
+		
+		// 拦截GoToURL函数（额外保护）
+		setTimeout(function() {
+			if (window.runtime && window.runtime.types_by_index) {
+				// 查找Browser插件
+				for (var i = 0; i < window.runtime.types_by_index.length; i++) {
+					var type = window.runtime.types_by_index[i];
+					if (type && type.plugin && type.plugin.acts && type.plugin.acts.GoToURL) {
+						var originalGoToURL = type.plugin.acts.GoToURL;
+						type.plugin.acts.GoToURL = function(url, target) {
+							if (url && (url.indexOf("yourdomain.com") !== -1 || url.indexOf("yourdomain") !== -1)) {
+								console.log("已阻止跳转到:", url);
+								return;
+							}
+							return originalGoToURL.call(this, url, target);
+						};
+						break;
+					}
+				}
+			}
+			
+			// 也拦截Browser插件的GoToURL
+			if (window.cr && window.cr.plugins_ && window.cr.plugins_.Browser && window.cr.plugins_.Browser.prototype && window.cr.plugins_.Browser.prototype.acts) {
+				var browserActs = window.cr.plugins_.Browser.prototype.acts;
+				if (browserActs.GoToURL) {
+					var originalGoToURL = browserActs.GoToURL;
+					browserActs.GoToURL = function(url, target) {
+						if (url && (url.indexOf("yourdomain.com") !== -1 || url.indexOf("yourdomain") !== -1)) {
+							console.log("已阻止跳转到:", url);
+							return;
+						}
+						return originalGoToURL.call(this, url, target);
+					};
+				}
+			}
+		}, 2000);
+    </script>
+</body> 
+</html> 

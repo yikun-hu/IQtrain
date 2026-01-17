@@ -1,0 +1,71 @@
+{
+    "ui": {"type": "atlas", "src": "images/ui.json"},
+
+    "balls_def": {"type": "atlas", "src": "images/balls_def.json"},
+    "flasks_def": {"type": "atlas", "src": "images/flasks_def.json"},
+    "backgrounds_def": {"type": "img", "src": "images/colors.png"},
+    "bottom_black": {"type": "img", "src": "images/bottom_black.png"},
+
+    "confetti": {"type": "atlas", "src": "images/confetti.json"},
+
+    "chest_bonus": {"type": "atlas", "src": "images/chest_bonus.json"},
+    "chest_gray": {"type": "atlas", "src": "images/chest_gray.png"},
+    "lock_gray": {"type": "atlas", "src": "images/lock_gray.png"},
+
+    "mysterious_ball": {"type": "img", "src": "images/mysterious_ball.png"},
+    "awords": {"type": "img", "src": "images/awords.png"},
+    "flash": {"type": "img", "src": "images/flash.png"},
+
+    "mail": {"type": "json", "src": "./json/mail.json"},
+    "skins": {"type": "json", "src": "./json/skins.json"},
+
+    "chest_icon": {"type": "img", "src": "images/chest_icon.png"},
+    "mail_icon": {"type": "img", "src": "images/mail_icon.png"},
+    "gift_icon": {"type": "img", "src": "images/gift_icon.png"},
+    "post_icon": {"type": "img", "src": "images/post_icon.png"},
+    "invite_friend": {"type": "img", "src": "images/invite_friend.png"},
+    "group_icon": {"type": "img", "src": "images/group.png"},
+    "forward_icon": {"type": "img", "src": "images/forward_icon.png"},
+    "gadb_icon": {"type": "img", "src": "images/gadb_icon.png"},
+    "splash_icon": {"type": "img", "src": "images/splash.png"},
+
+    "hand": {"type": "img", "src": "images/hand.png"},
+
+    "coin_big": {"type": "img", "src": "images/coin_big.png"},
+
+    "light": {"type": "img", "src": "images/light.png"},
+    "light_1": {"type": "img", "src": "images/light_1.png"},
+    "config": {"type": "json", "src": "./json/config.json"},
+    "localization": {"type": "json", "src": "./json/localization.json"},
+    "shop": {"type": "json", "src": "./json/shop.json"},
+    "challenges": {"type": "json", "src": "./json/challenges.json"},
+    "backgrounds": {"type": "json", "src": "./json/backgrounds.json"},
+    
+    "snd_clock": {"type": "sound", "src": "./sound/clock.mp3"},
+
+    "snd_jump2": {"type": "sound", "src": "./sound/jump2.mp3"},
+    "snd_jump3": {"type": "sound", "src": "./sound/jump3.mp3"},
+
+    "snd_fall1": {"type": "sound", "src": "./sound/fall1.mp3"},
+
+    "snd_bounce1": {"type": "sound", "src": "./sound/bounce1.mp3"},
+    "snd_bounce3": {"type": "sound", "src": "./sound/bounce3.mp3"},
+
+    "snd_collect1": {"type": "sound", "src": "./sound/collect1.mp3"},
+    "snd_collect3": {"type": "sound", "src": "./sound/collect3.mp3"},
+    "snd_collect5": {"type": "sound", "src": "./sound/collect5.mp3"},
+
+    "snd_success1": {"type": "sound", "src": "./sound/success1.mp3"},
+    "snd_success3": {"type": "sound", "src": "./sound/success3.mp3"},
+
+    "snd_wrong3": {"type": "sound", "src": "./sound/wrong3.mp3"},
+    "snd_wrong4": {"type": "sound", "src": "./sound/wrong4.mp3"},
+
+    "snd_loop1": {"type": "sound", "src": "./sound/loop1.mp3"},
+
+    "snd_chest_drop": {"type": "sound", "src": "./sound/chest_drop.mp3"},
+    "snd_chest_open": {"type": "sound", "src": "./sound/chest_open.mp3"},
+    "snd_lock_open": {"type": "sound", "src": "./sound/lock_open.mp3"},
+    "snd_intrigue": {"type": "sound", "src": "./sound/intrigue.mp3"},
+    "snd_take_gift": {"type": "sound", "src": "./sound/take_gift.mp3"}
+}

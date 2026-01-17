@@ -1,0 +1,496 @@
+{
+    "sections": [
+        {
+            "key": "balls",
+            "title": "Balls",
+            "image": {
+                "texture": "balls_def",
+                "frame": "yellow"
+            },
+            "items": [
+                {
+                    "key": "def",
+                    "image": {
+                        "frame": "yellow",
+                        "texture": "balls_def",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 0,
+                    "currency": "coins"
+                },
+                {
+                    "key": "old",
+                    "image": {
+                        "frame": "yellow",
+                        "texture": "balls_old",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 0,
+                    "currency": "coins"
+                },
+                {
+                    "key": "fruits",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_fruits",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "sport",
+                    "image": {
+                        "frame": "gray",
+                        "texture": "balls_sport",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "cats",
+                    "image": {
+                        "frame": "yellow",
+                        "texture": "balls_cats",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "candies",
+                    "image": {
+                        "frame": "pink",
+                        "texture": "balls_candies",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "billiards",
+                    "image": {
+                        "frame": "gray",
+                        "texture": "balls_billiards",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "new_year",
+                    "image": {
+                        "frame": "yellow",
+                        "texture": "balls_new_year",
+                        "scale": {"x": 0.7, "y": 0.7}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "cosmo",
+                    "image": {
+                        "frame": "gray",
+                        "texture": "balls_cosmo",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "shells",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_shells",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "emoji",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_emoji",
+                        "scale": {"x": 0.9, "y": 0.9}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "hearts",
+                    "image": {
+                        "frame": "red",
+                        "texture": "balls_hearts",
+                        "scale": {"x": 0.8, "y": 0.8}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "leaves",
+                    "image": {
+                        "frame": "red",
+                        "texture": "balls_leaves",
+                        "scale": {"x": 0.8, "y": 0.8}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "halloween",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_halloween",
+                        "scale": {"x": 0.8, "y": 0.8}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "food",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_food",
+                        "scale": {"x": 0.85, "y": 0.85}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "macarons",
+                    "image": {
+                        "frame": "pink",
+                        "texture": "balls_macarons",
+                        "scale": {"x": 0.85, "y": 0.85}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "planets",
+                    "image": {
+                        "frame": "orange",
+                        "texture": "balls_planets",
+                        "scale": {"x": 0.85, "y": 0.85}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                },
+                {
+                    "key": "geometry",
+                    "image": {
+                        "frame": "pink",
+                        "texture": "balls_geometry",
+                        "scale": {"x": 0.85, "y": 0.85}
+                    },
+                    "price": 250,
+                    "currency": "coins"
+                }
+            ]
+        },
+        {
+            "key": "flasks",
+            "title": "Flasks",
+            "image": {
+                "texture": "flasks_def",
+                "frame": "prev"
+            },
+            "items": [
+                {
+                    "key": "def",
+                    "image": {
+                        "frame": "prev",
+                        "texture": "flasks_def",
+                        "scale": {"x": 0.4, "y": 0.4}
+                    },
+                    "price": 0,
+                    "currency": "coins"
+                },
+                {
+                    "key": "old",
+                    "image": {
+                        "frame": "prev",
+                        "texture": "flasks_old",
+                        "scale": {"x": 0.4, "y": 0.4}
+                    },
+                    "price": 0,
+                    "currency": "coins"
+                },
+                {
+                    "key": "faceted",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_faceted",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_faceted",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "vase",
+                    "image":[
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_vase",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_vase",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "easuring",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_easuring",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_easuring",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "pimply",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_pimply",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_pimply",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "plump",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_plump",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_plump",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "spiny",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_spiny",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_spiny",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "spiral",
+                    "image": [
+                        {
+                            "frame": "bottom",
+                            "texture": "flasks_def",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 31}
+                        },
+                        {
+                            "frame": "back_1",
+                            "texture": "flasks_spiral",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        },
+                        {
+                            "frame": "front_1",
+                            "texture": "flasks_spiral",
+                            "scale": {"x": 0.4, "y": 0.4},
+                            "position": {"x": 0, "y": 35},
+                            "anchor": {"x": 0.5, "y": 1}
+                        }
+                    ],
+                    "price": 500,
+                    "currency": "coins"
+                }
+            ]
+        },
+        {
+            "key": "backgrounds",
+            "title": "Bagrounds",
+            "image": {
+                "texture": "backgrounds_def"
+            },
+            "items": [
+                {
+                    "key": "def",
+                    "image": {
+                        "texture": "backgrounds_def",
+                        "scale": {"x": 0.75, "y": 0.75}
+                    },
+                    "price": 0,
+                    "currency": "coins"
+                },
+                {
+                    "key": "desert",
+                    "image": {
+                        "texture": "backgrounds_desert_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "forest",
+                    "image": {
+                        "texture": "backgrounds_forest_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "futureCity",
+                    "image": {
+                        "texture": "backgrounds_futureCity_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "snow",
+                    "image": {
+                        "texture": "backgrounds_snow_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "cosmos",
+                    "image": {
+                        "texture": "backgrounds_cosmos_prev",
+                        "scale": {"x": 0.6, "y": 0.6}
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "geometry",
+                    "image": {
+                        "texture": "backgrounds_geometry_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "forest2",
+                    "image": {
+                        "texture": "backgrounds_forest2_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                },
+                {
+                    "key": "geometry2",
+                    "image": {
+                        "texture": "backgrounds_geometry2_prev"
+                    },
+                    "price": 1500,
+                    "currency": "coins"
+                }
+            ]
+        }
+    ]
+}

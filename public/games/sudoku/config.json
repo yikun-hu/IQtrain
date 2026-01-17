@@ -1,0 +1,98 @@
+{
+	"Difficulty": {
+		"Easy": {
+			"Count": [43,46],
+			"MinInBox": 3,
+			"MaxMistakes": 3,
+			"Score": {
+				"Base": 10,
+				"Min": 2,
+				"TimePenaltyPerSec": -0.1
+			}
+		},
+		"Medium": {
+			"Count": [36,37],
+			"MinInBox": 2,
+			"MaxMistakes": 3,
+			"Score": {
+				"Base": 15,
+				"Min": 3,
+				"TimePenaltyPerSec": -0.1
+			}
+		},
+		"Hard": {
+			"Count": [30,34],
+			"MinInBox": 2,
+			"MaxMistakes": 3,
+			"Score": {
+				"Base": 20,
+				"Min": 4,
+				"TimePenaltyPerSec": -0.1
+			}
+		},
+		"Expert": {
+			"Count": [25,28],
+			"MinInBox": 1,
+			"MaxMistakes": 3,
+			"Score": {
+				"Base": 25,
+				"Min": 5,
+				"TimePenaltyPerSec": -0.1
+			}
+		}
+	},
+	
+	"Space": {
+		"BetweenCells": 2,
+		"BetweenBoxes": 6
+	},
+	
+	"Curves": {
+		"List": ["None", "All", "OnBoard", "OnBox"],
+		"Type": "OnBoard"
+	},
+	
+	"Colors": {
+		"Background": {
+			"Base": "#638df0",
+			"Top": "#638df0",
+			"Bottom": "#8275ff",
+			"Pattern": {
+				"Color": "#ffffff",
+				"Opacity": 0.8
+			}
+		},
+		"Spot": {
+			"Normal": "#ffffff",
+			"Selected": "#3bf4f7",
+			"Related":"#e1fefe",
+			"SameNum": "#fffbcc",
+			"CompleteEffect": "#8cf2f1",
+			"Error": "#f28c8c"
+		},
+		"Number": {
+			"Initial": "#000000",
+			"Typed": "#1e2acc",
+			"Wrong": "#ff0000",
+			"Notes": "#6b6b6b"
+		},
+		"Tools": {
+			"Undo": "#ffffff",
+			"Erase": "#ffffff",
+			"Notes": ["#ffffff","#8bf26e"],
+			"Hint": {
+				"Button": "#ffffff",
+				"Value": "#ffffff",
+				"ValueBg": "#1b51f3"
+			}
+		},
+		"Alert": {
+			"Box": "#ffe380",
+			"Text": "#000000"
+		}
+	},
+	
+	"Hints": 3,
+	"RewardedAdHints": 3,
+	"NotesAlert": false
+}

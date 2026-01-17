@@ -1,0 +1,13 @@
+{
+    "pool": {
+        "0": {
+            "id": 0,
+            "title": "First news",
+            "content": "Hello World!",
+            "prize": {
+                "type": "coins",
+                "value": 50
+            }
+        }
+    }
+}

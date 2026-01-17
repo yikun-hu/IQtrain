@@ -1,0 +1,324 @@
+{
+    "metrika": 95417572,
+    "waitSkip": 2,
+    "waitAD": 2,
+    "waitSubscribe": 2,
+    "firstSubscribe": true,
+    "link": "https://vk.com/shariki20",
+    "group": "https://vk.com/public197362931",
+    "help": "https://vk.com/im?sel=-197362931",
+    "gameCode": "SORTIT",
+    "dailyBonus": [20, 50, 100, 150, 200, 250, 400],
+    "types": [
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "gray",
+        "orange",
+        "pink",
+        "purple"
+    ],
+    "ui_colors": {
+        "green": "33CC33",
+        "green-dark": "32B332",
+        "blue-light": "78B6FA",
+        "blue": "3488E4",
+        "blue-dark": "346EAD",
+        "red": "ED333B",
+        "red-dark": "E01B24",
+        "purple": "C061CB",
+        "purple-dark": "9141AC",
+        "yellow": "F7BD00",
+        "yellow-dark": "EBAC09"
+    },
+    "colors": [
+        [
+            "#2B32B2",
+            "#1488CC"
+        ],
+        [
+            "#061161",
+            "#780206"
+        ],
+        [
+            "#00223E",
+            "#FFA17F"
+        ],
+        [
+            "#001510",
+            "#00bf8f"
+        ],
+        [
+            "#7b4397",
+            "#dc2430"
+        ],
+        [
+            "#5c9695",
+            "#e7aff5"
+        ],
+        [
+            "#326c4c",
+            "#a95517"
+        ],
+        [
+            "#000000",
+            "#e74c3c"
+        ],
+        [
+            "#4B1248",
+            "#F0C27B"
+        ],
+        [
+            "#FF4E50",
+            "#F9D423"
+        ],
+        [
+            "#3f4c6b",
+            "#606c88"
+        ],
+        [
+            "#8CA6DB",
+            "#B993D6"
+        ],
+        [
+            "#190A05",
+            "#870000"
+        ],
+        [
+            "#3a7bd5",
+            "#00d2ff"
+        ],
+        [
+            "#274046",
+            "#E6DADA"
+        ],
+        [
+            "#5D4157",
+            "#A8CABA"
+        ],
+        [
+            "#616161",
+            "#9bc5c3"
+        ],
+        [
+            "#50C9C3",
+            "#96DEDA"
+        ],
+        [
+            "#215f00",
+            "#e4e4d9"
+        ],
+        [
+            "#c21500",
+            "#ffc500"
+        ],
+        [
+            "#666600",
+            "#999966"
+        ],
+        [
+            "#DE6262",
+            "#FFB88C"
+        ],
+        [
+            "#333333",
+            "#e9d362"
+        ],
+        [
+            "#d53369",
+            "#cbad6d"
+        ],
+        [
+            "#7a2828",
+            "#a73737"
+        ],
+        [
+            "#182848",
+            "#4b6cb7"
+        ],
+        [
+            "#0ABFBC",
+            "#FC354C"
+        ],
+        [
+            "#414d0b",
+            "#727a17"
+        ],
+        [
+            "#480048",
+            "#C04848"
+        ],
+        [
+            "#5f2c82",
+            "#49a09d"
+        ],
+        [
+            "#7474BF",
+            "#348AC7"
+        ],
+        [
+            "#4A569D",
+            "#DC2424"
+        ],
+        [
+            "#514A9D",
+            "#24C6DC"
+        ],
+        [
+            "#283048",
+            "#859398"
+        ],
+        [
+            "#232526",
+            "#414345"
+        ],
+        [
+            "#5C258D",
+            "#4389A2"
+        ],
+        [
+            "#134E5E",
+            "#71B280"
+        ],
+        [
+            "#085078",
+            "#85D8CE"
+        ],
+        [
+            "#8E54E9",
+            "#4776E6"
+        ],
+        [
+            "#516395",
+            "#614385"
+        ],
+        [
+            "#1F1C2C",
+            "#928DAB"
+        ],
+        [
+            "#16222A",
+            "#3A6073"
+        ],
+        [
+            "#1D976C",
+            "#93F9B9"
+        ],
+        [
+            "#FF8008",
+            "#FFC837"
+        ],
+        [
+            "#EB3349",
+            "#F45C43"
+        ],
+        [
+            "#4CB8C4",
+            "#3CD3AD"
+        ],
+        [
+            "#1D2B64",
+            "#F8CDDA"
+        ],
+        [
+            "#FF512F",
+            "#F09819"
+        ],
+        [
+            "#1A2980",
+            "#26D0CE"
+        ],
+        [
+            "#61045F",
+            "#AA076B"
+        ],
+        [
+            "#4A00E0",
+            "#8E2DE2"
+        ]
+    ],
+    "levels": [
+        {"title":1,"flasks":[{"type":-1,"capacity":3,"balls":[1,1,2]},{"type":-1,"capacity":3,"balls":[2,1]},{"type":-1,"capacity":3,"balls":[2]}]},
+        {"title":2,"flasks":[{"type":-1,"capacity":3,"balls":[2]},{"type":-1,"capacity":3,"balls":[1,2,1]},{"type":-1,"capacity":3,"balls":[2,1]}]},
+        {"title":3,"flasks":[{"type":-1,"capacity":3,"balls":[1,4,2]},{"type":-1,"capacity":3,"balls":[2,4,1]},{"type":-1,"capacity":3,"balls":[]},{"type":-1,"capacity":3,"balls":[1,4,2]}]},
+        {"title":4,"flasks":[{"type":-1,"capacity":3,"balls":[2,3,2]},{"type":-1,"capacity":3,"balls":[1,1,3]},{"type":-1,"capacity":3,"balls":[3,1,2]},{"type":-1,"capacity":2,"balls":[]}]},
+        {"title":5,"flasks":[{"type":-1,"capacity":3,"balls":[4,7,2]},{"type":-1,"capacity":3,"balls":[4,4,2]},{"type":-1,"capacity":2,"balls":[]},{"type":-1,"capacity":1,"balls":[]}]},
+        {"title":6,"flasks":[{"type":-1,"capacity":4,"balls":[2,1,2,1]},{"type":-1,"capacity":3,"balls":[2,2,1]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":7,"flasks":[{"type":-1,"capacity":3,"balls":[4,1,1]},{"type":-1,"capacity":3,"balls":[2,1,2]},{"type":-1,"capacity":3,"balls":[]},{"type":-1,"capacity":3,"balls":[4,2,4]}]},
+        {"title":8,"flasks":[{"type":-1,"capacity":3,"balls":[4,4,2]},{"type":-1,"capacity":3,"balls":[2,1]},{"type":-1,"capacity":3,"balls":[1,2]},{"type":-1,"capacity":2,"balls":[4,1]}]},
+        {"title":9,"flasks":[{"type":-1,"capacity":4,"balls":[4,4,2,1]},{"type":-1,"capacity":4,"balls":[]},{"type":-1,"capacity":4,"balls":[2,4,1,2]},{"type":-1,"capacity":4,"balls":[1,4,1,2]}]},
+        {"title":10,"flasks":[{"type":-1,"capacity":3,"balls":[1,1,2]},{"type":1,"capacity":3,"balls":[6,2,6]},{"type":-1,"capacity":3,"balls":[1,2,6]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":11,"flasks":[{"type":-1,"capacity":3,"balls":[8,2,1]},{"type":1,"capacity":3,"balls":[2,2,8]},{"type":2,"capacity":3,"balls":[1,1,8]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":12,"flasks":[{"type":5,"capacity":3,"balls":[4,4,7]},{"type":-1,"capacity":3,"balls":[5,7,7]},{"type":4,"capacity":3,"balls":[5,5,4]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":13,"flasks":[{"type":-1,"capacity":4,"balls":[4,4,3,4]},{"type":-1,"capacity":4,"balls":[3,4,3,2]},{"type":2,"capacity":4,"balls":[2,3,2,2]},{"type":-1,"capacity":4,"balls":[]}]},
+        {"title":14,"flasks":[{"type":-1,"capacity":4,"balls":[6,2,8]},{"type":6,"capacity":4,"balls":[6,2,8]},{"type":8,"capacity":4,"balls":[6,2,8]},{"type":-1,"capacity":4,"balls":[6,2,8]}]},
+        {"title":15,"flasks":[{"type":-1,"capacity":4,"balls":[3,1,2,1]},{"type":1,"capacity":4,"balls":[1,3,1,2]},{"type":2,"capacity":4,"balls":[3,2]},{"type":-1,"capacity":3,"balls":[2]}]},
+        {"title":16,"flasks":[{"type":-1,"capacity":5,"balls":[5,5,4,4,3]},{"type":-1,"capacity":5,"balls":[3,4,4,5,4]},{"type":-1,"capacity":5,"balls":[5,3,5,3,3]},{"type":-1,"capacity":5,"balls":[]}]},
+        {"title":17,"flasks":[{"type":-1,"capacity":3,"balls":[1,2,3]},{"type":-1,"capacity":3,"balls":[4,1,2]},{"type":-1,"capacity":3,"balls":[2,4,5]},{"type":-1,"capacity":3,"balls":[3,5,4]},{"type":-1,"capacity":3,"balls":[5,3,1]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":18,"flasks":[{"type":-1,"capacity":4,"balls":[4,3,2,1]},{"type":-1,"capacity":4,"balls":[8,8,3,8]},{"type":-1,"capacity":4,"balls":[4,1,2,8]},{"type":-1,"capacity":4,"balls":[2,3,4,1]},{"type":-1,"capacity":4,"balls":[3,4,1,2]},{"type":-1,"capacity":4,"balls":[]}]},
+        {"title":19,"flasks":[{"type":-1,"capacity":4,"balls":[4,3,2,1]},{"type":-1,"capacity":4,"balls":[8,8,3,8]},{"type":-1,"capacity":4,"balls":[4,1,2,8]},{"type":-1,"capacity":4,"balls":[2,3,4,1]},{"type":-1,"capacity":4,"balls":[3,4,1,2]},{"type":-1,"capacity":4,"balls":[]}]},
+        {"title":20,"flasks":[{"type":3,"capacity":3,"balls":[3,4,1]},{"type":1,"capacity":3,"balls":[1,4,3]},{"type":4,"capacity":2,"balls":[1,3]},{"type":4,"capacity":2,"balls":[]}]},
+        {"title":21,"flasks":[{"type":1,"capacity":4,"balls":[2,1,3,2]},{"type":2,"capacity":4,"balls":[1,3,2,1]},{"type":3,"capacity":4,"balls":[1,3,3,2]},{"type":0,"capacity":4,"balls":[]}]},
+        {"title":22,"flasks":[{"type":1,"capacity":3,"balls":[3,3,4]},{"type":2,"capacity":3,"balls":[1,1,2]},{"type":3,"capacity":3,"balls":[4,4,3]},{"type":4,"capacity":3,"balls":[2,2,5]},{"type":5,"capacity":3,"balls":[]},{"type":0,"capacity":3,"balls":[5,5,1]}]},
+        {"title":23,"flasks":[{"type":0,"capacity":4,"balls":[1,2,3,4]},{"type":1,"capacity":4,"balls":[2,2,4,4]},{"type":2,"capacity":4,"balls":[3,3,1,1]},{"type":3,"capacity":4,"balls":[1,3,4,2]},{"type":4,"capacity":4,"balls":[]}]},
+        {"title":24,"flasks":[{"type":2,"capacity":4,"balls":[4,2,1]},{"type":4,"capacity":4,"balls":[2,2,4]},{"type":2,"capacity":4,"balls":[4,2,1]},{"type":1,"capacity":4,"balls":[2,1,2]},{"type":0,"capacity":4,"balls":[1,4,2,2]}]},
+        {"title":25,"flasks":[{"type":4,"capacity":4,"balls":[6,2,1]},{"type":3,"capacity":4,"balls":[6,4,2,1]},{"type":1,"capacity":4,"balls":[6,4,2]},{"type":6,"capacity":4,"balls":[4,2,1]},{"type":2,"capacity":4,"balls":[6,4,1]}]},
+        {"title":26,"flasks":[{"type":4,"capacity":4,"balls":[8,8,4,4]},{"type":8,"capacity":4,"balls":[4,4,8]},{"type":4,"capacity":3,"balls":[1]},{"type":0,"capacity":4,"balls":[4,4,4]},{"type":1,"capacity":4,"balls":[8,1,1,1]}]},
+        {"title":27,"flasks":[{"type":6,"capacity":4,"balls":[1,3,1]},{"type":6,"capacity":3,"balls":[1,1,3]},{"type":1,"capacity":4,"balls":[6,6,1]},{"type":1,"capacity":3,"balls":[1,6,6]},{"type":3,"capacity":4,"balls":[3,6,1]},{"type":0,"capacity":4,"balls":[3,6,6]}]},
+        {"title":28,"flasks":[{"type":1,"capacity":4,"balls":[3,2,5,6]},{"type":2,"capacity":4,"balls":[3,1,5,6]},{"type":3,"capacity":4,"balls":[1,4,5]},{"type":4,"capacity":4,"balls":[3,2,5]},{"type":5,"capacity":4,"balls":[3,4,6]},{"type":6,"capacity":4,"balls":[2,1,4]},{"type":0,"capacity":4,"balls":[2,1,4,6]}]},
+        {"title":29,"flasks":[{"type":1,"capacity":3,"balls":[2,7]},{"type":2,"capacity":3,"balls":[3,5,6]},{"type":3,"capacity":3,"balls":[2,5,7]},{"type":4,"capacity":3,"balls":[2,5,6]},{"type":5,"capacity":3,"balls":[3,4]},{"type":6,"capacity":3,"balls":[3,1,6]},{"type":7,"capacity":3,"balls":[4,1]},{"type":0,"capacity":3,"balls":[4,1,7]}]},
+        {"title":30,"flasks":[{"type":8,"capacity":3,"balls":[8,7,7]},{"type":7,"capacity":3,"balls":[7,8,5]},{"type":6,"capacity":3,"balls":[4,4,6]},{"type":5,"capacity":3,"balls":[5,8,5]},{"type":4,"capacity":3,"balls":[6,4]},{"type":3,"capacity":3,"balls":[3,6]},{"type":0,"capacity":3,"balls":[3,3]}]},
+        {"title":31,"flasks":[{"type":0,"capacity":3,"balls":[6,4,7]},{"type":1,"capacity":3,"balls":[]},{"type":2,"capacity":3,"balls":[5,3,6]},{"type":3,"capacity":3,"balls":[7,3,2]},{"type":4,"capacity":3,"balls":[7,2,1]},{"type":5,"capacity":3,"balls":[4,1,5]},{"type":6,"capacity":3,"balls":[4,1,3]},{"type":7,"capacity":3,"balls":[2,5,6]}]},
+        {"title":32,"flasks":[{"type":0,"capacity":4,"balls":[1,2,3,4]},{"type":1,"capacity":4,"balls":[5,6,7,1]},{"type":2,"capacity":4,"balls":[2,3,4,5]},{"type":3,"capacity":4,"balls":[6,7,1,2]},{"type":4,"capacity":4,"balls":[3,4,5,6]},{"type":5,"capacity":4,"balls":[7,1,2,3]},{"type":6,"capacity":4,"balls":[4,5,6,7]},{"type":7,"capacity":4,"balls":[]}]},
+        {"title":33,"flasks":[{"type":0,"capacity":4,"balls":[7,1,4]},{"type":1,"capacity":4,"balls":[7,2,1,5]},{"type":2,"capacity":4,"balls":[3,2,4,1]},{"type":3,"capacity":4,"balls":[7,2,4,1]},{"type":4,"capacity":4,"balls":[3,2,4,6]},{"type":5,"capacity":4,"balls":[6,6,3,5]},{"type":6,"capacity":4,"balls":[6,5,5,3]},{"type":7,"capacity":3,"balls":[]}]},
+        {"title":34,"flasks":[{"type":1,"capacity":3,"balls":[]},{"type":2,"capacity":3,"balls":[4,5,2]},{"type":3,"capacity":3,"balls":[1,5,6]},{"type":4,"capacity":3,"balls":[3,6,8]},{"type":5,"capacity":3,"balls":[2,7,6]},{"type":6,"capacity":3,"balls":[3,8,5]},{"type":7,"capacity":3,"balls":[4,8,1]},{"type":8,"capacity":3,"balls":[4,1,7]},{"type":0,"capacity":3,"balls":[2,7,3]}]},
+        {"title":35,"flasks":[{"type":2,"capacity":4,"balls":[8,4,2]},{"type":4,"capacity":4,"balls":[4,8,4]},{"type":5,"capacity":4,"balls":[8,4,2]},{"type":8,"capacity":2,"balls":[2]},{"type":8,"capacity":1,"balls":[2]}]},
+        {"title":36,"flasks":[{"type":1,"capacity":4,"balls":[1,2,4,1]},{"type":2,"capacity":4,"balls":[2,4,3]},{"type":3,"capacity":4,"balls":[3,4,2]},{"type":4,"capacity":4,"balls":[4,3,2]},{"type":0,"capacity":2,"balls":[1,3]},{"type":0,"capacity":1,"balls":[1]}]},
+        {"title":37,"flasks":[{"type":1,"capacity":4,"balls":[6,4,1,2]},{"type":2,"capacity":4,"balls":[6,6,3,8]},{"type":3,"capacity":4,"balls":[3,4,3,4]},{"type":4,"capacity":4,"balls":[]},{"type":5,"capacity":4,"balls":[1,7,5,2]},{"type":6,"capacity":4,"balls":[5,5,2,1]},{"type":7,"capacity":4,"balls":[8,4,6,3]},{"type":8,"capacity":4,"balls":[7,7,8,5]},{"type":0,"capacity":4,"balls":[2,7,8,1]}]},
+        {"title":38,"flasks":[{"type":-1,"capacity":4,"balls":[1,6,3,8]},{"type":0,"capacity":4,"balls":[6,2,1,6]},{"type":6,"capacity":4,"balls":[6,2,3,3]},{"type":3,"capacity":4,"balls":[2,6,8]},{"type":1,"capacity":4,"balls":[3,8,1]},{"type":-1,"capacity":4,"balls":[6,2,8]},{"type":2,"capacity":4,"balls":[6,6,1]}]},
+        {"title":39,"flasks":[{"type":1,"capacity":4,"balls":[8,4]},{"type":2,"capacity":4,"balls":[8,2,4]},{"type":3,"capacity":4,"balls":[8,1,4]},{"type":4,"capacity":4,"balls":[8,1,2,1]},{"type":-1,"capacity":3,"balls":[1,2,4]},{"type":8,"capacity":1,"balls":[2]}]},
+        {"title":40,"flasks":[{"type":1,"capacity":4,"balls":[2,4,8,3]},{"type":4,"capacity":4,"balls":[3,2,5,2]},{"type":-1,"capacity":4,"balls":[3,2,3,5]},{"type":8,"capacity":4,"balls":[5,3,5,8]},{"type":2,"capacity":4,"balls":[4,3,4,3]},{"type":5,"capacity":4,"balls":[]},{"type":-1,"capacity":3,"balls":[8,8,4]}]},
+        {"title":41,"flasks":[{"type":-1,"capacity":4,"balls":[4,3,2,1]},{"type":1,"capacity":4,"balls":[2,4,1,4]},{"type":-1,"capacity":4,"balls":[3,2]},{"type":2,"capacity":4,"balls":[4,2]},{"type":4,"capacity":3,"balls":[1,4,3]},{"type":0,"capacity":3,"balls":[4,1,3]},{"type":4,"capacity":3,"balls":[]}]},
+        {"title":42,"flasks":[{"type":0,"capacity":5,"balls":[4,1,2,4,2]},{"type":1,"capacity":5,"balls":[2,1,3,6,3]},{"type":2,"capacity":5,"balls":[3,6,1,5,6]},{"type":3,"capacity":5,"balls":[4,2,7,5,8]},{"type":4,"capacity":5,"balls":[5,7,5,1,8]},{"type":5,"capacity":5,"balls":[6,8,6,8,4]},{"type":6,"capacity":5,"balls":[7,4,7,3,8]},{"type":7,"capacity":5,"balls":[7,5,3,2,1]},{"type":8,"capacity":5,"balls":[]}]},
+        {"title":43,"flasks":[{"type":1,"capacity":5,"balls":[1,4]},{"type":3,"capacity":5,"balls":[3,4,1]},{"type":4,"capacity":5,"balls":[4,3,4,1,3]},{"type":0,"capacity":5,"balls":[4,3,4,1,3]},{"type":-1,"capacity":3,"balls":[4,3,1]},{"type":-1,"capacity":2,"balls":[3,4]}]},
+        {"title":44,"flasks":[{"type":0,"capacity":4,"balls":[7,4,3,4]},{"type":1,"capacity":4,"balls":[3,5,2,7]},{"type":2,"capacity":4,"balls":[]},{"type":3,"capacity":4,"balls":[1,6,1,5]},{"type":4,"capacity":4,"balls":[6,1,6,3]},{"type":5,"capacity":4,"balls":[5,3,2,4]},{"type":-1,"capacity":4,"balls":[2,6,5,7]},{"type":-1,"capacity":4,"balls":[7,2,1,4]}]},
+        {"title":45,"flasks":[{"type":3,"capacity":4,"balls":[3,7,4,7]},{"type":1,"capacity":4,"balls":[1,6,3,4]},{"type":4,"capacity":4,"balls":[4,7,3,7]},{"type":-1,"capacity":4,"balls":[7,6,4,7]},{"type":6,"capacity":4,"balls":[6,1,6,3]},{"type":-1,"capacity":3,"balls":[1,7]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":46,"flasks":[{"type":0,"capacity":4,"balls":[4,3,1,2]},{"type":1,"capacity":4,"balls":[4,6,8,1]},{"type":3,"capacity":4,"balls":[4,3,2,3]},{"type":4,"capacity":4,"balls":[4,2,4,1]},{"type":5,"capacity":4,"balls":[1,2,4,5]},{"type":6,"capacity":4,"balls":[5,4,6,3]},{"type":-1,"capacity":4,"balls":[6,5,4,7]},{"type":8,"capacity":4,"balls":[]},{"type":-1,"capacity":4,"balls":[8,5,7,8]},{"type":-1,"capacity":4,"balls":[7,6,8,7]}]},
+        {"title":47,"flasks":[{"type":1,"capacity":4,"balls":[1,3,2,1]},{"type":2,"capacity":4,"balls":[2,6,1,4]},{"type":3,"capacity":4,"balls":[3,2,6,2]},{"type":4,"capacity":4,"balls":[4,3,4,3]},{"type":0,"capacity":3,"balls":[4,1,6]},{"type":-1,"capacity":3,"balls":[]}]},
+        {"title":48,"flasks":[{"type":1,"capacity":4,"balls":[]},{"type":-1,"capacity":4,"balls":[2,3,5,3]},{"type":3,"capacity":4,"balls":[4,8,1,4]},{"type":-1,"capacity":4,"balls":[2,3,5,8]},{"type":4,"capacity":4,"balls":[4,3,1,4]},{"type":0,"capacity":4,"balls":[1,2,8,5]},{"type":-1,"capacity":3,"balls":[2,1,5]}]},
+        {"title":49,"flasks":[{"type":7,"capacity":5,"balls":[7,2,4,7,4]},{"type":4,"capacity":4,"balls":[2,7,4,2]},{"type":2,"capacity":3,"balls":[7,4,7]},{"type":3,"capacity":2,"balls":[]},{"type":0,"capacity":1,"balls":[]},{"type":0,"capacity":1,"balls":[]}]},
+        {"title":50,"flasks":[{"type":1,"capacity":4,"balls":[8,5,2,5]},{"type":6,"capacity":4,"balls":[6,3,1,7]},{"type":4,"capacity":4,"balls":[4,2,8,5]},{"type":2,"capacity":4,"balls":[2,3,6,3]},{"type":3,"capacity":4,"balls":[8,7,2,4]},{"type":8,"capacity":4,"balls":[]},{"type":7,"capacity":4,"balls":[7,1,4,6]},{"type":5,"capacity":4,"balls":[5,4,8,7]},{"type":0,"capacity":4,"balls":[1,3,6,1]}]}
+    ],
+    "hard_levels": [
+        {"title":2, "solid": true, "flasks":[{"capacity":3,"balls":[4,7],"type":-1},{"capacity":3,"balls":[7],"type":-1},{"capacity":3,"balls":[7,4,4],"type":-1}]},
+        {"title":3, "solid": true, "flasks":[{"capacity":3,"balls":[4,4,8],"type":-1},{"capacity":3,"balls":[2,2,4],"type":-1},{"capacity":3,"balls":[8,8,2],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":4, "solid": true, "flasks":[{"capacity":3,"balls":[1,2,2],"type":-1},{"capacity":3,"balls":[3,3,1],"type":-1},{"capacity":3,"balls":[2,1,3],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":5, "solid": true, "flasks":[{"capacity":5,"balls":[1,2,2,2,8],"type":-1},{"capacity":4,"balls":[4,4,8,8],"type":-1},{"capacity":3,"balls":[8],"type":-1},{"capacity":2,"balls":[],"type":-1},{"capacity":1,"balls":[],"type":-1}]},
+        {"title":6, "solid": true, "flasks":[{"capacity":4,"balls":[1,2,1],"type":-1},{"capacity":4,"balls":[2,2],"type":-1},{"capacity":4,"balls":[1,2,1],"type":-1}]},
+        {"title":7, "solid": true, "flasks":[{"capacity":3,"balls":[1,3,1],"type":-1},{"capacity":3,"balls":[3,4],"type":-1},{"capacity":3,"balls":[4,2],"type":-1},{"capacity":3,"balls":[1,4],"type":-1},{"capacity":3,"balls":[2,3,2],"type":-1}]},
+        {"title":8, "solid": true, "flasks":[{"capacity":4,"balls":[2,8,2,6],"type":-1},{"capacity":4,"balls":[6,8,2,6],"type":-1},{"capacity":4,"balls":[8,2,6,8],"type":-1},{"capacity":4,"balls":[],"type":-1}]},
+        {"title":9, "solid": true, "flasks":[{"capacity":2,"balls":[],"type":-1},{"capacity":2,"balls":[1,2],"type":-1},{"capacity":2,"balls":[3,4],"type":-1},{"capacity":2,"balls":[4,6],"type":-1},{"capacity":2,"balls":[2,6],"type":-1},{"capacity":2,"balls":[1,3],"type":-1}]},
+        {"title":10, "flasks":[{"capacity":3,"balls":[1,2,3],"type":-1},{"capacity":3,"balls":[2,3,1],"type":-1},{"capacity":3,"balls":[3,1],"type":-1},{"capacity":2,"balls":[],"type":-1}]},
+        {"title":11, "flasks":[{"capacity":3,"balls":[5,7,5],"type":-1},{"capacity":3,"balls":[6,5,7],"type":-1},{"capacity":3,"balls":[7,6,6],"type":-1},{"capacity":2,"balls":[],"type":-1}]},
+        {"title":12, "flasks":[{"capacity":3,"balls":[3,5,4],"type":-1},{"capacity":3,"balls":[4,3,2],"type":-1},{"capacity":3,"balls":[5,3,2],"type":-1},{"capacity":3,"balls":[4,2,5],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":13, "flasks":[{"capacity":4,"balls":[4,4,1,1],"type":-1},{"capacity":4,"balls":[1,1,2,2],"type":-1},{"capacity":4,"balls":[5,5,3,3],"type":-1},{"capacity":2,"balls":[],"type":-1},{"capacity":4,"balls":[3,3,5,5],"type":-1},{"capacity":4,"balls":[2,2,4,4],"type":-1}]},
+        {"title":14, "flasks":[{"capacity":3,"balls":[5,4,8],"type":-1},{"capacity":3,"balls":[4,5,2],"type":-1},{"capacity":3,"balls":[8,4,5],"type":-1},{"capacity":3,"balls":[2],"type":-1},{"capacity":3,"balls":[7,2],"type":-1},{"capacity":3,"balls":[8,7,7],"type":-1}]},
+        {"title":15, "flasks":[{"capacity":4,"balls":[7,4,2,7],"type":-1},{"capacity":4,"balls":[4,2,7,4],"type":-1},{"capacity":4,"balls":[2,7,4,2],"type":-1},{"capacity":4,"balls":[],"type":-1}]},
+        {"title":16, "flasks":[{"capacity":4,"balls":[2,3,4,5],"type":-1},{"capacity":4,"balls":[5,4,3,2],"type":-1},{"capacity":4,"balls":[4,2,5,3],"type":-1},{"capacity":4,"balls":[3,5,2,4],"type":-1},{"capacity":4,"balls":[],"type":-1}]},
+        {"title":17, "flasks":[{"capacity":3,"balls":[1,5,2],"type":-1},{"capacity":3,"balls":[6,3,1],"type":-1},{"capacity":3,"balls":[5,2,6],"type":-1},{"capacity":3,"balls":[3,1,5],"type":-1},{"capacity":3,"balls":[2,6,3],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":18, "flasks":[{"capacity":4,"balls":[2,8,5,5],"type":-1},{"capacity":4,"balls":[8,4,4,2],"type":-1},{"capacity":4,"balls":[7,8,2,7],"type":-1},{"capacity":4,"balls":[4,8,2,7],"type":-1},{"capacity":4,"balls":[4,7,5,5],"type":-1},{"capacity":4,"balls":[],"type":-1}]},
+        {"title":19, "flasks":[{"capacity":5,"balls":[1,1,3,3,1],"type":-1},{"capacity":5,"balls":[3,2,1,1,2],"type":-1},{"capacity":5,"balls":[2,3,3,2,2],"type":-1},{"capacity":5,"balls":[],"type":-1}]},
+        {"title":20, "flasks":[{"capacity":5,"balls":[1,2,3,4,7],"type":-1},{"capacity":1,"balls":[],"type":-1},{"capacity":1,"balls":[],"type":-1},{"capacity":1,"balls":[],"type":-1},{"capacity":1,"balls":[],"type":-1},{"capacity":1,"balls":[],"type":-1}]},
+        {"title":21, "flasks":[{"capacity":5,"balls":[],"type":-1},{"capacity":5,"balls":[2,1,2,1,2],"type":-1},{"capacity":5,"balls":[8,7,8,7,8],"type":-1},{"capacity":5,"balls":[7,8,7,8,7],"type":-1},{"capacity":5,"balls":[1,2,1,2,1],"type":-1}]},
+        {"title":22, "flasks":[{"capacity":3,"balls":[4,2,4],"type":-1},{"capacity":3,"balls":[4,2,4],"type":-1},{"capacity":3,"balls":[4,2,4],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":23, "flasks":[{"capacity":3,"balls":[4,2,4],"type":-1},{"capacity":3,"balls":[4,2,4],"type":-1},{"capacity":3,"balls":[4,4,2],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":24, "flasks":[{"capacity":3,"balls":[6,7,6],"type":-1},{"capacity":3,"balls":[7,7,6],"type":-1},{"capacity":3,"balls":[7,6,7],"type":-1},{"capacity":3,"balls":[6,6,7],"type":-1},{"capacity":3,"balls":[],"type":-1}]},
+        {"title":25, "flasks":[{"capacity":4,"balls":[1,1,8],"type":-1},{"capacity":4,"balls":[2,4,2,1],"type":-1},{"capacity":4,"balls":[8,8,2,4],"type":-1},{"capacity":4,"balls":[8,2,4,1],"type":-1},{"capacity":3,"balls":[],"type":-1}]}
+    ],
+    "fonts": [
+        {"name":"MPLUS-Regular", "url":"./fonts/Roundedmplus1cmedium.ttf"},
+        {"name":"MPLUS-Bold", "url":"./fonts/Roundedmplus1cbold.ttf"},
+        {"name":"MPLUS-Black", "url":"./fonts/Roundedmplus1cblack.ttf"}
+    ]
+}
