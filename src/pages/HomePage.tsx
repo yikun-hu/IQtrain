@@ -349,6 +349,30 @@ export default function HomePage() {
         }
       `}</style>
 
+      {/* Floating Start Test Button */}
+      <Button
+        onClick={() => navigate('/test')}
+        className="fixed bottom-6 right-6 z-50 h-12 px-4 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center gap-2"
+        size="lg"
+        aria-label="Start Test"
+      >
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 5v14l11-7z"
+          />
+        </svg>
+        <span className="text-sm font-medium">{t.startTest}</span>
+      </Button>
+
       {/* HERO */}
       <section className="bg-muted/40">
         <div className="container mx-auto px-4 pt-8 pb-3 md:pt-10">
@@ -368,7 +392,7 @@ export default function HomePage() {
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <Button
                   onClick={() => navigate('/test')}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
+                  className="bg-primary py-6 text-md font-bold hover:bg-primary/90 text-primary-foreground w-full sm:w-auto"
                   size="lg"
                 >
                   {t.heroCta}
@@ -770,7 +794,7 @@ export default function HomePage() {
             <Button
               size="lg"
               onClick={() => navigate('/test')}
-              className="bg-white text-primary hover:bg-white/90"
+              className="bg-white py-5 text-md font-bold text-primary hover:bg-white/90"
             >
               {t.finalCta}
             </Button>

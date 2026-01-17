@@ -1,5 +1,6 @@
 const home = {
   "en-US": {
+    startTest: "Start Test",
     heroKicker: "IQ Test",
     heroTitle: "What Is Your IQ Score?",
     heroTitlePrefix: "What Is Your",
@@ -129,6 +130,7 @@ const home = {
     finalCta: "Start Test"
   },
   "zh-CN": {
+    startTest: "开始测试",
     heroKicker: "IQ 测试",
     heroTitle: "你的 IQ 分数是多少？",
     heroSubtitle:
@@ -254,12 +256,13 @@ const home = {
       "现在开始，立刻获得分数、百分位与清晰解读；随时可回看，也能复测对比进步。",
     finalCta: "开始测试",
     heroTitlePrefix: "你的",
-    heroTitleGradient: "IQ 分数/等级是多少？",
+    heroTitleGradient: "IQ 分数是多少？",
     testsThisMonthNumber: "28193",
     testsThisMonthText: "本月已完成 IQ 测试",
 
   },
   "de-DE": {
+    startTest: "Test starten",
     heroKicker: "IQ-Test",
     heroTitle: "Wie hoch ist Ihr IQ-Score?",
     heroTitlePrefix: "Wie hoch ist Ihr",
@@ -389,6 +392,7 @@ const home = {
     finalCta: "Test starten"
   },
   "fr-FR": {
+    startTest: "Commencer le test",
     heroKicker: "Test de QI",
     heroTitle: "Quel est votre score de QI ?",
     heroTitlePrefix: "Quel est votre",
@@ -518,6 +522,7 @@ const home = {
     finalCta: "Commencer le test"
   },
   "zh-TW": {
+    startTest: "開始測試",
     heroKicker: "IQ 測試",
     heroTitle: "你的 IQ 分數是多少？",
     heroSubtitle:
@@ -643,7 +648,7 @@ const home = {
       "現在開始，立刻獲得分數、百分位與清晰解讀；隨時可回看，也能復測對比進步。",
     finalCta: "開始測試",
     heroTitlePrefix: "你的",
-    heroTitleGradient: "IQ 分數/等級是多少？",
+    heroTitleGradient: "IQ 分數是多少？",
     testsThisMonthNumber: "28193",
     testsThisMonthText: "本月已完成 IQ 測試",
   }
