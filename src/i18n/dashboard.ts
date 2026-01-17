@@ -1,6 +1,7 @@
 export default {
   "en-US": {
     todayTrainRecommend: "Today's Train Recommend",
+    games: "Games",
     allGames: "All Games",
     availableTests: "Available Tests",
     completedTests: "Completed Tests",
@@ -46,6 +47,7 @@ export default {
   },
   "zh-CN": {
     todayTrainRecommend: "今日训练推荐",
+    games: "游戏",
     allGames: "所有游戏",
     availableTests: "可用测试",
     completedTests: "已完成测试",
@@ -91,6 +93,7 @@ export default {
   },
   "de-DE": {
     todayTrainRecommend: "Heutige Trainingsempfehlung",
+    games: "Spiele",
     allGames: "Alle Spiele",
     availableTests: "Verfügbare Tests",
     completedTests: "Abgeschlossene Tests",
@@ -136,6 +139,7 @@ export default {
   },
   "fr-FR": {
     todayTrainRecommend: "Recommandation d'entraînement d'aujourd'hui",
+    games: "Jeux",
     allGames: "Tous les jeux",
     availableTests: "Tests disponibles",
     completedTests: "Tests complétés",
@@ -181,6 +185,7 @@ export default {
   },
   "zh-TW": {
     todayTrainRecommend: "今日訓練推薦",
+    games: "遊戲",
     allGames: "所有遊戲",
     availableTests: "可用測試",
     completedTests: "已完成測試",

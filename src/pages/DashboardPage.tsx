@@ -246,20 +246,20 @@ export default function DashboardPage() {
                       key={game.id}
                       className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col bg-card/50 backdrop-blur-sm
             /* 核心新增：限制卡片外部高度 */
-            max-h-[270px] /* 可根据需要调整这个数值，比如 250px/300px */
+            max-h-[260px] /* 可根据需要调整这个数值，比如 250px/300px */
             h-fit /* 让卡片高度自适应内容，但不超过max-h */"
                     >
                       <div className="flex flex-row items-stretch">
                         {game.thumbnail_url && (
-                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mr-0">
-                            <img
-                              src={game.thumbnail_url}
-                              alt={gameTitle}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        )}
-                        <CardContent className="px-4 pt-4 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
+                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mt-0 mr-0">
+                          <img
+                            src={game.thumbnail_url}
+                            alt={gameTitle}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      )}
+                      <CardContent className="px-4 pt-0 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center justify-between gap-2">
                               <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-1 font-semibold flex-1">
@@ -315,7 +315,7 @@ export default function DashboardPage() {
             <section>
               <div className="mb-6">
                 <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  游戏
+                  {t.dashboard.games}
                 </h2>
                 <div className="h-1 w-20 bg-gradient-to-r from-primary to-transparent rounded-full"></div>
               </div>
@@ -361,12 +361,12 @@ export default function DashboardPage() {
                       key={game.id}
                       className="group hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden border-2 border-border/50 hover:border-primary/30 flex flex-col bg-card/50 backdrop-blur-sm
             /* 核心新增：限制卡片外部高度 */
-            max-h-[270px] /* 可根据需要调整这个数值，比如 250px/300px */
+            max-h-[260px] /* 可根据需要调整这个数值，比如 250px/300px */
             h-fit /* 让卡片高度自适应内容，但不超过max-h */"
                     >
                       <div className="flex flex-row items-stretch">
                         {game.thumbnail_url && (
-                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mr-0">
+                          <div className="relative w-32 sm:w-36 md:w-40 aspect-square flex-shrink-0 overflow-hidden bg-muted flex items-center justify-center m-4 mt-0 mr-0">
                             <img
                               src={game.thumbnail_url}
                               alt={gameTitle}
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                             />
                           </div>
                         )}
-                        <CardContent className="px-4 pt-4 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
+                        <CardContent className="px-4 pt-0 pb-4 pr-4 flex flex-col gap-1.5 flex-1 min-w-0 justify-between">
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center justify-between gap-2">
                               <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-1 font-semibold flex-1">
